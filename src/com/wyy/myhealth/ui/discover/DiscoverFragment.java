@@ -2,6 +2,7 @@ package com.wyy.myhealth.ui.discover;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.healthbar.HealthPassActivity;
+import com.wyy.myhealth.ui.message.MessageTListActivity;
 import com.wyy.myhealth.ui.shaiyishai.ShaiyishaiActivity;
 
 import android.content.Intent;
@@ -67,7 +68,7 @@ public class DiscoverFragment extends Fragment {
 				break;
 
 			case R.id.msgbox_fr:
-
+				showMsgList();
 				break;
 
 			default:
@@ -86,4 +87,9 @@ public class DiscoverFragment extends Fragment {
 	private void showHealthPass(){
 		startActivity(new Intent(getActivity(), HealthPassActivity.class));
 	}
+	
+	private void showMsgList(){
+		startActivity(new Intent(getActivity(), MessageTListActivity.class));
+	}
+	
 }

@@ -6,7 +6,7 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.ui.healthbar.HealthPassActivity;
-import com.wyy.myhealth.ui.message.ChatMsgActivity;
+import com.wyy.myhealth.ui.message.MessageTListActivity;
 import com.wyy.myhealth.welcome.WelcomeActivity;
 
 import android.app.Notification;
@@ -52,7 +52,7 @@ public class NoticeUtils {
 			} else {
 
 				pendingIntent = PendingIntent.getActivity(context, 0,
-						new Intent(context, ChatMsgActivity.class),
+						new Intent(context, MessageTListActivity.class),
 						Intent.FLAG_ACTIVITY_NEW_TASK);
 			}
 
