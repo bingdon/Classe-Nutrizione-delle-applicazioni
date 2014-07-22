@@ -7,8 +7,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.NearFoodBean;
+import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.GeographyLocation;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
@@ -49,6 +52,10 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 
 	private YaoyingyangAdapter yaoyingyangAdapter;
 
+	private boolean searchFlag = false;
+
+	private String key = "";
+
 	public YaoyingyangFragment() {
 
 	}
@@ -66,6 +73,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "=====onCreate======");
+		initFilter();
 		new Thread(WaitLocation).start();
 	}
 
@@ -90,6 +98,9 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		if (!TextUtils.isEmpty(lastJson)) {
 			saveLie_Current_Result(lastJson);
 		}
+		
+		getActivity().unregisterReceiver(searchReceiver);
+		
 	}
 
 	private void getNerabyFoods() {
@@ -398,7 +409,12 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 	public void onRefresh() {
 		// TODO Auto-generated method stub
 		if (!isLoaing) {
-			ReshNerabyFoods();
+			if (!searchFlag && !TextUtils.isEmpty(key)) {
+				ReshNerabyFoods();
+			} else {
+				searchReshFoodbyKey(key, "0");
+			}
+
 		}
 	}
 
@@ -406,7 +422,12 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		if (!isLoaing) {
-			LoadModreNerabyFoods();
+			if (!searchFlag && !TextUtils.isEmpty(key)) {
+				LoadModreNerabyFoods();
+			} else {
+				searchLoadMordFoodbyKey(key, "" + currtuindex);
+			}
+
 		}
 
 	}
@@ -502,17 +523,42 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		startActivity(intent);
 	}
 
-	private void searchReshFoodbyKey(String key,String first) {
-		HealthHttpClient.doHttpGetFoodsList(key,
-				""+MainActivity.Wlatitude,
-				""+MainActivity.Wlongitude, first, limit, reShResponseHandler);
+	private void searchReshFoodbyKey(String key, String first) {
+		HealthHttpClient
+				.doHttpGetFoodsList(key, "" + MainActivity.Wlatitude, ""
+						+ MainActivity.Wlongitude, first, limit,
+						reShResponseHandler);
 	}
-	
-	private void searchLoadMordFoodbyKey(String key,String first) {
-		HealthHttpClient.doHttpGetFoodsList(key,
-				""+MainActivity.Wlatitude,
-				""+MainActivity.Wlongitude, first, limit, responseHandler);
+
+	private void searchLoadMordFoodbyKey(String key, String first) {
+		HealthHttpClient.doHttpGetFoodsList(key, "" + MainActivity.Wlatitude,
+				"" + MainActivity.Wlongitude, first, limit, responseHandler);
 	}
-	
+
+	private void initFilter() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConstantS.ACTION_SEARCH_FOOD);
+		getActivity().registerReceiver(searchReceiver, filter);
+	}
+
+	private BroadcastReceiver searchReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			key = intent.getStringExtra("key");
+			currtuindex = 0;
+			if (TextUtils.isEmpty(key)) {
+				searchFlag=false;
+				ReshNerabyFoods();
+			}else {
+				searchFlag=true;
+				list.clear();
+				yaoyingyangAdapter.notifyDataSetChanged();
+				searchReshFoodbyKey(key, "" + currtuindex);
+			}
+			
+		}
+	};
 
 }

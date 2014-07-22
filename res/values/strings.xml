@@ -260,5 +260,6 @@
     <string name="remark_hint">请填写您的备注信息</string>
     <string name="remark_example">如最近身体不错，精神也蛮好的</string>
     <string name="publish_mood">发表心情</string>
+    <string name="exit">退出</string>
 
 </resources>

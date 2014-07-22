@@ -26,6 +26,8 @@ public interface ConstantS {
 	public static final String PAGE_INDEX_CHANG="ACTION.WYY.PAGE.CHANGE";
 	
 	public static final String ACTION_BASE_INFO_CHANGE="ACTION.BASEINFO.CHANGE";
+	
+	public static final String ACTION_SEARCH_FOOD="ACTION.WYY.SEARCH.FOOD";
 
 	/**************NOTICE_ID*************/
 	public static final int NEW_LOGIN_ACTION_ID = 0;

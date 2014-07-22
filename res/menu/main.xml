@@ -7,6 +7,11 @@
         android:id="@+id/action_saoyy"
         android:orderInCategory="100"
         android:title="@string/saoyy"
-        app:showAsAction="always" android:showAsAction="always"/>
+        app:showAsAction="collapseActionView"/>
+    <item
+        android:id="@+id/exit"
+        app:showAsAction="collapseActionView"
+        android:title="@string/exit">
+    </item>
 
 </menu>

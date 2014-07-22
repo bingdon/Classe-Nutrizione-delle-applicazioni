@@ -249,7 +249,8 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 	@Override
 	public boolean onQueryTextSubmit(String arg0) {
 		// TODO Auto-generated method stub
-		return false;
+		sendFoodkey(""+arg0);
+		return true;
 	}
 
 
@@ -283,6 +284,15 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 		intent.putExtra("index", index);
 		sendBroadcast(intent);
 	}
+	
+	
+	private void sendFoodkey(String key){
+		Intent intent=new Intent();
+		intent.setAction(ConstantS.ACTION_SEARCH_FOOD);
+		intent.putExtra("key", key);
+		sendBroadcast(intent);
+	}
+	
 
 	
 }
