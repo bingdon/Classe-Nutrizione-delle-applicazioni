@@ -65,10 +65,24 @@ public class GridAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		ImageView mImageView;
 		if (convertView==null) {
-			if (list.size()>2) {
-				convertView=inflater.inflate(R.layout.pic_gird, null);
-			}else {
+			switch (list.size()) {
+			case 1:
 				convertView=inflater.inflate(R.layout.pic_grid_, null);
+				break;
+				
+			case 2:
+				convertView=inflater.inflate(R.layout.pic_grid_t, null);
+				break;
+
+			case 3:
+				convertView=inflater.inflate(R.layout.pic_gird, null);
+				break;
+				
+			default:
+				
+				convertView=inflater.inflate(R.layout.pic_gird, null);
+				
+				break;
 			}
 			
 			mImageView=(ImageView)convertView.findViewById(R.id.shai_pic_muilt);
@@ -77,13 +91,6 @@ public class GridAdapter extends BaseAdapter {
 			mImageView=(ImageView)convertView.getTag();
 		}
 		
-		if (list.size()==2) {
-//			imageFetcher.setImageSize(450, 450);
-//			convertView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, 100));
-		}else if (list.size()>2) {
-//			imageFetcher.setImageSize(52, 52);
-		}
-//		imageFetcher.loadImage(list.get(position), mImageView);
 		imageLoader.displayImage(list.get(position), mImageView,options);
 		
 		return convertView;

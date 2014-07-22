@@ -24,16 +24,16 @@
             layout="@layout/health_right_ada" />
     </LinearLayout>
 
-    <GridView
+    <com.wyy.myhealth.ui.customview.BingGridView
         android:id="@+id/shai_gridView1"
-        android:layout_width="110dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center_horizontal"
-        android:horizontalSpacing="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="10dp"
         android:numColumns="auto_fit"
-        android:scrollbars="none"
-        android:verticalSpacing="1dp" >
-    </GridView>
+        android:scrollbars="none" >
+
+     </com.wyy.myhealth.ui.customview.BingGridView>
 
     <FrameLayout
         android:id="@+id/FrameLayout1"

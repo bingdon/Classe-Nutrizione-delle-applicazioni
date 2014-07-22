@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
@@ -28,9 +29,18 @@ private Activity context;
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		NoticeUtils.notice(context,
-				context.getResources().getString(R.string.send),
-				ConstantS.PUBLISH_COMMENT);
+		Log.d(ModifyPicHandler.class.getSimpleName(), "开始发送");
+		try {
+			NoticeUtils.notice(context,
+					context.getResources().getString(R.string.send),
+					ConstantS.PUBLISH_COMMENT);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Log.e(ModifyBaseInfoActivity.class.getSimpleName(), "发送出错");
+			
+		}
+		
 		context.finish();
 	}
 

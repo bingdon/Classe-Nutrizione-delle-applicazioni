@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -45,8 +46,8 @@ public class ModifyBaseInfoActivity extends SubmitActivity implements
 	private RadioGroup mRadioGroup;
 
 	private String headimage;
-	
-	private String headstr="";
+
+	private String headstr = "";
 
 	private String gender = "";
 
@@ -57,7 +58,7 @@ public class ModifyBaseInfoActivity extends SubmitActivity implements
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 
 	private DisplayImageOptions options;
-	
+
 	private Bitmap myHead;
 
 	@Override
@@ -156,14 +157,14 @@ public class ModifyBaseInfoActivity extends SubmitActivity implements
 			return;
 		}
 		try {
-			headstr=PhoneUtlis.bitmapToString(myHead);
+			headstr = PhoneUtlis.bitmapToString(myHead);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
-		
-		new Thread(sendModifyRunnable).start();
-		
+
+		sendModify();
+//		new Thread(sendModifyRunnable).start();
+
 	}
 
 	@Override
@@ -207,11 +208,10 @@ public class ModifyBaseInfoActivity extends SubmitActivity implements
 				str = localCursor.getString(localCursor
 						.getColumnIndex(arrayOfString[0]));
 				localCursor.close();
-				
-				myHead=PhoneUtlis.getNoCutSmallBitmap(str);
-				
-				userheadView
-						.setImageBitmap(myHead);
+
+				myHead = PhoneUtlis.getNoCutSmallBitmap(str);
+
+				userheadView.setImageBitmap(myHead);
 				headimage = str;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -221,7 +221,7 @@ public class ModifyBaseInfoActivity extends SubmitActivity implements
 			try {
 				String path = PhotoUtils.getPicPathFromUri(
 						PhotoUtils.imageFileUri, this);
-				myHead=PhoneUtlis.getNoCutSmallBitmap(path);
+				myHead = PhoneUtlis.getNoCutSmallBitmap(path);
 				userheadView.setImageBitmap(myHead);
 				headimage = path;
 			} catch (Exception e) {
@@ -239,14 +239,26 @@ public class ModifyBaseInfoActivity extends SubmitActivity implements
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
-				HealthHttpClient.doHttpFinishPersonInfoForName(info, username,
-						userage, gender,
-						headstr,
-						new ModifyPicHandler(context));
+				HealthHttpClient
+						.doHttpFinishPersonInfoForName(info, username, userage,
+								gender, headstr, new ModifyPicHandler(context));
 			} catch (Exception e) {
 				// TODO: handle exception
+				e.printStackTrace();
+				Log.e(ModifyBaseInfoActivity.class.getSimpleName(), "发送出错");
 			}
 		}
 	};
+
+	private void sendModify() {
+		try {
+			HealthHttpClient.doHttpFinishPersonInfoForName(info, username,
+					userage, gender, headstr, new ModifyPicHandler(context));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Log.e(ModifyBaseInfoActivity.class.getSimpleName(), "发送出错");
+		}
+	}
 
 }

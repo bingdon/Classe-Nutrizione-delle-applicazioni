@@ -2,6 +2,11 @@ package com.wyy.myhealth.bean;
 
 public class NearFoodBean extends Foods{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String distance;
 
 	private String visitcount;

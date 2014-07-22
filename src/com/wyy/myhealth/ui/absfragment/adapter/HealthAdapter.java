@@ -250,6 +250,9 @@ public class HealthAdapter extends BaseAdapter {
 			picList = (List<String>) list.get(position).get("grid_pic");
 			if (null != picList) {
 				if (picList.size() > 0) {
+					
+					
+					
 					setGridView(holder.picGridView, picList.size());
 					holder.gridAdapter = new GridAdapter(context, picList);
 					holder.picGridView.setAdapter(holder.gridAdapter);
@@ -441,15 +444,14 @@ public class HealthAdapter extends BaseAdapter {
 
 		case 3:
 
-			gridView.setNumColumns(2);
-			gridView.setHorizontalSpacing(2);
+			gridView.setNumColumns(3);
 
 			break;
 
 		case 4:
 
 			gridView.setNumColumns(2);
-			gridView.setHorizontalSpacing(2);
+			gridView.setVerticalSpacing(20);
 
 			break;
 

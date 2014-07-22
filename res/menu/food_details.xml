@@ -35,5 +35,11 @@
         android:orderInCategory="105"
         android:title="@string/canelcomment">
     </item>
+    <item
+        android:id="@+id/loopmap"
+   		android:icon="@android:drawable/ic_dialog_map"
+   		 android:orderInCategory="106"
+        android:title="@string/loopmap">
+    </item>
 
 </menu>

@@ -219,45 +219,6 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 				Gson gson = new Gson();
 				for (int i = 0; i < length; i++) {
 					JSONObject jsonObject = resultlist.getJSONObject(i);
-					// Log.i(TAG, "数据:"+jsonObject);
-					// HashMap<String, Object> map = new HashMap<String,
-					// Object>();
-					// map.put("tags", jsonObject.get("tags"));
-					// map.put("id", jsonObject.get("id"));
-					// map.put("energy", jsonObject.get("energy"));
-					// // map.put("foodpic",
-					// // HealthHttpClient.IMAGE_URL
-					// // + jsonObject.get("foodpic"));
-					// map.put("foodpic",
-					// HealthHttpClient.MINIIMAGE + jsonObject.get("id"));//
-					// 小图片加载
-					// map.put("tastelevel", jsonObject.get("tastelevel"));
-					// map.put("commercialLat",
-					// jsonObject.get("commercialLat"));
-					// map.put("commercialLon",
-					// jsonObject.get("commercialLon"));
-					// String commentcount =
-					// jsonObject.getString("commentcount");
-					// String collectcount =
-					// jsonObject.getString("collectcount");
-					// String laudcount = jsonObject.getString("laudcount");
-					// if (commentcount.equals("null")) {
-					// map.put("commentcount", 0);
-					// } else {
-					// map.put("commentcount", commentcount);
-					// }
-					//
-					// if (collectcount.equals("null")) {
-					// map.put("collectcount", 0);
-					// } else {
-					// map.put("collectcount", collectcount);
-					// }
-					//
-					// if (laudcount.equals("null")) {
-					// map.put("laudcount", 0);
-					// } else {
-					// map.put("laudcount", laudcount);
-					// }
 
 					double distance = -1;
 					GeographyLocation gLocation = new GeographyLocation();

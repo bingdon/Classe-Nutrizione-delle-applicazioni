@@ -474,15 +474,14 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 
 		case 3:
 
-			gridView.setNumColumns(2);
-			gridView.setHorizontalSpacing(2);
+			gridView.setNumColumns(3);
 
 			break;
 
 		case 4:
 
 			gridView.setNumColumns(2);
-			gridView.setHorizontalSpacing(2);
+			gridView.setHorizontalSpacing(20);
 
 			break;
 

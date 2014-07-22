@@ -38,6 +38,9 @@ import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.support.collect.CollectUtils;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
+import com.wyy.myhealth.ui.mapfood.CommercialMapActivity;
+import com.wyy.myhealth.ui.mapfood.MapFoodsActivity;
+import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
 import com.wyy.myhealth.utils.DistanceUtils;
 import com.wyy.myhealth.utils.FoodsUtil;
 
@@ -171,6 +174,12 @@ public class FoodDetailsActivity extends BaseActivity {
 		case R.id.action_share:
 
 			break;
+			
+		case R.id.loopmap:
+			
+			loopCommercialMap();
+			
+			break;
 
 		default:
 			break;
@@ -192,6 +201,7 @@ public class FoodDetailsActivity extends BaseActivity {
 			case R.id.healthzs_fra:
 
 				break;
+				
 
 			default:
 				break;
@@ -235,6 +245,7 @@ public class FoodDetailsActivity extends BaseActivity {
 
 		try {
 
+			
 			JSONObject result = new JSONObject(response);
 
 			JSONObject obj = result.getJSONObject("foods");
@@ -403,4 +414,20 @@ public class FoodDetailsActivity extends BaseActivity {
 		}
 	}
 
+	
+	private void loopCommercialMap(){
+		try {
+			
+			YaoyingyangFragment.isdingwei = true;
+			Intent intent = new Intent();
+			intent.setClass(context, CommercialMapActivity.class);
+			intent.putExtra("foods", (Serializable) foods);
+			startActivity(intent);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Log.e(TAG, "–¥»Î¥ÌŒÛ");
+		}
+	}
+	
 }

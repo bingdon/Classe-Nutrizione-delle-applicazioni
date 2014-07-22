@@ -261,5 +261,7 @@
     <string name="remark_example">如最近身体不错，精神也蛮好的</string>
     <string name="publish_mood">发表心情</string>
     <string name="exit">退出</string>
+    <string name="loopmap">查看地图</string>
+    <string name="commerialmap">商家地图</string>
 
 </resources>

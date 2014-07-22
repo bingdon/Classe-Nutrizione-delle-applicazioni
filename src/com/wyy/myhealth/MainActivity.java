@@ -291,6 +291,7 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 		intent.setAction(ConstantS.ACTION_SEARCH_FOOD);
 		intent.putExtra("key", key);
 		sendBroadcast(intent);
+		mainPager.setCurrentItem(1);
 	}
 	
 

@@ -41,13 +41,13 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.Foods;
+import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
 import com.wyy.myhealth.utils.FoodsUtil;
 import com.wyy.myhealth.utils.ImageUtil;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -63,8 +63,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -665,16 +663,11 @@ public class MapFoodsActivity extends ActionBarActivity {
 			OverlayItem item = getItem(index);
 			foods = imemFoods.get(item);
 
-			// popupText.setText(getItem(index).getTitle());
-			// Bitmap[] bitMaps = { FoodsUtil.getBitmapFromView(popupInfo) };
-			// pop.showPopup(bitMaps, item.getPoint(), 32);
-
-			// 跳转详情传foodid值
-//			Intent intent = new Intent();
-//			PreferencesFoodsInfo.setfoodId((Activity) context,
-//					"" + foods.getId());
-//			intent.setClass(context, DetailsActivity.class);
-//			context.startActivity(intent);
+			Intent intent = new Intent();
+			PreferencesFoodsInfo.setfoodId(MapFoodsActivity.this,
+					"" + foods.getId());
+			intent.setClass(context, FoodDetailsActivity.class);
+			context.startActivity(intent);
 			return true;
 		}
 

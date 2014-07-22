@@ -68,6 +68,9 @@ public class DistanceUtils {
 	    		Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2.0D), 2.0D)));
 	    s *= 6378137.0D;
 	    s = Math.round(s * 10000.0D) / 10000L;
+	    
+	    s=changep2(s);
+	    
 	    return s;
 	  }
 	
