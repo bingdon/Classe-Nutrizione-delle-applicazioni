@@ -106,7 +106,7 @@ public class MsgDatabaseUtils implements DatebaseInterface {
 	}
 
 	@Override
-	public Object deleteAll() {
+	public long deleteAll() {
 		// TODO Auto-generated method stub
 		
 		long del=-1;
@@ -145,6 +145,12 @@ public class MsgDatabaseUtils implements DatebaseInterface {
 			e.printStackTrace();
 		}
 		return id;
+	}
+
+	@Override
+	public long delete() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

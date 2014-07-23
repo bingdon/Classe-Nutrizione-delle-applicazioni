@@ -183,27 +183,24 @@ public class HealthHttpClient {
 		params.put("headimage", headimage);
 		client.post(PERSONAL_URL + "fullUserInfo", params, handler);
 	}
-	
-	
-	
+
 	// 淇敼澶村儚
-		public static void doHttpFinishPersonInfoForSummary(PersonalInfo info,
-				String summary, AsyncHttpResponseHandler handler) {
-			RequestParams params = new RequestParams();
-			params.put("userid", info.getId());
-			params.put("height", info.getHeight());
-			params.put("weight", info.getWeight());
-			params.put("job", info.getJob());
-			params.put("gender", info.getGender());
-			params.put("birthday", info.getBirthday());
-			params.put("name", info.getUsername());
-			params.put("sportindex", info.getSportindex());
-			params.put("tags", info.getTags());
-			params.put("headimage", info.getHeadimage());
-			params.put("summary", summary);
-			client.post(PERSONAL_URL + "fullUserInfo", params, handler);
-		}
-	
+	public static void doHttpFinishPersonInfoForSummary(PersonalInfo info,
+			String summary, AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", info.getId());
+		params.put("height", info.getHeight());
+		params.put("weight", info.getWeight());
+		params.put("job", info.getJob());
+		params.put("gender", info.getGender());
+		params.put("birthday", info.getBirthday());
+		params.put("name", info.getUsername());
+		params.put("sportindex", info.getSportindex());
+		params.put("tags", info.getTags());
+		params.put("headimage", info.getHeadimage());
+		params.put("summary", summary);
+		client.post(PERSONAL_URL + "fullUserInfo", params, handler);
+	}
 
 	/**
 	 * Share food method 分享食物
@@ -796,6 +793,16 @@ public class HealthHttpClient {
 		RequestParams params = new RequestParams();
 		params.put("moodid", moodid);
 		client.post(BASE_URL + "moodInfo", params, handler);
+	}
+
+	public static void getHealthRecorder(String userid, String first,
+			AsyncHttpResponseHandler handler) {
+
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("first", first);
+		client.post(BASE_URL + "userNutritions", params, handler);
+
 	}
 
 }

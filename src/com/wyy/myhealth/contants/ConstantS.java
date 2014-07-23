@@ -56,4 +56,10 @@ public interface ConstantS {
 	
 	public static final String MAN="1";
 	
+	/**************消息类型*************/
+	public static final int MSG2M=0;
+	
+	public static final int MSG2W=1;
+	
+	
 }

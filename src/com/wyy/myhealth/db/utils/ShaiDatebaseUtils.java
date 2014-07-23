@@ -140,13 +140,19 @@ public class ShaiDatebaseUtils implements DatebaseInterface{
 	}
 
 	@Override
-	public Object deleteAll() {
+	public long deleteAll() {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
 	public long insert(String json, String time) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long delete() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

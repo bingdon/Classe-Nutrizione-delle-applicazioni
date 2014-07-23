@@ -139,7 +139,7 @@ public class CollectDatabaseUtils implements DatebaseInterface {
 	}
 
 	@Override
-	public Object deleteAll() {
+	public long deleteAll() {
 		// TODO Auto-generated method stub
 		
 		long del=-1;
@@ -159,5 +159,12 @@ public class CollectDatabaseUtils implements DatebaseInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public long delete() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }

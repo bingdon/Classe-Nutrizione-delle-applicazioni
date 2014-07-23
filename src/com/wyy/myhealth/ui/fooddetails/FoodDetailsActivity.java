@@ -41,6 +41,7 @@ import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.mapfood.CommercialMapActivity;
 import com.wyy.myhealth.ui.mapfood.MapFoodsActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
+import com.wyy.myhealth.utils.BingLog;
 import com.wyy.myhealth.utils.DistanceUtils;
 import com.wyy.myhealth.utils.FoodsUtil;
 
@@ -92,6 +93,8 @@ public class FoodDetailsActivity extends BaseActivity {
 	private String mydiatance = "";
 
 	private String foodid = "";
+	
+	public static String imgurl="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -199,9 +202,8 @@ public class FoodDetailsActivity extends BaseActivity {
 				break;
 
 			case R.id.healthzs_fra:
-
+				loopNutritionInfo();
 				break;
-				
 
 			default:
 				break;
@@ -260,7 +262,7 @@ public class FoodDetailsActivity extends BaseActivity {
 								foods.getCommercialLat()));
 			} catch (Exception e) {
 				// TODO: handle exception
-				Log.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
+				BingLog.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
 			}
 
 			comments = new ArrayList<Comment>();
@@ -281,7 +283,7 @@ public class FoodDetailsActivity extends BaseActivity {
 					comments.add(mcomment);
 				} catch (Exception e) {
 					// TODO: handle exception
-					Log.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
+					BingLog.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
 				}
 				// mcomment.setVitamin(obj.getString("vitamin"));
 				// mcomment.setProtein(obj.getString("protein"));
@@ -314,7 +316,7 @@ public class FoodDetailsActivity extends BaseActivity {
 					menuComlist.add(mComment);
 				} catch (Exception e) {
 					// TODO: handle exception
-					Log.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
+					BingLog.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
 				}
 
 				// mComment.setContent(commentsArray.getJSONObject(i).getString(
@@ -347,19 +349,20 @@ public class FoodDetailsActivity extends BaseActivity {
 				goodsindex = Integer.valueOf(result.getInt("laudCount"));
 			} catch (Exception e) {
 				// TODO: handle exception
-				Log.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
+				BingLog.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
 			}
 
 			setView();
 
 		} catch (JSONException e) {
 			e.printStackTrace();
-			Log.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
+			BingLog.e(TAG, "Ω‚Œˆ¥ÌŒÛ");
 		}
 
 	}
 
 	private void setView() {
+		imgurl=HealthHttpClient.IMAGE_URL + foods.getFoodpic();
 		imageLoader.displayImage(
 				HealthHttpClient.IMAGE_URL + foods.getFoodpic(), foodpic,
 				options);
@@ -396,7 +399,7 @@ public class FoodDetailsActivity extends BaseActivity {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Log.e(TAG, "–¥»Î¥ÌŒÛ");
+			BingLog.e(TAG, "–¥»Î¥ÌŒÛ");
 		}
 
 	}
@@ -410,7 +413,7 @@ public class FoodDetailsActivity extends BaseActivity {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Log.e(TAG, "–¥»Î¥ÌŒÛ");
+			BingLog.e(TAG, "–¥»Î¥ÌŒÛ");
 		}
 	}
 
@@ -426,8 +429,26 @@ public class FoodDetailsActivity extends BaseActivity {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Log.e(TAG, "–¥»Î¥ÌŒÛ");
+			BingLog.e(TAG, "–¥»Î¥ÌŒÛ");
 		}
 	}
+	
+	
+	private void loopNutritionInfo(){
+		try {
+			
+			Intent intent = new Intent();
+			intent.setClass(context, FoodNutritionActivity.class);
+			if (comments!=null&&comments.size()>0) {
+				intent.putExtra("comment", (Serializable) comments.get(comments.size()-1));
+			}
+			startActivity(intent);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			BingLog.e(TAG, "–¥»Î¥ÌŒÛ");
+		}
+	}
+	
 	
 }

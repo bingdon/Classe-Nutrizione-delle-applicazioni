@@ -1,7 +1,7 @@
 package com.wyy.myhealth.db.utils;
 
 
-public interface DatebaseInterface {
+public interface DatebaseInterface extends BaseDateInterface{
 
 	public Object update(String json,int id);
 	
@@ -16,8 +16,6 @@ public interface DatebaseInterface {
 	public Object queryData();
 	
 	public Object queryDataId(long id);
-	
-	public Object deleteAll();
 	
 	public void close();
 	

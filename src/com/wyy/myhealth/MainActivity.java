@@ -7,6 +7,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.pager.utils.SuperAwesomeCardFragment;
+import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.discover.DiscoverFragment;
 import com.wyy.myhealth.ui.personcenter.PersonCenterFragment;
 import com.wyy.myhealth.ui.scan.ScanFragment;
@@ -21,8 +22,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -30,20 +35,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class MainActivity extends ActionBarActivity implements OnQueryTextListener, OnPageChangeListener {
+public class MainActivity extends ActionBarActivity implements
+		OnQueryTextListener, OnPageChangeListener {
 
-	private static final String TAG=MainActivity.class.getSimpleName();
-	private static final String POSTION="postion";
-	private static int curpostion=0;
+	private static final String TAG = MainActivity.class.getSimpleName();
+	private static final String POSTION = "postion";
+	private static int curpostion = 0;
 	private PagerSlidingTabStrip tabs;
 	private ViewPager mainPager;
 	private MyPagerAdapter adapter;
-	
+
 	/**
 	 * 定位
 	 */
 	private LocationClient mLocationClient;
-	
+
 	/**
 	 * 经度
 	 */
@@ -52,25 +58,26 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 	 * 纬度
 	 */
 	public static double Wlatitude = 0;
-	
+
 	private ScanFragment scanFragment;
-	
+
 	private YaoyingyangFragment yaoyingyangFragment;
-	
+
 	private DiscoverFragment discoverFragment;
-	
+
 	private PersonCenterFragment personCenterFragment;
 
-	
+	private MainService mservice;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		if (savedInstanceState == null) {
-			
+
 			initActionBar();
-			
+
 			tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 			tabs.setShouldExpand(true);
 			mainPager = (ViewPager) findViewById(R.id.pager);
@@ -78,56 +85,58 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 
 			mainPager.setAdapter(adapter);
 
-			final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-					.getDisplayMetrics());
+			final int pageMargin = (int) TypedValue.applyDimension(
+					TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+							.getDisplayMetrics());
 			mainPager.setPageMargin(pageMargin);
 
 			tabs.setViewPager(mainPager);
 			tabs.setOnPageChangeListener(this);
-//			tabs.setTextColor(getResources().getColor(R.color.blue));
+			// tabs.setTextColor(getResources().getColor(R.color.blue));
 		}
-		
-		
+
 		initLocation();
 		
+		initService();
+
 	}
 
-	
-	private void initActionBar(){
-		SearchView searchView=new SearchView(this);
-		getSupportActionBar().setCustomView(searchView, new ActionBar.LayoutParams(
-				Gravity.RIGHT));
+	private void initActionBar() {
+		SearchView searchView = new SearchView(this);
+		getSupportActionBar().setCustomView(searchView,
+				new ActionBar.LayoutParams(Gravity.RIGHT));
 		getSupportActionBar().setDisplayShowCustomEnabled(true);
-		getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_g_bg));
+		getSupportActionBar().setBackgroundDrawable(
+				getResources().getDrawable(R.drawable.actionbar_g_bg));
 		searchView.setOnQueryTextListener(this);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		stopLocation();
+		unbindService(serviceConnection);
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		curpostion=mainPager.getCurrentItem();
+		curpostion = mainPager.getCurrentItem();
 		outState.putInt(POSTION, curpostion);
 	}
-	
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onRestoreInstanceState(savedInstanceState);
-		if (savedInstanceState!=null) {
-			curpostion=savedInstanceState.getInt(POSTION, 0);
+		if (savedInstanceState != null) {
+			curpostion = savedInstanceState.getInt(POSTION, 0);
 			mainPager.setCurrentItem(curpostion);
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -148,7 +157,6 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 		return super.onOptionsItemSelected(item);
 	}
 
-	
 	public class MyPagerAdapter extends FragmentPagerAdapter {
 
 		private final String[] TITLES = { "扫营养", "yao营养", "发现", "我的" };
@@ -171,20 +179,20 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 		public Fragment getItem(int position) {
 			switch (position) {
 			case 0:
-				
+
 				return ScanFragment.newInstance(position);
-				
+
 			case 1:
 				return YaoyingyangFragment.newInstance(position);
-				
+
 			case 2:
-				
+
 				return DiscoverFragment.newInstance(position);
-			
+
 			case 3:
-				
+
 				return PersonCenterFragment.newInstance(position);
-				
+
 			default:
 				break;
 			}
@@ -192,17 +200,17 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 		}
 
 	}
-	
+
 	/**
 	 * 停止定位
 	 */
-	private void stopLocation(){
+	private void stopLocation() {
 		if (mLocationClient != null) {
 			mLocationClient.stop();
 			mLocationClient = null;
 		}
 	}
-	
+
 	/**
 	 * 初始化百度定位
 	 */
@@ -222,7 +230,7 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 				Wlongitude = arg0.getLongitude();
 				Wlatitude = arg0.getLatitude();
 
-//				 Log.i(TAG, "经度:"+Wlongitude+"纬度:"+Wlatitude);
+				// Log.i(TAG, "经度:"+Wlongitude+"纬度:"+Wlatitude);
 			}
 		});
 
@@ -238,62 +246,74 @@ public class MainActivity extends ActionBarActivity implements OnQueryTextListen
 
 	}
 
-
 	@Override
 	public boolean onQueryTextChange(String arg0) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-
 	@Override
 	public boolean onQueryTextSubmit(String arg0) {
 		// TODO Auto-generated method stub
-		sendFoodkey(""+arg0);
+		sendFoodkey("" + arg0);
 		return true;
 	}
-
 
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void onPageSelected(int arg0) {
 		// TODO Auto-generated method stub
-		if (arg0==0) {
+		if (arg0 == 0) {
 			sendPageIndex(arg0);
 		}
-		
+
 	}
 
-	
-	private void sendPageIndex(int index){
-		Intent intent=new Intent();
+	private void sendPageIndex(int index) {
+		Intent intent = new Intent();
 		intent.setAction(ConstantS.PAGE_INDEX_CHANG);
 		intent.putExtra("index", index);
 		sendBroadcast(intent);
 	}
-	
-	
-	private void sendFoodkey(String key){
-		Intent intent=new Intent();
+
+	private void sendFoodkey(String key) {
+		Intent intent = new Intent();
 		intent.setAction(ConstantS.ACTION_SEARCH_FOOD);
 		intent.putExtra("key", key);
 		sendBroadcast(intent);
 		mainPager.setCurrentItem(1);
 	}
-	
 
-	
+	private void initService() {
+		bindService(new Intent(MainActivity.this, MainService.class),
+				serviceConnection, Context.BIND_AUTO_CREATE);
+	}
+
+	private ServiceConnection serviceConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			// TODO Auto-generated method stub
+			mservice = ((MainService.Wibingder) service).getBingder();
+
+		}
+	};
+
 }

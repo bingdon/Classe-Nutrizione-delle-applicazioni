@@ -263,5 +263,7 @@
     <string name="exit">退出</string>
     <string name="loopmap">查看地图</string>
     <string name="commerialmap">商家地图</string>
+    <string name="wteam">微营养团队</string>
+    <string name="nutritionnfo">营养详情</string>
 
 </resources>

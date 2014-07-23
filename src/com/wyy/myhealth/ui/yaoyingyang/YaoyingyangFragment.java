@@ -28,6 +28,7 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.NearFoodBean;
+import com.wyy.myhealth.config.Config;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.GeographyLocation;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
@@ -330,8 +331,6 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 					try {
 						nearFoodBean = gson.fromJson(jsonObject.toString(),
 								NearFoodBean.class);
-						Log.i(TAG, "新数据:" + nearFoodBean);
-						Log.i(TAG, "新数据距离:" + distance);
 						nearFoodBean.setDistance("" + distance);
 						nearFoodBean.setFoodpic(HealthHttpClient.IMAGE_URL
 								+ nearFoodBean.getFoodpic());
@@ -339,7 +338,10 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 
 					} catch (Exception e) {
 						// TODO: handle exception
-						Log.w(TAG, "解析异常");
+						if (Config.DEVELOPER_MODE) {
+							Log.w(TAG, "解析异常");
+						}
+						
 					}
 
 				}

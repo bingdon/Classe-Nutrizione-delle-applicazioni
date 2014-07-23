@@ -7,6 +7,10 @@ package com.wyy.myhealth.bean;
  * 
  */
 public class ShaiFoods extends Foods {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// 用户ID
 	private String userid;
 	// 头像地址
