@@ -152,6 +152,7 @@
         <activity android:name=".ui.message.MessageTListActivity"></activity>
         <service android:name=".service.MainService"></service>
         <activity android:name=".ui.fooddetails.FoodNutritionActivity" android:theme="@style/BingparenceTheme"></activity>
+        <activity android:name=".ui.healthrecorder.HealthRecorderActivity"></activity>
        
     </application>
 

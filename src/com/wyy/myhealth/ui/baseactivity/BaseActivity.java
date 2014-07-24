@@ -16,10 +16,11 @@ public class BaseActivity extends ActionBarActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		onInitFragment();
+		
 		
 		onInitActionBar();
 		onInitUI();
+		onInitFragment();
 	}
 
 	protected void onInitFragment() {

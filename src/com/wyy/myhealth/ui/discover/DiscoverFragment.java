@@ -2,6 +2,7 @@ package com.wyy.myhealth.ui.discover;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.healthbar.HealthPassActivity;
+import com.wyy.myhealth.ui.healthrecorder.HealthRecorderActivity;
 import com.wyy.myhealth.ui.message.MessageTListActivity;
 import com.wyy.myhealth.ui.shaiyishai.ShaiyishaiActivity;
 
@@ -56,7 +57,7 @@ public class DiscoverFragment extends Fragment {
 				break;
 
 			case R.id.healthrecord_fr:
-				
+				showHealthRecorder();
 				break;
 
 			case R.id.bingxiang_fr:
@@ -90,6 +91,10 @@ public class DiscoverFragment extends Fragment {
 	
 	private void showMsgList(){
 		startActivity(new Intent(getActivity(), MessageTListActivity.class));
+	}
+	
+	private void showHealthRecorder(){
+		startActivity(new Intent(getActivity(), HealthRecorderActivity.class));
 	}
 	
 }

@@ -31,6 +31,11 @@ public class MainService extends Service {
 		return nextHealthRecoderBeans;
 	}
 
+	
+	public static List<HealthRecoderBean> getThHealthRecoderBeans() {
+		return thHealthRecoderBeans;
+	}
+
 
 	private final Binder mBinder = new Wibingder();
 
