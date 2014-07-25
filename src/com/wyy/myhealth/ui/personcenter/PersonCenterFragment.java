@@ -9,6 +9,7 @@ import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.imag.utils.Bmprcy;
+import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.ui.personcenter.modify.ModifyBaseInfoActivity;
 import com.wyy.myhealth.ui.personcenter.modify.ModifyBodyStateActivity;
 import com.wyy.myhealth.ui.personcenter.modify.ModifySummaryActivity;
@@ -77,6 +78,10 @@ public class PersonCenterFragment extends Fragment implements
 	private List<View> centerViews = new ArrayList<View>();
 	// Í·Ïñ
 	private Bitmap headBitmap = null;
+	
+	private ImageView headbg;
+	
+	private Bitmap bgBitmap;
 
 	public static PersonCenterFragment newInstance(int position) {
 		PersonCenterFragment personCenterFragment = new PersonCenterFragment();
@@ -140,11 +145,15 @@ public class PersonCenterFragment extends Fragment implements
 
 		tabBaseInfo = (TextView) v.findViewById(R.id.my_base_info_tab);
 		tabHonor = (TextView) v.findViewById(R.id.my_honor_tab);
+		
+		
+		headbg=(ImageView)v.findViewById(R.id.per_bg);
 
 		userHeadImageView.setOnClickListener(listener);
 		tabBaseInfo.setOnClickListener(listener);
 		tabHonor.setOnClickListener(listener);
 
+		
 	}
 
 	private void initPageView(View v) {
@@ -199,6 +208,8 @@ public class PersonCenterFragment extends Fragment implements
 						WyyApplication.getInfo().getWeight()));
 		userRemarks.setText(WyyApplication.getInfo().getSummary() + "");
 
+		
+		getperBg();
 		
 		setSex();
 		
@@ -392,6 +403,17 @@ public class PersonCenterFragment extends Fragment implements
 			
 		default:
 			break;
+		}
+	}
+	
+	private void getperBg(){
+		if (bgBitmap==null) {
+			bgBitmap=PhotoUtils.getListHeadBg();
+			if (null!=bgBitmap) {
+				headbg.setImageBitmap(bgBitmap);
+			}
+		}else {
+			headbg.setImageBitmap(bgBitmap);
 		}
 	}
 	

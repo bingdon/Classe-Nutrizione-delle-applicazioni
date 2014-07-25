@@ -22,9 +22,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -99,6 +101,8 @@ public class MainActivity extends ActionBarActivity implements
 		
 		initService();
 
+		initFilter();
+		
 	}
 
 	private void initActionBar() {
@@ -117,6 +121,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onDestroy();
 		stopLocation();
 		unbindService(serviceConnection);
+		unregisterReceiver(mainReceiver);
 	}
 
 	@Override
@@ -315,5 +320,35 @@ public class MainActivity extends ActionBarActivity implements
 
 		}
 	};
+	
+	
+	private void initFilter() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConstantS.PAGE_INDEX_CHANG);
+		filter.addAction(ConstantS.ACTION_HIDE_UI_CHANGE);
+		registerReceiver(mainReceiver, filter);
+	}
+	
+	
+	private BroadcastReceiver mainReceiver=new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action=intent.getAction();
+			if (action.equals(ConstantS.ACTION_HIDE_UI_CHANGE)) {
+				changeUI();
+			}
+		}
+	};
 
+	
+	private void changeUI(){
+		if (tabs.isShown()) {
+			tabs.setVisibility(View.INVISIBLE);
+		}else {
+			tabs.setVisibility(View.VISIBLE);
+		}
+	}
+	
 }

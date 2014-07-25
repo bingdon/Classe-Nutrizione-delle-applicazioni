@@ -13,15 +13,18 @@ import org.json.JSONObject;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
+import com.wyy.myhealth.bean.HealthRecoderBean;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.utils.FileUtils;
 import com.wyy.myhealth.file.utils.SdUtils;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
+import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.imag.utils.PhoneUtlis;
 import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.imag.utils.SavePic;
 import com.wyy.myhealth.support.picfeure.Align;
+import com.wyy.myhealth.ui.photoview.utils.Utility;
 import com.wyy.myhealth.welcome.WelcomeActivity;
 
 import android.annotation.SuppressLint;
@@ -33,6 +36,7 @@ import android.content.IntentFilter;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
@@ -49,6 +53,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.SurfaceHolder.Callback;
 import android.view.ViewTreeObserver;
+import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -86,6 +91,16 @@ public class ScanFragment extends Fragment {
 	private cameraView cView;
 	
 	private boolean isSurface=false;
+	
+	private ScanView scanView;
+	
+	private ImageView takepic;
+	
+	private ImageView openlight;
+	
+	private ImageView voiceSearch;
+	
+	private FrameLayout bottomLayout;
 
 	public static ScanFragment newInstance(int postion) {
 		ScanFragment scanFragment = new ScanFragment();
@@ -147,6 +162,7 @@ public class ScanFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.i(TAG, "======onResume======");
+		takepic.setEnabled(true);
 	}
 
 	@Override
@@ -176,12 +192,23 @@ public class ScanFragment extends Fragment {
 
 	}
 
+	
+	
+	
 	private void initView(View v) {
 		saoImageView = (ImageView) v.findViewById(R.id.saomiao_k_img);
 		mFrameLayout = (FrameLayout) v.findViewById(R.id.camera_view);
+		
+		takepic=(ImageView)v.findViewById(R.id.take_pic);
+		openlight=(ImageView)v.findViewById(R.id.open_ligth);
+		voiceSearch=(ImageView)v.findViewById(R.id.loop_yuyin);
+		scanView=(ScanView)v.findViewById(R.id.scanView0);
+		bottomLayout=(FrameLayout)v.findViewById(R.id.take_bottom_lay);
+		
 		ViewTreeObserver vto2 = saoImageView.getViewTreeObserver();
 		vto2.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onGlobalLayout() {
 				// TODO Auto-generated method stub
@@ -191,6 +218,12 @@ public class ScanFragment extends Fragment {
 				ScanView.saoHeigth = saoImageView.getHeight();
 			}
 		});
+		
+		
+		takepic.setOnClickListener(listener);
+		openlight.setOnClickListener(listener);
+		voiceSearch.setOnClickListener(listener);
+		
 	}
 
 	private void initCameraView() {
@@ -412,6 +445,7 @@ public class ScanFragment extends Fragment {
 			} else {
 				Toast.makeText(context, R.string.autofousnotice,
 						Toast.LENGTH_LONG).show();
+				takepic.setEnabled(true);
 			}
 
 		}
@@ -516,7 +550,6 @@ public class ScanFragment extends Fragment {
 
 	private void parseJson(String content) {
 		JSONObject mJsonObject = null;
-		String foodname = "未知";// 食物标签
 		String result = null;
 
 		if (content != null) {
@@ -526,30 +559,14 @@ public class ScanFragment extends Fragment {
 				result = mJsonObject.getString("result");
 				if (result.equals("1") && count != 0) {
 					Log.i(TAG, "" + count);
-					foodname = mJsonObject.getJSONObject("samefood").getString(
-							"tags");
-					String foodid = mJsonObject.getJSONObject("samefood")
-							.getString("id");
 					JSONArray comments = mJsonObject.getJSONArray("comments");
 					if (comments != null && comments.length() > 0) {
 
-						String vitamin = comments.getJSONObject(0).getString(
-								"vitamin");
-						String protein = comments.getJSONObject(0).getString(
-								"protein");
-						String mineral = comments.getJSONObject(0).getString(
-								"mineral");
-						String fat = comments.getJSONObject(0).getString("fat");
-						String sugar = comments.getJSONObject(0).getString(
-								"sugar");
-						String energy = comments.getJSONObject(0).getString(
-								"energy");
-						logindialog(foodname, foodid, vitamin, protein,
-								mineral, fat, sugar, energy);
+						HealthRecoderBean healthRecoderBean=JsonUtils.getHealthRecoder(comments.getJSONObject(0));
+						logindialog(healthRecoderBean);
 
 					} else {
-						logindialog(foodname, foodid, "0", "0", "0", "0", "0",
-								"0");
+						logindialogfire();
 					}
 
 				} else {
@@ -581,28 +598,19 @@ public class ScanFragment extends Fragment {
 		takpic = false;
 		isfit = false;
 		Intent intent = new Intent();
-		intent.setClass(context, ScanSuccessActivity.class);
+		intent.setClass(context, ScanResultActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
 	}
 
 	// 比较成功
-	public void logindialog(String foodname, String foodid, String vitamin,
-			String protein, String mineral, String fat, String sugar,
-			String energy) {
+	public void logindialog(HealthRecoderBean healthRecoderBean) {
 		takpic = false;
 		isfit = false;
 		Log.i("=========", "扫描成功");
 		Intent intent = new Intent();
-		intent.putExtra("foodid", foodid);
-		intent.putExtra("foodname", foodname);
-		intent.putExtra("vitamin", vitamin);
-		intent.putExtra("protein", protein);
-		intent.putExtra("mineral", mineral);
-		intent.putExtra("sugar", sugar);
-		intent.putExtra("fat", fat);
-		intent.putExtra("energy", energy);
-		intent.setClass(context, ScanSuccessActivity.class);
+		intent.putExtra("foods", healthRecoderBean);
+		intent.setClass(context, ScanResultActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
 
@@ -637,9 +645,15 @@ public class ScanFragment extends Fragment {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			if (!isSurface) {
-				mHandler.sendEmptyMessageDelayed(0, SPLASH_DELAY_MILLIS);
+			String action=intent.getAction();
+			if (action.equals(ConstantS.PAGE_INDEX_CHANG)) {
+				if (!isSurface) {
+					mHandler.sendEmptyMessageDelayed(0, SPLASH_DELAY_MILLIS);
+				}
+			}else if (action.equals(ConstantS.ACTION_HIDE_UI_CHANGE)) {
+				changeUI();
 			}
+			
 			
 		}
 	};
@@ -647,6 +661,7 @@ public class ScanFragment extends Fragment {
 	private void initFilter() {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(ConstantS.PAGE_INDEX_CHANG);
+		filter.addAction(ConstantS.ACTION_HIDE_UI_CHANGE);
 		getActivity().registerReceiver(pageIndexReceiver, filter);
 	}
 
@@ -674,4 +689,97 @@ public class ScanFragment extends Fragment {
 
 	};
 
+	
+	private OnClickListener listener=new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+			case R.id.take_pic:
+				takepic2web();
+				break;
+
+			case R.id.open_ligth:
+				openlight();
+				break;
+				
+			case R.id.loop_yuyin:
+				
+				break;
+				
+			default:
+				break;
+			}
+		}
+	};
+	
+	
+	
+	private void takepic2web(){
+		if (Utility.isConnected(getActivity())) {
+			takpic=true;
+			takepic.setEnabled(false);
+			scanView.setScroll(true);
+		}else {
+			Toast.makeText(getActivity(), R.string.neterro, Toast.LENGTH_SHORT).show();
+		}
+		
+		
+	}
+	
+	
+	private void openlight(){
+		if (mCamera.getParameters().getFlashMode()
+				.equals(Parameters.FLASH_MODE_TORCH)) {
+			try {
+				parameters = mCamera.getParameters();
+				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);// �?��
+				mCamera.setParameters(parameters);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		} else {
+			try {
+				parameters = mCamera.getParameters();
+				parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);// �?��
+				mCamera.setParameters(parameters);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+	}
+	
+	
+	private void changeUI(){
+		
+		if (scanView.isShown()) {
+			scanView.setVisibility(View.INVISIBLE);
+			saoImageView.setVisibility(View.INVISIBLE);
+			bottomLayout.setVisibility(View.INVISIBLE);
+			
+			try {
+				mCamera.stopPreview();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		}else {
+			scanView.setVisibility(View.VISIBLE);
+			saoImageView.setVisibility(View.INVISIBLE);
+			bottomLayout.setVisibility(View.VISIBLE);
+			scanView.setScroll(false);
+			try {
+				mCamera.startPreview();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	
 }

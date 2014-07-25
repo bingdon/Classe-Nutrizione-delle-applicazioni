@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -38,8 +39,8 @@ public class PhotoUtils {
 
 	// 图片上传选择途径
 	public static void MyDialog(final Activity context) {
-		final CharSequence[] items = { "相册", "拍照" };
-		AlertDialog dlg = new AlertDialog.Builder(context).setTitle("更换背景")
+		final CharSequence[] items = { context.getString(R.string.photo), context.getString(R.string.takepic) };
+		AlertDialog dlg = new AlertDialog.Builder(context).setTitle(context.getString(R.string.changebg))
 				.setItems(items, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
 						// 这里item是根据选择的方式，
@@ -276,5 +277,40 @@ public class PhotoUtils {
 		intent.setAction(ConstantS.ACTION_BASE_INFO_CHANGE);
 		context.sendBroadcast(intent);
 	}
+	
+	
+	/**
+	 * 获取listview 头像
+	 */
 
+	public static Bitmap getListHeadBg() {
+		Bitmap mBitmap=null;
+		try {
+			mBitmap = BitmapFactory.decodeFile(FileUtils.HEALTH_IMAG
+					+ "/" + WyyApplication.getInfo().getUsername() + "hps"
+					+ ".jpg");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return mBitmap;
+		
+
+	}
+	
+
+	public static Bitmap getScaledBitmap(String fileName, int dstWidth) {
+		BitmapFactory.Options localOptions = new BitmapFactory.Options();
+		localOptions.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(fileName, localOptions);
+		int originWidth = localOptions.outWidth;
+		int originHeight = localOptions.outHeight;
+
+		localOptions.inSampleSize = originWidth > originHeight ? originWidth
+				/ dstWidth : originHeight / dstWidth;
+		localOptions.inJustDecodeBounds = false;
+
+		return BitmapFactory.decodeFile(fileName, localOptions);
+	}
+	
 }

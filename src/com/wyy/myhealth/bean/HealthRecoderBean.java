@@ -1,7 +1,14 @@
 package com.wyy.myhealth.bean;
 
-public class HealthRecoderBean {
+import java.io.Serializable;
+
+public class HealthRecoderBean implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String mineral;
 	
 	private String protein;

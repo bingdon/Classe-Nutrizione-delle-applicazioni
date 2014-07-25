@@ -31,7 +31,7 @@ public class ListBaseFragYP extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View rootView=inflater.inflate(R.layout.base_frag_lay, null);
+		View rootView=inflater.inflate(R.layout.fragment_yaoyingyang, null);
 		initView(rootView);
 		onRegisterForContextMenu();
 		onInitAdapter();

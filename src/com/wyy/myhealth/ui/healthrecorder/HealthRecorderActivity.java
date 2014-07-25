@@ -1,7 +1,9 @@
 package com.wyy.myhealth.ui.healthrecorder;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -9,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wyy.myhealth.R;
+import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
 import com.wyy.myhealth.utils.BingLog;
@@ -66,7 +69,7 @@ public class HealthRecorderActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.onInitFragment();
 		getSupportFragmentManager().beginTransaction()
-				.add(R.id.health_fra_lay, new RecorderChatFragment()).commit();
+				.add(R.id.health_fra_lay, RecorderChatFragment.newInstance(ConstantS.YINSHI)).commit();
 	}
 
 	@Override
@@ -100,6 +103,8 @@ public class HealthRecorderActivity extends BaseActivity implements
 			recorderLay[i].setOnClickListener(listener);
 		}
 
+		showRecorderFragment(getPreferences());
+		
 	}
 
 	@Override
@@ -162,6 +167,103 @@ public class HealthRecorderActivity extends BaseActivity implements
 			}
 		}
 
+		swithRecorder(id);
+		
+	}
+
+	private void swithRecorder(int id) {
+		
+		savePreferences(id);
+		
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		switch (id) {
+		case 0:
+			fragmentManager
+					.beginTransaction()
+					.replace(R.id.health_fra_lay,
+							RecorderChatFragment.newInstance(ConstantS.YINSHI))
+					.commit();
+			break;
+
+		case 1:
+
+			fragmentManager
+					.beginTransaction()
+					.replace(R.id.health_fra_lay,
+							RecorderChatFragment.newInstance(ConstantS.YUNDONG))
+					.commit();
+
+			break;
+
+		case 2:
+
+			fragmentManager
+					.beginTransaction()
+					.replace(R.id.health_fra_lay,
+							RecorderChatFragment.newInstance(ConstantS.ZHIFANG))
+					.commit();
+
+			break;
+
+		case 3:
+
+			fragmentManager
+					.beginTransaction()
+					.replace(R.id.health_fra_lay,
+							RecorderChatFragment.newInstance(ConstantS.TANGLEI))
+					.commit();
+
+			break;
+
+		case 4:
+
+			fragmentManager
+					.beginTransaction()
+					.replace(
+							R.id.health_fra_lay,
+							RecorderChatFragment
+									.newInstance(ConstantS.DANGBAIZHI))
+					.commit();
+
+			break;
+
+		case 5:
+
+			fragmentManager
+					.beginTransaction()
+					.replace(
+							R.id.health_fra_lay,
+							RecorderChatFragment
+									.newInstance(ConstantS.WEISHENGSU))
+					.commit();
+
+			break;
+
+		case 6:
+
+			fragmentManager
+					.beginTransaction()
+					.replace(
+							R.id.health_fra_lay,
+							RecorderChatFragment
+									.newInstance(ConstantS.KUANGWUZHI))
+					.commit();
+
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private void savePreferences(int id) {
+		getSharedPreferences(ConstantS.USER_PREFERENCES, Context.MODE_PRIVATE)
+				.edit().putInt(TAG, id).commit();
+	}
+
+	private int getPreferences() {
+		return getSharedPreferences(ConstantS.USER_PREFERENCES,
+				Context.MODE_PRIVATE).getInt(TAG, 0);
 	}
 
 }

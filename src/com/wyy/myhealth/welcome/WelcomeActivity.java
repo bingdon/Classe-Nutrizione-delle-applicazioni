@@ -135,7 +135,7 @@ public class WelcomeActivity extends Activity {
 	 */
 	public static void getPersonInfo(Context context) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(
-				"Login", Context.MODE_PRIVATE);
+				ConstantS.USER_DATA, Context.MODE_PRIVATE);
 		String personstr = sharedPreferences.getString("personinfo", "");
 		if (!TextUtils.isEmpty(personstr)) {
 			byte[] bytepersonbase64 = Base64.decode(personstr.getBytes(),

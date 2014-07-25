@@ -26,6 +26,8 @@ public class MainService extends Service {
 	private static List<HealthRecoderBean> thHealthRecoderBeans = new ArrayList<>();
 
 	private static List<HealthRecoderBean> nextHealthRecoderBeans = new ArrayList<>();
+	
+	private static List<String> sports=new ArrayList<>();
 
 	public static List<HealthRecoderBean> getNextHealthRecoderBeans() {
 		return nextHealthRecoderBeans;
@@ -36,6 +38,10 @@ public class MainService extends Service {
 		return thHealthRecoderBeans;
 	}
 
+	public static List<String> getSports() {
+		return sports;
+	}
+	
 
 	private final Binder mBinder = new Wibingder();
 
@@ -58,6 +64,7 @@ public class MainService extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		getHealthRecored();
+		getFoots();
 	}
 
 	private void getHealthRecored() {
@@ -112,7 +119,7 @@ public class MainService extends Service {
 			for (int i = 0; i < length1; i++) {
 				
 				HealthRecoderBean healthRecoderBean = JsonUtils
-						.getHealthRecoder(jsonObject.getJSONArray("nutritions")
+						.getHealthRecoder(jsonObject.getJSONArray("nutritionsNext")
 								.getJSONObject(i));
 				
 				if (null!=healthRecoderBean) {
@@ -131,4 +138,36 @@ public class MainService extends Service {
 		}
 	}
 
+	
+	private static void getFoots() {
+		HealthHttpClient.doHttpGetMyFoots(WyyApplication.getInfo().getId(),
+				new AsyncHttpResponseHandler() {
+
+					@Override
+					public void onSuccess(String content) {
+						// TODO Auto-generated method stub
+						super.onSuccess(content);
+						parseFoots(content);
+
+					}
+
+				});
+	}
+	
+	
+	private static void parseFoots(String json) {
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			int length = jsonObject.getJSONArray("foots").length();
+			for (int i = 0; i < length; i++) {
+				String level = jsonObject.getJSONArray("foots")
+						.getJSONObject(i).getString("level");
+				sports.add(level);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

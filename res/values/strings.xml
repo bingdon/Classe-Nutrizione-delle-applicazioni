@@ -4,7 +4,7 @@
     <string name="app_name">微营养</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="neterro">网络错误!</string>
+    <string name="neterro">网络出错啦!</string>
     <string name="account_hint">邮箱/电话/微码</string>
     <string name="password">密码</string>
     <string name="login">登陆</string>
@@ -266,5 +266,11 @@
     <string name="wteam">微营养团队</string>
     <string name="nutritionnfo">营养详情</string>
     <string name="healthrecorder">健康记录</string>
+    <string name="scanresult">扫描结果</string>
+    <string name="shijiajilu">实际记录</string>
+    <string name="jianyijilu">建议记录</string>
+    <string name="jiluyingyang">记录营养</string>
+    <string name="takepic">拍照</string>
+    <string name="photo">相册</string>
 
 </resources>

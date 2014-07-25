@@ -44,6 +44,19 @@ public class ScanView extends View {
 	private static final int LINE_HEIGHT = 100;
 
 	private Rect dst;
+	
+	private boolean isScroll=false;
+	
+	
+	
+
+	public boolean isScroll() {
+		return isScroll;
+	}
+
+	public void setScroll(boolean isScroll) {
+		this.isScroll = isScroll;
+	}
 
 	public ScanView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -86,7 +99,7 @@ public class ScanView extends View {
 			if (slideTop >= slideBottom) {
 				slideTop = top;
 			}
-			if (drawBitmap != null) {
+			if (drawBitmap != null&&isScroll) {
 				dst = new Rect(left, slideTop, right, slideTop + LINE_HEIGHT);
 				// canvas.drawBitmap(drawBitmap, left, slideTop, paint);
 				canvas.drawBitmap(drawBitmap, null, dst, paint);
