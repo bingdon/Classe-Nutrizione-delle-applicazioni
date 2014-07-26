@@ -98,7 +98,12 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 					public void onRatingChanged(RatingBar ratingBar,
 							float rating, boolean fromUser) {
 						// TODO Auto-generated method stub
-						moodIndex = "" + rating;
+						try {
+							moodIndex = "" + (int)rating;
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						
 
 						Log.i(TAG, "Ö¸Êý:" + rating);
 					}

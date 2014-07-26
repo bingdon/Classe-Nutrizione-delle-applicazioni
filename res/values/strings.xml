@@ -3,7 +3,7 @@
 
     <string name="app_name">微营养</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设置</string>
     <string name="neterro">网络出错啦!</string>
     <string name="account_hint">邮箱/电话/微码</string>
     <string name="password">密码</string>
@@ -67,6 +67,7 @@
     <string name="pingjiayixia">评价一下</string>
     <string name="mancenter">管理中心</string>
     <string name="aboutversion">关于版本</string>
+     <string name="versioninfo">版本信息</string>
     <string name="commfeedback">意见反馈</string>
     <string name="clearcoach">清空缓存</string>
     <string name="loginout">注销当前账号</string>
@@ -272,5 +273,19 @@
     <string name="jiluyingyang">记录营养</string>
     <string name="takepic">拍照</string>
     <string name="photo">相册</string>
+    <string name="voiceengineerro">语音不可用</string>
+    <string name="voicerecogniseing">正在识别</string>
+    <string name="speaknotice">请讲话</string>
+    <string name="submitrecogise">提交识别</string>
+    <string name="scaning">扫描中&#8230;</string>
+    <string name="feedbackconent_hint">哪里不足，填写您的宝贵意见</string>
+    <string name="feekbackcontact_hint">为了方便，请留下您的联系方式</string>
+    <string name="hasnewversion">有新版本</string>
+    <string name="share_content_hint">记录之前，说点什么吧</string>
+    <string name="place">位置</string>
+    <string name="commercialname">商家</string>
+    <string name="share_shaiyishai">分享到晒一晒</string>
+    <string name="inputtag_hint">美食标签</string>
+    <string name="inputaddress_hint">美食位置</string>
 
 </resources>

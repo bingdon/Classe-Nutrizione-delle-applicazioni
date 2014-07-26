@@ -47,6 +47,7 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 	@Override
 	public void initView() {
 		// TODO Auto-generated method stub
+		context=this;
 		initScoreV();
 		
 
@@ -56,6 +57,8 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 		findViewById(R.id.open_ligth).setOnClickListener(listener);
 		findViewById(R.id.take_pic).setOnClickListener(listener);
 		findViewById(R.id.take_bottom_lay).setOnClickListener(listener);
+		findViewById(R.id.loop_yuyin).setOnClickListener(listener);
+		findViewById(R.id.jilufood).setOnClickListener(listener);
 		
 		initData();
 
@@ -121,8 +124,32 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			finish();
+			switch (v.getId()) {
+			case R.id.loop_yuyin:
+				showVoiceSearch();
+				break;
+
+			case R.id.jilufood:
+				showShareFood();
+				break;
+				
+			default:
+				finish();
+				break;
+			}
+			
 		}
 	};
 
+	
+	private void showVoiceSearch(){
+		startActivity(new Intent(context, VoiceSearceActivity.class));
+		finish();
+	}
+	
+	
+	private  void showShareFood(){
+		startActivity(new Intent(context, ShareFoodActivity.class));
+	}
+	
 }

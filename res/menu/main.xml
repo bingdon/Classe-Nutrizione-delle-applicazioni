@@ -4,14 +4,15 @@
     tools:context="com.wyy.myhealth.MainActivity" >
 
     <item
-        android:id="@+id/action_saoyy"
+        android:id="@+id/action_setting"
         android:orderInCategory="100"
-        android:title="@string/saoyy"
+        android:title="@string/action_settings"
         app:showAsAction="collapseActionView"/>
     <item
         android:id="@+id/exit"
-        app:showAsAction="collapseActionView"
-        android:title="@string/exit" android:orderInCategory="101">
+        android:orderInCategory="101"
+        android:title="@string/exit"
+        app:showAsAction="collapseActionView">
     </item>
 
 </menu>

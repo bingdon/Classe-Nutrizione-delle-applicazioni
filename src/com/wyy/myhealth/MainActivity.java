@@ -11,7 +11,9 @@ import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.discover.DiscoverFragment;
 import com.wyy.myhealth.ui.personcenter.PersonCenterFragment;
 import com.wyy.myhealth.ui.scan.ScanFragment;
+import com.wyy.myhealth.ui.setting.SettingActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
+import com.wyy.myhealth.utils.BingLog;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -61,13 +63,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	public static double Wlatitude = 0;
 
-	private ScanFragment scanFragment;
-
-	private YaoyingyangFragment yaoyingyangFragment;
-
-	private DiscoverFragment discoverFragment;
-
-	private PersonCenterFragment personCenterFragment;
+	public static String address = "";
 
 	private MainService mservice;
 
@@ -76,33 +72,29 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		if (savedInstanceState == null) {
+		initActionBar();
 
-			initActionBar();
+		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+		tabs.setShouldExpand(true);
+		mainPager = (ViewPager) findViewById(R.id.pager);
+		adapter = new MyPagerAdapter(getSupportFragmentManager());
 
-			tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-			tabs.setShouldExpand(true);
-			mainPager = (ViewPager) findViewById(R.id.pager);
-			adapter = new MyPagerAdapter(getSupportFragmentManager());
+		mainPager.setAdapter(adapter);
 
-			mainPager.setAdapter(adapter);
+		final int pageMargin = (int) TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+						.getDisplayMetrics());
+		mainPager.setPageMargin(pageMargin);
 
-			final int pageMargin = (int) TypedValue.applyDimension(
-					TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-							.getDisplayMetrics());
-			mainPager.setPageMargin(pageMargin);
-
-			tabs.setViewPager(mainPager);
-			tabs.setOnPageChangeListener(this);
-			// tabs.setTextColor(getResources().getColor(R.color.blue));
-		}
+		tabs.setViewPager(mainPager);
+		tabs.setOnPageChangeListener(this);
 
 		initLocation();
-		
+
 		initService();
 
 		initFilter();
-		
+
 	}
 
 	private void initActionBar() {
@@ -138,7 +130,15 @@ public class MainActivity extends ActionBarActivity implements
 		super.onRestoreInstanceState(savedInstanceState);
 		if (savedInstanceState != null) {
 			curpostion = savedInstanceState.getInt(POSTION, 0);
-			mainPager.setCurrentItem(curpostion);
+			if (mainPager != null) {
+				try {
+					mainPager.setCurrentItem(curpostion);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+
+			}
+
 		}
 	}
 
@@ -156,7 +156,8 @@ public class MainActivity extends ActionBarActivity implements
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_saoyy) {
+		if (id == R.id.action_setting) {
+			showSetting();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -234,14 +235,29 @@ public class MainActivity extends ActionBarActivity implements
 				// TODO Auto-generated method stub
 				Wlongitude = arg0.getLongitude();
 				Wlatitude = arg0.getLatitude();
+				address = arg0.getAddrStr();
+				BingLog.i(TAG, "实际地址:" + arg0.getLocType());
+				BingLog.i(TAG, "实际地址:" + arg0.getAddrStr());
 
-				// Log.i(TAG, "经度:"+Wlongitude+"纬度:"+Wlatitude);
 			}
 		});
 
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
+		// 需要地址信息，设置为其他任何值（string类型，且不能为null）时，都表示无地址信息。
+		option.setAddrType("all");
+
+		// 设置是否返回POI的电话和地址等详细信息。默认值为false，即不返回POI的电话和地址信息。
+		option.setPoiExtraInfo(true);
+
+		// 设置产品线名称。强烈建议您使用自定义的产品线名称，方便我们以后为您提供更高效准确的定位服务。
+		option.setProdName("通过GPS定位我当前的位置");
+
+		// 查询范围，默认值为500，即以当前定位位置为中心的半径大小。
+		option.setPoiDistance(600);
+		// 禁用启用缓存定位数据
+		option.disableCache(true);
 		option.setScanSpan(1000);
 		mLocationClient.setLocOption(option);
 
@@ -320,35 +336,36 @@ public class MainActivity extends ActionBarActivity implements
 
 		}
 	};
-	
-	
+
 	private void initFilter() {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(ConstantS.PAGE_INDEX_CHANG);
 		filter.addAction(ConstantS.ACTION_HIDE_UI_CHANGE);
 		registerReceiver(mainReceiver, filter);
 	}
-	
-	
-	private BroadcastReceiver mainReceiver=new BroadcastReceiver() {
-		
+
+	private BroadcastReceiver mainReceiver = new BroadcastReceiver() {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			String action=intent.getAction();
+			String action = intent.getAction();
 			if (action.equals(ConstantS.ACTION_HIDE_UI_CHANGE)) {
 				changeUI();
 			}
 		}
 	};
 
-	
-	private void changeUI(){
+	private void changeUI() {
 		if (tabs.isShown()) {
 			tabs.setVisibility(View.INVISIBLE);
-		}else {
+		} else {
 			tabs.setVisibility(View.VISIBLE);
 		}
 	}
-	
+
+	private void showSetting() {
+		startActivity(new Intent(MainActivity.this, SettingActivity.class));
+	}
+
 }

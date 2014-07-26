@@ -7,9 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,14 +25,20 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.file.utils.FileUtils;
+import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.ui.absfragment.HealthPassBase;
@@ -98,6 +106,72 @@ public class HealPassFragment extends HealthPassBase implements
 			bgImageView.setImageBitmap(headbg);
 		}
 
+	}
+
+	@Override
+	protected void registerForContextMenu() {
+		// TODO Auto-generated method stub
+		super.registerForContextMenu();
+		registerForContextMenu(mListView);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		getActivity().getMenuInflater().inflate(R.menu.hps_menu, menu);
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.shaiyisai:
+
+			if (thList.get(info.position - 1).containsKey("moodsid")) {
+				shaiMoodsshai(thList.get(info.position - 1).get("moodsid")
+						.toString());
+
+			}
+
+			if (thList.get(info.position - 1).containsKey("foodsid")) {
+				shaiFoodsshai(thList.get(info.position - 1).get("foodsid")
+						.toString());
+			}
+
+			break;
+
+		case R.id.delete:
+
+			if (thList.get(info.position - 1).containsKey("moodsid")) {
+				HealthHttpClient.doHttpdelMood(thList.get(info.position - 1)
+						.get("moodsid").toString(), new DelAsyHander(
+						info.position - 1));
+
+			}
+
+			if (thList.get(info.position - 1).containsKey("collect_id")) {
+				HealthHttpClient.doHttpdelCollect(thList.get(info.position - 1)
+						.get("collect_id").toString(), new DelAsyHander(
+						info.position - 1));
+			} else {
+				if (thList.get(info.position - 1).containsKey("foodsid")) {
+					HealthHttpClient.doHttpdelFoods(
+							thList.get(info.position - 1).get("foodsid")
+									.toString(), new DelAsyHander(
+									info.position - 1));
+				}
+			}
+
+			break;
+
+		default:
+			break;
+		}
+		return super.onContextItemSelected(item);
 	}
 
 	@Override
@@ -228,10 +302,9 @@ public class HealPassFragment extends HealthPassBase implements
 			// 把得到的图片绑定在控件上显示
 
 		}
-		
+
 		saveCurrent_ResultBitmap(headbg);
-		
-		
+
 	};
 
 	// 图片上传选择途径
@@ -285,4 +358,78 @@ public class HealPassFragment extends HealthPassBase implements
 
 		BingLog.i(TAG, "保存成功");
 	}
+
+	private void shaiMoodsshai(String moodid) {
+		HealthHttpClient.MoodShaiYIShai(moodid, shaiHandler);
+	}
+
+	private void shaiFoodsshai(String foodsid) {
+		HealthHttpClient.FoodShaiYiShai(foodsid, shaiHandler);
+	}
+
+	public class DelAsyHander extends AsyncHttpResponseHandler {
+		private int postion;
+
+		public DelAsyHander(int postion) {
+			this.postion = postion;
+		}
+
+		@Override
+		public void onSuccess(String content) {
+			// TODO Auto-generated method stub
+			super.onSuccess(content);
+			thList.remove(this.postion);
+			mAdapter.notifyDataSetChanged();
+			Toast.makeText(getActivity(), R.string.delsuccess,
+					Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		public void onFailure(Throwable error, String content) {
+			// TODO Auto-generated method stub
+			super.onFailure(error, content);
+			Toast.makeText(getActivity(), R.string.delfailure,
+					Toast.LENGTH_LONG).show();
+		}
+
+	}
+
+	private AsyncHttpResponseHandler shaiHandler = new AsyncHttpResponseHandler() {
+
+		@Override
+		public void onSuccess(String content) {
+			// TODO Auto-generated method stub
+			super.onSuccess(content);
+			parseResult(content);
+		}
+
+		@Override
+		public void onFailure(Throwable error, String content) {
+			// TODO Auto-generated method stub
+			super.onFailure(error, content);
+			Toast.makeText(getActivity(), R.string.publish_faliure,
+					Toast.LENGTH_LONG).show();
+		}
+
+	};
+
+	private void parseResult(String result) {
+		try {
+			JSONObject object = new JSONObject(result);
+			String issuccess = object.getString("result");
+			if ("1".equals(issuccess)) {
+				Toast.makeText(getActivity(), R.string.publish_sucess,
+						Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(getActivity(), R.string.publish_faliure,
+						Toast.LENGTH_LONG).show();
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Toast.makeText(getActivity(), R.string.publish_faliure,
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
 }

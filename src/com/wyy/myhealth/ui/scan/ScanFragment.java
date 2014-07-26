@@ -25,7 +25,7 @@ import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.imag.utils.SavePic;
 import com.wyy.myhealth.support.picfeure.Align;
 import com.wyy.myhealth.ui.photoview.utils.Utility;
-import com.wyy.myhealth.welcome.WelcomeActivity;
+import com.wyy.myhealth.utils.BingLog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,13 +38,13 @@ import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -57,6 +57,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ScanFragment extends Fragment {
@@ -78,7 +79,7 @@ public class ScanFragment extends Fragment {
 	// 上传返回完成标志
 	private boolean isfasongcm = false;
 
-	private boolean backflag = false;
+	private boolean voiceflage = false;
 
 	private int count = 0;// 识别计时
 
@@ -101,6 +102,8 @@ public class ScanFragment extends Fragment {
 	private ImageView voiceSearch;
 	
 	private FrameLayout bottomLayout;
+	
+	private TextView scantTextView;
 
 	public static ScanFragment newInstance(int postion) {
 		ScanFragment scanFragment = new ScanFragment();
@@ -112,10 +115,10 @@ public class ScanFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		Log.i(TAG, "======onCreateView======");
+		BingLog.i(TAG, "======onCreateView======");
 		
 		initFilter();
-		View rootView = inflater.inflate(R.layout.scan_lay, null);
+		View rootView = inflater.inflate(R.layout.scan_lay, container,false);
 		initView(rootView);
 		return rootView;
 
@@ -125,21 +128,21 @@ public class ScanFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		Log.i(TAG, "======onCreate======");
+		BingLog.i(TAG, "======onCreate======");
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		Log.i(TAG, "======onDestroy======");
+		BingLog.i(TAG, "======onDestroy======");
 	}
 
 	@Override
 	public void onDetach() {
 		// TODO Auto-generated method stub
 		super.onDetach();
-		Log.i(TAG, "======onDetach======");
+		BingLog.i(TAG, "======onDetach======");
 		getActivity().unregisterReceiver(pageIndexReceiver);
 	}
 
@@ -147,21 +150,21 @@ public class ScanFragment extends Fragment {
 	public void onLowMemory() {
 		// TODO Auto-generated method stub
 		super.onLowMemory();
-		Log.i(TAG, "======onLowMemory======");
+		BingLog.i(TAG, "======onLowMemory======");
 	}
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		Log.i(TAG, "======onPause======");
+		BingLog.i(TAG, "======onPause======");
 	}
 
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.i(TAG, "======onResume======");
+		BingLog.i(TAG, "======onResume======");
 		takepic.setEnabled(true);
 	}
 
@@ -169,21 +172,21 @@ public class ScanFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		Log.i(TAG, "======onSaveInstanceState======");
+		BingLog.i(TAG, "======onSaveInstanceState======");
 	}
 
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		Log.i(TAG, "======onStart======");
+		BingLog.i(TAG, "======onStart======");
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		Log.i(TAG, "======onActivityCreated======");
+		BingLog.i(TAG, "======onActivityCreated======");
 		context = getActivity();
 		if (count == 0) {
 			initCameraView();
@@ -204,6 +207,7 @@ public class ScanFragment extends Fragment {
 		voiceSearch=(ImageView)v.findViewById(R.id.loop_yuyin);
 		scanView=(ScanView)v.findViewById(R.id.scanView0);
 		bottomLayout=(FrameLayout)v.findViewById(R.id.take_bottom_lay);
+		scantTextView=(TextView)v.findViewById(R.id.scan_notice_txt);
 		
 		ViewTreeObserver vto2 = saoImageView.getViewTreeObserver();
 		vto2.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
@@ -281,6 +285,8 @@ public class ScanFragment extends Fragment {
 			// mCamera.takePicture(null, null,BingCamera.this );
 			new Thread(face_recon).start();
 
+//			mCamera.setPreviewCallback(previewCallback);
+			
 		}
 
 		private Size getOptimalPreviewSize(List<Size> sizes, int width,
@@ -439,6 +445,7 @@ public class ScanFragment extends Fragment {
 		@Override
 		public void onAutoFocus(boolean success, Camera camera) {
 			// TODO Auto-generated method stub
+			foucs=success;
 			if (success) {
 				mCamera.takePicture(null, null, pictureCallback);
 				takpic = false;
@@ -446,6 +453,8 @@ public class ScanFragment extends Fragment {
 				Toast.makeText(context, R.string.autofousnotice,
 						Toast.LENGTH_LONG).show();
 				takepic.setEnabled(true);
+				scantTextView.setVisibility(View.GONE);
+				voiceflage=false;
 			}
 
 		}
@@ -458,7 +467,7 @@ public class ScanFragment extends Fragment {
 			// TODO Auto-generated method stub
 			Matrix matrix = new Matrix();
 			matrix.setRotate(angle);
-			Log.d(TAG, "是否可读:" + SdUtils.ExistSDCard());
+			BingLog.d(TAG, "是否可读:" + SdUtils.ExistSDCard());
 			if (SdUtils.ExistSDCard()) {
 				SavePic.saveToSDCard(data);
 			} else {
@@ -466,15 +475,24 @@ public class ScanFragment extends Fragment {
 			}
 
 			mCamera.startPreview();
-			backflag = true;
+			if (!voiceflage) {
+				compareFood();
+			}else {
+				showVoiceSearch();
+				
+			}
+			
 
-			ExecutorService tExecutorService = Executors.newFixedThreadPool(2);
-			tExecutorService.execute(cmpPicRunnable);
-			tExecutorService.execute(sendbmp);
-
-			foucs = true;
 		}
 	};
+	
+	
+	
+	private void compareFood(){
+		ExecutorService tExecutorService = Executors.newFixedThreadPool(2);
+		tExecutorService.execute(cmpPicRunnable);
+		tExecutorService.execute(sendbmp);
+	}
 
 	// 上传比较线程
 	Runnable sendbmp = new Runnable() {
@@ -483,7 +501,7 @@ public class ScanFragment extends Fragment {
 		public void run() {
 			// TODO Auto-generated method stub
 
-			Log.i(TAG, "=============发送线程============");
+			BingLog.i(TAG, "=============发送线程============");
 			isfasongcm = false;
 			String mybmp = "";
 			if (SdUtils.ExistSDCard()) {
@@ -508,11 +526,11 @@ public class ScanFragment extends Fragment {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			Log.i(TAG, "=============计算线程============");
+			BingLog.i(TAG, "=============计算线程============");
 			isfit = isComfortAble();
 			if (isfasongcm) {
 				if (isfit && !TextUtils.isEmpty(json)) {
-					Log.i(TAG, "=============计算处理============");
+					BingLog.i(TAG, "=============计算处理============");
 					parseJson(json);
 				} else {
 					logindialogfire();
@@ -529,10 +547,10 @@ public class ScanFragment extends Fragment {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
 			isfasongcm = true;
-			Log.i(TAG, "返回结果:" + content);
+			BingLog.i(TAG, "返回结果:" + content);
 			json = content;
 			if (iscomple && isfit) {
-				Log.i(TAG, "=============发送处理============");
+				BingLog.i(TAG, "=============发送处理============");
 				parseJson(content);
 			}
 
@@ -545,6 +563,13 @@ public class ScanFragment extends Fragment {
 			isfasongcm = true;
 			logindialogfire();
 		}
+		
+		public void onFinish() {
+			super.onFinish();
+			
+			takepic.setEnabled(true);
+		};
+		
 
 	};
 
@@ -553,12 +578,11 @@ public class ScanFragment extends Fragment {
 		String result = null;
 
 		if (content != null) {
-			foucs = false;
 			try {
 				mJsonObject = new JSONObject(content);
 				result = mJsonObject.getString("result");
 				if (result.equals("1") && count != 0) {
-					Log.i(TAG, "" + count);
+					BingLog.i(TAG, "" + count);
 					JSONArray comments = mJsonObject.getJSONArray("comments");
 					if (comments != null && comments.length() > 0) {
 
@@ -572,11 +596,11 @@ public class ScanFragment extends Fragment {
 				} else {
 					logindialogfire();
 				}
-				Log.i(TAG, "" + result);
+				BingLog.i(TAG, "" + result);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Log.i(TAG, "异常");
+				BingLog.i(TAG, "异常");
 
 				// 扫描 失败和成功的 写死测试
 				logindialogfire();
@@ -607,7 +631,7 @@ public class ScanFragment extends Fragment {
 	public void logindialog(HealthRecoderBean healthRecoderBean) {
 		takpic = false;
 		isfit = false;
-		Log.i("=========", "扫描成功");
+		BingLog.i("=========", "扫描成功");
 		Intent intent = new Intent();
 		intent.putExtra("foods", healthRecoderBean);
 		intent.setClass(context, ScanResultActivity.class);
@@ -623,7 +647,7 @@ public class ScanFragment extends Fragment {
 		fs1 = align.createHistogram(PhoneUtlis
 				.getSmallBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
 		int featureNumber = fs1.size();
-		Log.i(TAG, "指数:" + featureNumber + "耗时:"
+		BingLog.i(TAG, "指数:" + featureNumber + "耗时:"
 				+ ((System.currentTimeMillis() - time) / 1000.00) + "s");
 		return featureNumber;
 	}
@@ -705,7 +729,8 @@ public class ScanFragment extends Fragment {
 				break;
 				
 			case R.id.loop_yuyin:
-				
+				voiceflage=true;
+				takepic2web();
 				break;
 				
 			default:
@@ -717,6 +742,11 @@ public class ScanFragment extends Fragment {
 	
 	
 	private void takepic2web(){
+		
+		if (!voiceflage) {
+			scantTextView.setVisibility(View.VISIBLE);
+		}
+		
 		if (Utility.isConnected(getActivity())) {
 			takpic=true;
 			takepic.setEnabled(false);
@@ -751,13 +781,18 @@ public class ScanFragment extends Fragment {
 	}
 	
 	
+	private void showVoiceSearch(){
+		voiceflage=false;
+		startActivity(new Intent(context, VoiceSearceActivity.class));
+	}
+	
 	private void changeUI(){
 		
 		if (scanView.isShown()) {
 			scanView.setVisibility(View.INVISIBLE);
 			saoImageView.setVisibility(View.INVISIBLE);
 			bottomLayout.setVisibility(View.INVISIBLE);
-			
+			scantTextView.setVisibility(View.GONE);
 			try {
 				mCamera.stopPreview();
 			} catch (Exception e) {
@@ -780,6 +815,21 @@ public class ScanFragment extends Fragment {
 	}
 	
 	
+	private PreviewCallback previewCallback=new PreviewCallback() {
+		
+		@Override
+		public void onPreviewFrame(byte[] data, Camera camera) {
+			// TODO Auto-generated method stub
+			if (foucs) {
+				if (SdUtils.ExistSDCard()) {
+					SavePic.saveToSDCard(data);
+				} else {
+					PhotoUtils.saveChatCode(data, context);
+				}
+				foucs=false;
+			}
+		}
+	};
 	
 	
 }

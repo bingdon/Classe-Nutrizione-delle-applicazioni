@@ -16,7 +16,7 @@ public class BaseActivity extends ActionBarActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		
+		context=this;
 		
 		onInitActionBar();
 		onInitUI();

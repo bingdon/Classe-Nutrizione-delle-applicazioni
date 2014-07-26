@@ -20,12 +20,12 @@
         android:id="@+id/jilufood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="120dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="320dp"
         android:text="@string/jiluyingyang"
         android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:textSize="18sp" />
 
     <include
         android:layout_width="wrap_content"
