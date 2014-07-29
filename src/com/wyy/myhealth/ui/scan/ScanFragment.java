@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.HealthRecoderBean;
+import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.utils.FileUtils;
 import com.wyy.myhealth.file.utils.SdUtils;
@@ -23,6 +24,7 @@ import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.imag.utils.PhoneUtlis;
 import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.imag.utils.SavePic;
+import com.wyy.myhealth.support.bitmap.BitmapRatioUtils;
 import com.wyy.myhealth.support.picfeure.Align;
 import com.wyy.myhealth.ui.photoview.utils.Utility;
 import com.wyy.myhealth.utils.BingLog;
@@ -76,8 +78,12 @@ public class ScanFragment extends Fragment {
 	private boolean isfit = false;
 	// 计算完成标志
 	private boolean iscomple = false;
+	//阈值计算是否完成
+	private boolean isplace=false;
 	// 上传返回完成标志
 	private boolean isfasongcm = false;
+	
+	private boolean isplacefit=false;
 
 	private boolean voiceflage = false;
 
@@ -104,7 +110,9 @@ public class ScanFragment extends Fragment {
 	private FrameLayout bottomLayout;
 	
 	private TextView scantTextView;
-
+	
+	private NearFoodBean sameNearFoodBean;
+	
 	public static ScanFragment newInstance(int postion) {
 		ScanFragment scanFragment = new ScanFragment();
 		scanFragment.setArguments(new Bundle());
@@ -489,11 +497,30 @@ public class ScanFragment extends Fragment {
 	
 	
 	private void compareFood(){
-		ExecutorService tExecutorService = Executors.newFixedThreadPool(2);
+		ExecutorService tExecutorService = Executors.newFixedThreadPool(3);
 		tExecutorService.execute(cmpPicRunnable);
 		tExecutorService.execute(sendbmp);
+		tExecutorService.execute(cmpPlaceRunnable);
 	}
 
+	
+	Runnable cmpPlaceRunnable=new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			isplacefit=isExitPlace();
+			if (isfasongcm&&iscomple) {
+				if ( isfit&&isplacefit&& !TextUtils.isEmpty(json)) {
+					parseJson(json);
+				}else {
+					logindialogfire();
+				}
+			}
+			
+		}
+	};
+	
 	// 上传比较线程
 	Runnable sendbmp = new Runnable() {
 
@@ -528,8 +555,8 @@ public class ScanFragment extends Fragment {
 			// TODO Auto-generated method stub
 			BingLog.i(TAG, "=============计算线程============");
 			isfit = isComfortAble();
-			if (isfasongcm) {
-				if (isfit && !TextUtils.isEmpty(json)) {
+			if (isfasongcm&&isplace) {
+				if (isfit && !TextUtils.isEmpty(json)&&isplacefit) {
 					BingLog.i(TAG, "=============计算处理============");
 					parseJson(json);
 				} else {
@@ -549,9 +576,14 @@ public class ScanFragment extends Fragment {
 			isfasongcm = true;
 			BingLog.i(TAG, "返回结果:" + content);
 			json = content;
-			if (iscomple && isfit) {
+			if (iscomple && isplace) {
 				BingLog.i(TAG, "=============发送处理============");
-				parseJson(content);
+				if (isfit&&isplacefit) {
+					parseJson(content);
+				}else {
+					logindialogfire();
+				}
+				
 			}
 
 		}
@@ -581,11 +613,18 @@ public class ScanFragment extends Fragment {
 			try {
 				mJsonObject = new JSONObject(content);
 				result = mJsonObject.getString("result");
-				if (result.equals("1") && count != 0) {
-					BingLog.i(TAG, "" + count);
+				
+				try {
+					getFoodTag(mJsonObject.getJSONObject("samefood"));
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				
+				if (result.equals("1")) {
 					JSONArray comments = mJsonObject.getJSONArray("comments");
 					if (comments != null && comments.length() > 0) {
-
+						BingLog.i(TAG, "得到食物:"+comments.getJSONObject(0));
 						HealthRecoderBean healthRecoderBean=JsonUtils.getHealthRecoder(comments.getJSONObject(0));
 						logindialog(healthRecoderBean);
 
@@ -607,9 +646,7 @@ public class ScanFragment extends Fragment {
 			}
 
 		} else {
-			if (count != 0) {
 				logindialogfire();
-			}
 
 		}
 
@@ -625,15 +662,18 @@ public class ScanFragment extends Fragment {
 		intent.setClass(context, ScanResultActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
+		json="";
 	}
 
 	// 比较成功
 	public void logindialog(HealthRecoderBean healthRecoderBean) {
+		json="";
 		takpic = false;
 		isfit = false;
 		BingLog.i("=========", "扫描成功");
 		Intent intent = new Intent();
 		intent.putExtra("foods", healthRecoderBean);
+		intent.putExtra("samefood", sameNearFoodBean);
 		intent.setClass(context, ScanResultActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
@@ -645,7 +685,7 @@ public class ScanFragment extends Fragment {
 		Align align = new Align();
 		List<Feature> fs1;
 		fs1 = align.createHistogram(PhoneUtlis
-				.getSmallBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
+				.getSmall100ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
 		int featureNumber = fs1.size();
 		BingLog.i(TAG, "指数:" + featureNumber + "耗时:"
 				+ ((System.currentTimeMillis() - time) / 1000.00) + "s");
@@ -655,15 +695,30 @@ public class ScanFragment extends Fragment {
 	private boolean isComfortAble() {
 		iscomple = false;
 		int feturenum = secFood();
-		if (feturenum > 50 && feturenum < 300) {
+		BingLog.i(TAG, "计算:"+feturenum);
+		if (feturenum > 15 && feturenum < 120) {
 			iscomple = true;
 			return true;
 		}
-
 		iscomple = true;
 		return false;
 	}
 
+	
+	private boolean isExitPlace(){
+		isplace=false;
+		double k=0;
+		k=BitmapRatioUtils.ratio(PhoneUtlis
+				.getSmall60ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
+		BingLog.i(TAG, "阈值计算:"+k);
+		isplace=true;
+		if (k>0.4) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	private BroadcastReceiver pageIndexReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -743,14 +798,17 @@ public class ScanFragment extends Fragment {
 	
 	private void takepic2web(){
 		
-		if (!voiceflage) {
-			scantTextView.setVisibility(View.VISIBLE);
-		}
+		
 		
 		if (Utility.isConnected(getActivity())) {
 			takpic=true;
 			takepic.setEnabled(false);
 			scanView.setScroll(true);
+			
+			if (!voiceflage) {
+				scantTextView.setVisibility(View.VISIBLE);
+			}
+			
 		}else {
 			Toast.makeText(getActivity(), R.string.neterro, Toast.LENGTH_SHORT).show();
 		}
@@ -831,5 +889,7 @@ public class ScanFragment extends Fragment {
 		}
 	};
 	
-	
+	private void getFoodTag(JSONObject jsonObject){
+		sameNearFoodBean=JsonUtils.getNearFoodBean(jsonObject);
+	}
 }

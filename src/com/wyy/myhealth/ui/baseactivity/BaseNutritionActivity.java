@@ -26,6 +26,7 @@ public class BaseNutritionActivity extends BaseActivity {
 	protected TextView cfatTextView;
 	protected TextView csurgarTextView;
 	protected TextView cengerTextView;
+	
 
 	protected int vitasocre = 0, proteinsocre = 0, minerasocre = 0,
 			fatsocre = 0, sugarsocre = 0, energysocre = 0;

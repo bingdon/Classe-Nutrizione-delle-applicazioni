@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.baseactivity.AbstractlistActivity;
+import com.wyy.myhealth.ui.collect.CollectActivity;
 
 public class ShaiyishaiActivity extends AbstractlistActivity {
 
@@ -49,6 +50,10 @@ public class ShaiyishaiActivity extends AbstractlistActivity {
 			startActivity(new Intent(context, PublishActivity.class));
 			break;
 
+		case R.id.mycollect:
+			startActivity(new Intent(context, CollectActivity.class));
+			break;
+			
 		default:
 			break;
 		}

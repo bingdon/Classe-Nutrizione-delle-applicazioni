@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.HealthRecoderBean;
+import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.baseactivity.BaseNutritionActivity;
@@ -20,6 +21,8 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 	private FrameLayout successlay;
 	
 	private LinearLayout failurelay;
+	
+	private NearFoodBean samefood;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,9 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 		// TODO Auto-generated method stub
 		HealthRecoderBean healthRecoderBean = (HealthRecoderBean) getIntent()
 				.getSerializableExtra("foods");
+		
+		samefood=(NearFoodBean) getIntent().getSerializableExtra("samefood");
+		
 		if (null != healthRecoderBean
 				&& MainService.getNextHealthRecoderBeans() != null) {
 
@@ -85,6 +91,7 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 				getsugarimgs(sugarsocre);
 				energysocre = Integer.valueOf(healthRecoderBean.getEnergy());
 				getenergysimgs(energysocre);
+				
 			} catch (Exception e) {
 				// TODO: handle exception
 
@@ -149,7 +156,10 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 	
 	
 	private  void showShareFood(){
-		startActivity(new Intent(context, ShareFoodActivity.class));
+		Intent intent=new Intent();
+		intent.putExtra("samefood", samefood);
+		intent.setClass(context, ShareFoodActivity.class);
+		startActivity(intent);
 	}
 	
 }

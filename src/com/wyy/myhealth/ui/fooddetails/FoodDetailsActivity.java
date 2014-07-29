@@ -384,7 +384,7 @@ public class FoodDetailsActivity extends BaseActivity {
 				HealthHttpClient.IMAGE_URL + info.getHeadimage(), userHead,
 				options);
 		userName.setText("" + info.getUsername());
-		userSummary.setText("" + info.getSummary());
+		userSummary.setText("" + foods.getSummary());
 		userTag.setText("" + info.getBodyindex());
 		scrollView.setVisibility(View.VISIBLE);
 

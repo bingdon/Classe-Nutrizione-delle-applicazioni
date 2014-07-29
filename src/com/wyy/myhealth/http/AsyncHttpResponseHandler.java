@@ -120,7 +120,12 @@ public class AsyncHttpResponseHandler {
 	}
 
 	protected void handleFailureMessage(Throwable e, String responseBody) {
-		onFailure(e, responseBody);
+		try {
+			onFailure(e, responseBody);
+		} catch (Exception e2) {
+			// TODO: handle exception
+		}
+		
 	}
 
 	// Methods which emulate android's Handler and Message methods

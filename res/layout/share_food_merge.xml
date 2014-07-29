@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/icon_food_taste"
+            android:drawableLeft="@drawable/ic_food_taste"
             android:drawablePadding="10dp"
             android:gravity="center"
             android:text="@string/taste" />
@@ -29,11 +29,11 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/food_tag_fra"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="1dp"
         android:background="@drawable/list_sec"
-         android:id="@+id/food_tag_fra"
         android:clickable="true" >
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/icon_food_tag"
+            android:drawableLeft="@drawable/ic_food_tag"
             android:drawablePadding="10dp"
             android:gravity="center"
             android:text="@string/tags" />
@@ -63,11 +63,11 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/food_place_fra"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/list_sec"
-         android:id="@+id/food_place_fra"
         android:clickable="true" >
 
         <TextView
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/icon_food_tag"
+            android:drawableLeft="@drawable/ic_address"
             android:drawablePadding="10dp"
             android:gravity="center"
             android:text="@string/place" />
@@ -88,14 +88,14 @@
             android:layout_marginRight="16dp"
             android:text="" />
     </FrameLayout>
-    
-    
+
     <FrameLayout
+        android:id="@+id/food_commercial_fra"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_gravity="right|center_vertical"
         android:layout_marginTop="1dp"
         android:background="@drawable/list_sec"
-        android:id="@+id/food_commercial_fra"
         android:clickable="true" >
 
         <TextView
@@ -103,27 +103,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/icon_food_tag"
+            android:drawableLeft="@drawable/ic_commrecial"
             android:drawablePadding="10dp"
             android:gravity="center"
             android:text="@string/commercialname" />
 
-        <TextView
-            android:id="@+id/food_commercial"
+        <include
+            android:id="@+id/food_commercial_inc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="30dp"
-            android:text="" />
-        
-        
-         <ImageView
+            layout="@layout/food_commercial" />
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="16dp"
             android:src="@drawable/click_more" />
-        
     </FrameLayout>
 
     <CheckBox

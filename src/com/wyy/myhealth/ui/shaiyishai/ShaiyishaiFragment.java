@@ -1,17 +1,22 @@
 package com.wyy.myhealth.ui.shaiyishai;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.wyy.myhealth.R;
+import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.ListDataBead;
 import com.wyy.myhealth.db.utils.ShaiDatebaseUtils;
@@ -20,9 +25,11 @@ import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.ui.absfragment.ListBaseFragment;
 import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter.ShaiItemOnclickListener;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
+import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
+import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
 
 public class ShaiyishaiFragment extends ListBaseFragment implements
-		ShaiItemOnclickListener, OnRefreshListener, IXListViewListener {
+		ShaiItemOnclickListener, OnRefreshListener, IXListViewListener, OnItemClickListener {
 
 	// Êý¾Ý¿âID
 	private int _id = 0;
@@ -52,6 +59,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		mListView.setXListViewListener(this);
 		initSendView(sendView);
 		mAdapter.setOnClickListener(this);
+		mListView.setOnItemClickListener(this);
 	}
 
 	@Override
@@ -166,7 +174,15 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	@Override
 	public void onPicClick(int listPostino, int picPostion) {
 		// TODO Auto-generated method stub
-
+		 if (thList.get(listPostino).containsKey("grid_pic")) {
+			@SuppressWarnings("unchecked")
+			List<String> list=(List<String>) thList.get(listPostino).get("grid_pic");
+			Intent intent=new Intent();
+			intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
+			intent.putExtra("postion", picPostion);
+			intent.setClass(getActivity(), PhotoPagerActivity.class);
+			startActivity(intent);
+		}
 	}
 
 	private void initSendView(View v) {
@@ -286,6 +302,20 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		if (!loadflag) {
 			getLoadMore(""+first, limit);
 		}
+	}
+
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		if (thList.get(position).containsKey("foodsid")) {
+			PreferencesFoodsInfo.setfoodId(getActivity(),
+					thList.get(position).get("foodsid")+"");
+			startActivity(new Intent(getActivity(),
+					FoodDetailsActivity.class));
+		}
+		
 	}
 	
 }

@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,23 +32,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
+import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.file.utils.FileUtils;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.ui.absfragment.HealthPassBase;
+import com.wyy.myhealth.ui.absfragment.adapter.HealthAdapter.ShaiItemOnclickListener;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
+import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
+import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
 import com.wyy.myhealth.utils.BingLog;
 
 public class HealPassFragment extends HealthPassBase implements
-		OnRefreshListener, IXListViewListener {
+		OnRefreshListener, IXListViewListener, OnItemClickListener, ShaiItemOnclickListener {
 
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 
@@ -106,6 +114,9 @@ public class HealPassFragment extends HealthPassBase implements
 			bgImageView.setImageBitmap(headbg);
 		}
 
+		mListView.setOnItemClickListener(this);
+		mAdapter.setOnClickListener(this);
+		
 	}
 
 	@Override
@@ -430,6 +441,56 @@ public class HealPassFragment extends HealthPassBase implements
 			Toast.makeText(getActivity(), R.string.publish_faliure,
 					Toast.LENGTH_LONG).show();
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		if (thList.get(position-1).containsKey("foodsid")) {
+			PreferencesFoodsInfo.setfoodId(getActivity(),
+					thList.get(position-1).get("foodsid")+"");
+			startActivity(new Intent(getActivity(),
+					FoodDetailsActivity.class));
+		}
+	}
+
+	@Override
+	public void onUserPicClick(int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCommentClick(int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onZanClick(int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCollectClick(int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPicClick(int listPostino, int picPostion) {
+		// TODO Auto-generated method stub
+		 if (thList.get(listPostino).containsKey("grid_pic")) {
+				@SuppressWarnings("unchecked")
+				List<String> list=(List<String>) thList.get(listPostino).get("grid_pic");
+				Intent intent=new Intent();
+				intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
+				intent.putExtra("postion", picPostion);
+				intent.setClass(getActivity(), PhotoPagerActivity.class);
+				startActivity(intent);
+			}
 	}
 
 }

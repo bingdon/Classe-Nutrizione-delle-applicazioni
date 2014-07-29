@@ -25,7 +25,6 @@
             android:layout_marginLeft="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/pic_preview" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -41,6 +40,7 @@
 
         <EditText
             android:id="@+id/niname_edit"
+            style="@style/bing_edit_style"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -64,12 +64,12 @@
 
         <EditText
             android:id="@+id/age_edit"
+            style="@style/bing_edit_style"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/age_hint" >
-
         </EditText>
     </LinearLayout>
 
@@ -103,8 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="48dp"
-                android:text="@string/gilr"
-            />
+                android:text="@string/gilr" />
         </RadioGroup>
     </LinearLayout>
 

@@ -3,8 +3,10 @@ package com.wyy.myhealth.ui.discover;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.healthbar.HealthPassActivity;
 import com.wyy.myhealth.ui.healthrecorder.HealthRecorderActivity;
+import com.wyy.myhealth.ui.icebox.IceBoxActivity;
 import com.wyy.myhealth.ui.message.MessageTListActivity;
 import com.wyy.myhealth.ui.shaiyishai.ShaiyishaiActivity;
+import com.wyy.myhealth.utils.ShareUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +29,7 @@ public class DiscoverFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 
-		View rootView = inflater.inflate(R.layout.discover_lay, null);
+		View rootView = inflater.inflate(R.layout.discover_lay, container,false);
 		initView(rootView);
 		return rootView;
 	}
@@ -61,11 +63,11 @@ public class DiscoverFragment extends Fragment {
 				break;
 
 			case R.id.bingxiang_fr:
-				
+				showIceBoxActivity();
 				break;
 
 			case R.id.tellfr_fr:
-
+				ShareUtils.share2Fre(getActivity());
 				break;
 
 			case R.id.msgbox_fr:
@@ -95,6 +97,10 @@ public class DiscoverFragment extends Fragment {
 	
 	private void showHealthRecorder(){
 		startActivity(new Intent(getActivity(), HealthRecorderActivity.class));
+	}
+	
+	private void showIceBoxActivity(){
+		startActivity(new Intent(getActivity(), IceBoxActivity.class));
 	}
 	
 }

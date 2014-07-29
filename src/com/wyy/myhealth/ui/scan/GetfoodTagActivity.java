@@ -58,6 +58,9 @@ public class GetfoodTagActivity extends SaveActivity implements
 	public void initData() {
 		// TODO Auto-generated method stub
 		tag = getIntent().getStringExtra("tag");
+		if (TextUtils.isEmpty(tag)) {
+			return;
+		}
 		tagedit.setText("" + tag);
 	}
 

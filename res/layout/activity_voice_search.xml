@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/input_food_hint"
+        android:textColor="@color/white"
         android:textSize="16sp" >
 
         <requestFocus />
@@ -27,11 +28,10 @@
         android:textColor="@color/gray"
         android:textSize="15sp" />
 
-    <ImageView
-        android:id="@+id/voice"
+    <include
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:src="@drawable/yuyin_sec" />
+        layout="@layout/voice_btn_lay" />
 
 </FrameLayout>

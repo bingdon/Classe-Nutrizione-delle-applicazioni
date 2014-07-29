@@ -18,6 +18,7 @@
 
     <EditText
         android:id="@+id/account_edit"
+        style="@style/bing_edit_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -30,13 +31,14 @@
 
     <EditText
         android:id="@+id/password_edit"
-        android:inputType="textPassword"
+        style="@style/bing_edit_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/iconfont_password"
         android:ems="10"
-        android:hint="@string/password" />
+        android:hint="@string/password"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/login_btn"

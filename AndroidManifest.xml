@@ -162,6 +162,10 @@
         <activity android:name=".ui.scan.GetCommercial"></activity>
         <activity android:name=".ui.scan.GetFoodAddress"></activity>
         <activity android:name=".ui.scan.GetfoodTagActivity"></activity>
+        <activity android:name=".ui.photoPager.PhotoPagerActivity"></activity>
+        <activity android:name=".ui.collect.CollectActivity"></activity>
+        <activity android:name=".ui.healthbar.MsgListActivity"></activity>
+        <activity android:name=".ui.icebox.IceBoxActivity"></activity>
        
     </application>
 

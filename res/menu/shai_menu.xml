@@ -10,4 +10,5 @@
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/publish" >
 	</item>
+    <item android:id="@+id/mycollect" android:title="@string/mycollect" android:orderInCategory="102"></item>
 </menu>

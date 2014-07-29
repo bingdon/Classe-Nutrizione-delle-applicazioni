@@ -17,8 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iflytek.speech.ErrorCode;
@@ -31,24 +37,41 @@ import com.iflytek.speech.SpeechRecognizer;
 import com.iflytek.speech.SpeechUtility;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.HealthRecoderBean;
+import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
+import com.wyy.myhealth.ui.photoview.utils.Utility;
 import com.wyy.myhealth.ui.scan.utils.JsonParser;
 import com.wyy.myhealth.utils.BingLog;
 
 public class VoiceSearceActivity extends BaseActivity implements
 		ActivityInterface {
 	private static final String TAG = VoiceSearceActivity.class.getSimpleName();
+	
 	private boolean hasengine = false;
+	
 	private SpeechRecognizer speechRecognizer;
+	
 	private EditText inputEditText;
+	
 	private View submintView;
+	
 	private FrameLayout wrapper;
+	
+	private ImageView voiceView;
 
+	private NearFoodBean samefood;
+	
+	private RotateAnimation voiceReAnimation;
+	
+	private boolean isRecognizer=false;
+	
+	private TextView waitNotice;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -93,7 +116,9 @@ public class VoiceSearceActivity extends BaseActivity implements
 		wrapper = (FrameLayout) findViewById(R.id.wrapper);
 		inputEditText = (EditText) findViewById(R.id.input_food_edit);
 		submintView=getLayoutInflater().inflate(R.layout.submit_layout, null);
-		findViewById(R.id.voice).setOnClickListener(new OnClickListener() {
+		voiceView=(ImageView)findViewById(R.id.voice);
+		waitNotice=(TextView)findViewById(R.id.voice_notice);
+		voiceView.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -103,6 +128,12 @@ public class VoiceSearceActivity extends BaseActivity implements
 		});
 		initData();
 		sendChangeUI();
+		
+		voiceReAnimation=new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+		LinearInterpolator linearInterpolator=new LinearInterpolator();
+		voiceReAnimation.setInterpolator(linearInterpolator);
+		voiceReAnimation.setDuration(1000);
+		
 	}
 
 	@Override
@@ -123,6 +154,12 @@ public class VoiceSearceActivity extends BaseActivity implements
 			Toast.makeText(context, R.string.voiceengineerro, Toast.LENGTH_LONG).show();
 			return;
 		}
+		
+		if (!Utility.isConnected(context)) {
+			Toast.makeText(context, R.string.neterro, Toast.LENGTH_LONG).show();
+			return;
+		}
+		voiceView.setImageResource(R.drawable.voice_re_press);
 		setParam();
 		speechRecognizer.startListening(mRecognizerListener);
 	}
@@ -178,6 +215,7 @@ public class VoiceSearceActivity extends BaseActivity implements
 								+ iattext;
 						inputEditText.setText(text);
 						speechRecognizer.stopListening(mRecognizerListener);
+						stopAnimation();
 					} else {
 						Log.d(TAG, "recognizer result : null");
 					}
@@ -188,7 +226,7 @@ public class VoiceSearceActivity extends BaseActivity implements
 
 		@Override
 		public void onError(int errorCode) throws RemoteException {
-
+			endHandler.sendEmptyMessage(1);
 		}
 
 		@Override
@@ -198,7 +236,7 @@ public class VoiceSearceActivity extends BaseActivity implements
 
 		@Override
 		public void onBeginOfSpeech() throws RemoteException {
-
+			
 		}
 	};
 
@@ -217,7 +255,21 @@ public class VoiceSearceActivity extends BaseActivity implements
 
 	private Handler endHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
-			Toast.makeText(context, R.string.voicerecogniseing, Toast.LENGTH_LONG).show();
+			
+			switch (msg.what) {
+			case 0:
+				startAnimation();
+				break;
+
+			case 1:
+				stopAnimation();
+				break;
+				
+			default:
+				break;
+			}
+			
+			
 		};
 	};
 
@@ -227,7 +279,7 @@ public class VoiceSearceActivity extends BaseActivity implements
 			inputEditText.setError(getString(R.string.nullcontentnotice));
 			return;
 		}
-
+		
 		HealthHttpClient.cmpFoodWords(inputEditText.getText().toString(),
 				mhHandler);
 
@@ -275,6 +327,13 @@ public class VoiceSearceActivity extends BaseActivity implements
 			if ("1".equals(result)) {
 				JSONArray comments = mJsonObject
 						.getJSONArray("comments");
+				
+				try {
+					getSameFood(mJsonObject.getJSONObject("samefood"));
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
 				if (comments != null && comments.length() > 0) {
 
 					HealthRecoderBean healthRecoderBean=JsonUtils.getHealthRecoder(comments.getJSONObject(0));
@@ -296,6 +355,7 @@ public class VoiceSearceActivity extends BaseActivity implements
 
 	public void logindialog(HealthRecoderBean healthRecoderBean) {
 		Intent intent = new Intent();
+		intent.putExtra("samefood", samefood);
 		intent.putExtra("foods", healthRecoderBean);
 		intent.setClass(context, ScanResultActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -306,6 +366,49 @@ public class VoiceSearceActivity extends BaseActivity implements
 	
 	private void sendChangeUI() {
 		sendBroadcast(new Intent(ConstantS.ACTION_HIDE_UI_CHANGE));
+	}
+	
+	
+	private void getSameFood(JSONObject jsonObject){
+		samefood=JsonUtils.getNearFoodBean(jsonObject);
+	}
+	
+	
+	private void startAnimation(){
+		isRecognizer=true;
+		voiceView.setImageResource(R.drawable.voice_re_loding);
+		waitNotice.setVisibility(View.VISIBLE);
+		voiceReAnimation.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				if (isRecognizer) {
+					voiceView.startAnimation(voiceReAnimation);
+				}else {
+					voiceView.setImageResource(R.drawable.voice_re);
+					waitNotice.setVisibility(View.GONE);
+				}
+				
+			}
+		});
+		voiceView.startAnimation(voiceReAnimation);
+	}
+	
+	private void stopAnimation(){
+		isRecognizer=false;
 	}
 	
 }

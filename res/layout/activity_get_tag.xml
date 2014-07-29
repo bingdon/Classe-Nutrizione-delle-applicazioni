@@ -11,6 +11,7 @@
         android:id="@+id/share_tag_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/bing_edit_style"
         android:ems="10"
         android:hint="@string/inputtag_hint" >
 

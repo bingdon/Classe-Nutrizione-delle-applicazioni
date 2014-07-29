@@ -29,7 +29,6 @@
             android:layout_marginLeft="10dp"
             android:drawableLeft="@drawable/icon_user_summary"
             android:drawablePadding="10dp"
-            android:gravity="center"
             android:text=""
             android:textSize="18sp" />
 

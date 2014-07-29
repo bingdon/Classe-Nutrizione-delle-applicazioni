@@ -236,8 +236,6 @@ public class MainActivity extends ActionBarActivity implements
 				Wlongitude = arg0.getLongitude();
 				Wlatitude = arg0.getLatitude();
 				address = arg0.getAddrStr();
-				BingLog.i(TAG, "实际地址:" + arg0.getLocType());
-				BingLog.i(TAG, "实际地址:" + arg0.getAddrStr());
 
 			}
 		});
@@ -255,10 +253,10 @@ public class MainActivity extends ActionBarActivity implements
 		option.setProdName("通过GPS定位我当前的位置");
 
 		// 查询范围，默认值为500，即以当前定位位置为中心的半径大小。
-		option.setPoiDistance(600);
+		option.setPoiDistance(500);
 		// 禁用启用缓存定位数据
 		option.disableCache(true);
-		option.setScanSpan(1000);
+		option.setScanSpan(5000);
 		mLocationClient.setLocOption(option);
 
 		mLocationClient.start();

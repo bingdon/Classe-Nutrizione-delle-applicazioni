@@ -37,7 +37,6 @@ public class FoodCommentActivity extends SubmitActivity {
 	}
 
 	private void initView() {
-		context = this;
 		foodid = getIntent().getStringExtra(ConstantS.ID);
 		content_text = (EditText) findViewById(R.id.comment_edit);
 	}

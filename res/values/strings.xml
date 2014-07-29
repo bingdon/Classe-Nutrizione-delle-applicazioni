@@ -67,7 +67,7 @@
     <string name="pingjiayixia">评价一下</string>
     <string name="mancenter">管理中心</string>
     <string name="aboutversion">关于版本</string>
-     <string name="versioninfo">版本信息</string>
+    <string name="versioninfo">版本信息</string>
     <string name="commfeedback">意见反馈</string>
     <string name="clearcoach">清空缓存</string>
     <string name="loginout">注销当前账号</string>
@@ -287,5 +287,9 @@
     <string name="share_shaiyishai">分享到晒一晒</string>
     <string name="inputtag_hint">美食标签</string>
     <string name="inputaddress_hint">美食位置</string>
+    <string name="commercial_name_edit_hint">商家名称</string>
+    <string name="commercial_tel_hint">商家电话</string>
+    <string name="pleasew">请稍后</string>
+    <string name="share_content">营养健康预警，扫一扫就知道！最近都在用，感觉不错，推荐给你和家人用用. http://openbox.mobilem.360.cn/d.php?p=com.wyy.myhealth,下载吧!</string>
 
 </resources>

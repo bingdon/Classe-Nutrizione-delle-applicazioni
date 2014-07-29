@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_food_light" />
+
+    <ImageView
+        android:id="@+id/ice_food_date_img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_normal" />
+    
+    <com.wyy.myhealth.ui.customview.BingTextView
+        android:id="@+id/ice_food_date"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:text="一天"
+        android:textSize="12sp" />
+
+    
+
+</FrameLayout>
