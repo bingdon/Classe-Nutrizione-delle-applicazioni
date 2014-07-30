@@ -31,7 +31,6 @@ public class RecorderChatFragment extends Fragment {
 	private int re_type = ConstantS.YINSHI;
 
 	public static RecorderChatFragment newInstance(int id) {
-		BingLog.i(TAG, "============newInstance========re_type===="+id);
 		RecorderChatFragment recorderChatFragment = new RecorderChatFragment();
 		Bundle bundle = new Bundle();
 		bundle.putInt(ConstantS.RECEODER, id);
@@ -48,7 +47,6 @@ public class RecorderChatFragment extends Fragment {
 			re_type = savedInstanceState.getInt(ConstantS.RECEODER);
 		}
 		
-		BingLog.i(TAG, "============onCreate========re_type===="+re_type);
 
 	}
 	

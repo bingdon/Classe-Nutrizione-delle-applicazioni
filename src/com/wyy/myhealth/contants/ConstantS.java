@@ -33,6 +33,8 @@ public interface ConstantS {
 	public static final String ACTION_HIDE_UI_CHANGE = "ACTION.WYY.UI.CHANGE";
 	
 	public static final String ACTION_RESH_USER_DATA = "ACTION.WYY.RESH.USER.DATA";
+	
+	public static final String 	ACTION_LOGIN_FINISH="ACTION.WYY.LOGIN.FINISH";
 
 	/**************NOTICE_ID*************/
 	public static final int NEW_LOGIN_ACTION_ID = 0;
@@ -72,6 +74,8 @@ public interface ConstantS {
 	
 	public static final String USER_PREFERENCES="Preferences";
 	
+	public static final String USER_BACK_UP="back_up";
+	
 	/************¼ÇÂ¼ÀàÐÍ************/
 	
 	public static final int YINSHI=100;
@@ -89,6 +93,5 @@ public interface ConstantS {
 	public static final int KUANGWUZHI=106;
 	
 	public static final String RECEODER="receoder_type";
-	
 	
 }

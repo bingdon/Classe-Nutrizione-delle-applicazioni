@@ -11,8 +11,6 @@ public class BitmapRatioUtils {
 		for (int i = 0; i < intensity.length; i++) {
 			intensity[i] = 0;
 		}
-//		getRGB(srcImage, 0, 0, srcImage.getWidth(), srcImage.getHeight(),
-//				inPixels);
 		srcImage.getPixels(inPixels, 0, srcImage.getWidth(), 0, 0, srcImage.getWidth(), srcImage.getHeight());
 		int index = 0;
 		int count = 0;

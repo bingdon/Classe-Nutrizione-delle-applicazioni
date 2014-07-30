@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,6 +95,8 @@ public class MainActivity extends ActionBarActivity implements
 		initService();
 
 		initFilter();
+		
+		finshLogin();
 
 	}
 
@@ -158,6 +161,9 @@ public class MainActivity extends ActionBarActivity implements
 		int id = item.getItemId();
 		if (id == R.id.action_setting) {
 			showSetting();
+			return true;
+		}else if (id==R.id.exit) {
+			exitMain();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -366,4 +372,30 @@ public class MainActivity extends ActionBarActivity implements
 		startActivity(new Intent(MainActivity.this, SettingActivity.class));
 	}
 
+	private void finshLogin(){
+		sendBroadcast(new Intent(ConstantS.ACTION_LOGIN_FINISH));
+	}
+	
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK
+				&& event.getAction() == KeyEvent.ACTION_DOWN) {
+			
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_HOME);           
+			startActivity(intent);
+			return true;
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	
+	private void exitMain(){
+		finish();
+		System.exit(0);
+	}
 }

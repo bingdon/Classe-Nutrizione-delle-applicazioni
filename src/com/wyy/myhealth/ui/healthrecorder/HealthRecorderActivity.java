@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -14,7 +16,7 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
-import com.wyy.myhealth.utils.BingLog;
+import com.wyy.myhealth.utils.ReshUserDataUtlis;
 
 public class HealthRecorderActivity extends BaseActivity implements
 		ActivityInterface {
@@ -68,8 +70,11 @@ public class HealthRecorderActivity extends BaseActivity implements
 	protected void onInitFragment() {
 		// TODO Auto-generated method stub
 		super.onInitFragment();
-		getSupportFragmentManager().beginTransaction()
-				.add(R.id.health_fra_lay, RecorderChatFragment.newInstance(ConstantS.YINSHI)).commit();
+		getSupportFragmentManager()
+				.beginTransaction()
+				.add(R.id.health_fra_lay,
+						RecorderChatFragment.newInstance(ConstantS.YINSHI))
+				.commit();
 	}
 
 	@Override
@@ -103,14 +108,34 @@ public class HealthRecorderActivity extends BaseActivity implements
 			recorderLay[i].setOnClickListener(listener);
 		}
 
-		showRecorderFragment(getPreferences());
-		
+		initData();
 	}
 
 	@Override
 	public void initData() {
 		// TODO Auto-generated method stub
+		showRecorderFragment(getPreferences());
+	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		getMenuInflater().inflate(R.menu.health_recorder, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.resh:
+			ReshUserDataUtlis.reshUserRecorder(context);
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private OnClickListener listener = new OnClickListener() {
@@ -168,13 +193,13 @@ public class HealthRecorderActivity extends BaseActivity implements
 		}
 
 		swithRecorder(id);
-		
+
 	}
 
 	private void swithRecorder(int id) {
-		
+
 		savePreferences(id);
-		
+
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		switch (id) {
 		case 0:

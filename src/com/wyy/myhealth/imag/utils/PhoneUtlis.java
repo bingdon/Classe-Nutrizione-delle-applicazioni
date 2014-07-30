@@ -294,6 +294,45 @@ public class PhoneUtlis {
 	}
 	
 	
+
+	/**
+	 * 根据路径获得突破并压缩返回bitmap用于显示且压缩大小为60x60
+	 * 
+	 * @param imagesrc
+	 * @return
+	 */
+	public static Bitmap getSmall40ZoomBitmap(String filePath) {
+
+		Matrix matrix = new Matrix();
+		matrix.setRotate(ScanFoodActivity.angle);
+
+		
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(filePath, options);
+
+		// Calculate inSampleSize
+		options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+		
+		Bitmap mBitmap = BitmapFactory.decodeFile(filePath, options);
+		float width=mBitmap.getWidth();
+		float height=mBitmap.getHeight();
+		float ratio=width/height;
+		mBitmap = Bitmap.createBitmap(mBitmap, (int) (mBitmap.getWidth()/3),
+				(int) (mBitmap.getHeight()-mBitmap.getHeight()*ratio/3)/2, (int) (mBitmap.getWidth()/3),
+				(int) (mBitmap.getHeight() / 3*ratio), matrix, true);
+
+		mBitmap=zoomImage(mBitmap, 40, 40);
+		
+		
+		return mBitmap;
+	}
+	
+	
+	
 	/**
 	 * 根据路径获得突破并压缩返回bitmap用于显示且压缩大小为50x50
 	 * 

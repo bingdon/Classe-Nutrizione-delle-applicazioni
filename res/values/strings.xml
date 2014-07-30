@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">设置</string>
     <string name="neterro">网络出错啦!</string>
-    <string name="account_hint">邮箱/电话/微码</string>
+    <string name="account_hint">邮箱/电话号码</string>
     <string name="password">密码</string>
     <string name="login">登陆</string>
     <string name="saoyy">扫营养</string>
@@ -291,5 +291,8 @@
     <string name="commercial_tel_hint">商家电话</string>
     <string name="pleasew">请稍后</string>
     <string name="share_content">营养健康预警，扫一扫就知道！最近都在用，感觉不错，推荐给你和家人用用. http://openbox.mobilem.360.cn/d.php?p=com.wyy.myhealth,下载吧!</string>
+    <string name="weimalogin">微码登陆</string>
+    <string name="loginfailure">登录失败</string>
+    <string name="loginsuccess">登陆成功</string>
 
 </resources>

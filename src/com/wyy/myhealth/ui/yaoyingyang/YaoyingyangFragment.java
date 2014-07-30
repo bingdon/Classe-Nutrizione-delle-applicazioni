@@ -106,7 +106,6 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 
 	private void getNerabyFoods() {
 		lastJson = getLast_Result();
-		Log.i(TAG, "获取上次数据:" + lastJson);
 		if (!TextUtils.isEmpty(lastJson)) {
 			parseFoodsReshList(lastJson);
 		}

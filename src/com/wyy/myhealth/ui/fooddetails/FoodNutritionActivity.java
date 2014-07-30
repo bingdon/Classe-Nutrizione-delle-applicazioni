@@ -1,6 +1,8 @@
 package com.wyy.myhealth.ui.fooddetails;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.ImageView;
 
 import com.wyy.myhealth.R;
@@ -24,6 +26,7 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_food_nutri_info);
 		initView();
+		setIshasScale(true);
 	}
 
 	@Override
@@ -40,7 +43,8 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 				(ImageView) findViewById(R.id.food_pic),
 				FoodDetailsActivity.imgurl);
 		initScoreV();
-		initData();
+//		initData();
+		mHandler.sendEmptyMessageDelayed(0, 1000);
 
 	}
 
@@ -93,4 +97,14 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 
 	}
 
+	private Handler mHandler=new Handler(new Handler.Callback() {
+		
+		@Override
+		public boolean handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			initData();
+			return false;
+		}
+	});
+	
 }

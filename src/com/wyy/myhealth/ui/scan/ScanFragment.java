@@ -696,7 +696,7 @@ public class ScanFragment extends Fragment {
 		iscomple = false;
 		int feturenum = secFood();
 		BingLog.i(TAG, "¼ÆËã:"+feturenum);
-		if (feturenum > 15 && feturenum < 120) {
+		if (feturenum > 15 && feturenum < 80) {
 			iscomple = true;
 			return true;
 		}
@@ -709,7 +709,7 @@ public class ScanFragment extends Fragment {
 		isplace=false;
 		double k=0;
 		k=BitmapRatioUtils.ratio(PhoneUtlis
-				.getSmall60ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
+				.getSmall40ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
 		BingLog.i(TAG, "ãĞÖµ¼ÆËã:"+k);
 		isplace=true;
 		if (k>0.4) {

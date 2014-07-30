@@ -166,6 +166,7 @@
         <activity android:name=".ui.collect.CollectActivity"></activity>
         <activity android:name=".ui.healthbar.MsgListActivity"></activity>
         <activity android:name=".ui.icebox.IceBoxActivity"></activity>
+        <activity android:name=".ui.login.MicroCodeLoginActivity"></activity>
        
     </application>
 

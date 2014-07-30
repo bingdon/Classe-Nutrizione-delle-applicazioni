@@ -9,13 +9,17 @@ import org.json.JSONObject;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.HealthRecoderBean;
 import com.wyy.myhealth.config.Config;
+import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.utils.BingLog;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -63,10 +67,23 @@ public class MainService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		getUserRecorder();
+		initFilter();
+	}
+
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		unregisterReceiver(mainServiceReceiver);
+	}
+	
+	private void getUserRecorder(){
 		getHealthRecored();
 		getFoots();
 	}
-
+	
 	private void getHealthRecored() {
 		HealthHttpClient.getHealthRecorder(WyyApplication.getInfo().getId(),
 				"0", handler);
@@ -100,7 +117,7 @@ public class MainService extends Service {
 		try {
 			JSONObject jsonObject = new JSONObject(content);
 			int length0 = jsonObject.getJSONArray("nutritions").length();
-
+			thHealthRecoderBeans.clear();
 			for (int i = 0; i < length0; i++) {
 				HealthRecoderBean healthRecoderBean = JsonUtils
 						.getHealthRecoder(jsonObject.getJSONArray("nutritions")
@@ -115,7 +132,7 @@ public class MainService extends Service {
 			
 			
 			int length1=jsonObject.getJSONArray("nutritionsNext").length();
-			
+			nextHealthRecoderBeans.clear();
 			for (int i = 0; i < length1; i++) {
 				
 				HealthRecoderBean healthRecoderBean = JsonUtils
@@ -159,6 +176,7 @@ public class MainService extends Service {
 		try {
 			JSONObject jsonObject = new JSONObject(json);
 			int length = jsonObject.getJSONArray("foots").length();
+			sports.clear();
 			for (int i = 0; i < length; i++) {
 				String level = jsonObject.getJSONArray("foots")
 						.getJSONObject(i).getString("level");
@@ -169,5 +187,24 @@ public class MainService extends Service {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	private void initFilter(){
+		IntentFilter filter=new IntentFilter();
+		filter.addAction(ConstantS.ACTION_RESH_USER_DATA);
+		registerReceiver(mainServiceReceiver, filter);
+	}
+	
+	private BroadcastReceiver mainServiceReceiver=new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action=intent.getAction();
+			if (action.equals(ConstantS.ACTION_RESH_USER_DATA)) {
+				getUserRecorder();
+			}
+		}
+	};
 	
 }
