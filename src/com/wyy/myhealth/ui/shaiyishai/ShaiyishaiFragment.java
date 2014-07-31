@@ -276,6 +276,8 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			Toast.makeText(getActivity(), R.string.comment_success_, Toast.LENGTH_LONG).show();
 			sendEditText.setText("");
 			sendView.setVisibility(View.GONE);
+			shaiFoodsid="";
+			shaimoodsid="";
 		}
 
 		@Override

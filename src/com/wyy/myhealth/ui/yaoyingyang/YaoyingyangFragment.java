@@ -39,6 +39,7 @@ import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.mapfood.MapFoodsActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangAdapter.LocationListener;
+import com.wyy.myhealth.utils.BingLog;
 import com.wyy.myhealth.utils.DistanceUtils;
 
 public class YaoyingyangFragment extends ListBaseFragYP implements
@@ -92,10 +93,13 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		bingListView.setOnItemClickListener(this);
 	}
 
+	
+	
 	@Override
 	public void onDetach() {
 		// TODO Auto-generated method stub
 		super.onDetach();
+		BingLog.i(TAG, "保存数据:"+lastJson);
 		if (!TextUtils.isEmpty(lastJson)) {
 			saveLie_Current_Result(lastJson);
 		}
@@ -106,6 +110,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 
 	private void getNerabyFoods() {
 		lastJson = getLast_Result();
+//		BingLog.i(TAG, "上次数据:"+lastJson);
 		if (!TextUtils.isEmpty(lastJson)) {
 			parseFoodsReshList(lastJson);
 		}
@@ -355,6 +360,8 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 				yaoyingyangAdapter.notifyDataSetChanged();
 				lastJson = content;
 
+				
+				
 			} else {
 				Toast.makeText(getActivity(), getString(R.string.parseerror),
 						Toast.LENGTH_LONG).show();
@@ -444,13 +451,14 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 	 * @param result
 	 */
 	private void saveLie_Current_Result(String result) {
+		BingLog.i(TAG, "保存此次数据:"+result);
 		SharedPreferences preferences = getActivity()
 				.getSharedPreferences(
 						YaoyingyangFragment.class.getSimpleName(),
 						Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
 
-		editor.putString("result", result);
+		editor.putString(ConstantS.RESULT, result);
 		editor.commit();
 
 	}
@@ -464,7 +472,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		String result = getActivity()
 				.getSharedPreferences(
 						YaoyingyangFragment.class.getSimpleName(),
-						Context.MODE_PRIVATE).getString("result", "");
+						Context.MODE_PRIVATE).getString(ConstantS.RESULT, "");
 		return result;
 	}
 

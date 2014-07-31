@@ -49,9 +49,13 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 	@Override
 	protected void submitMsg() {
 		// TODO Auto-generated method stub
+		moodEditText.setError(null);
 		if (!TextUtils.isEmpty(moodEditText.getText().toString())) {
 			HealthHttpClient.doHttpPostMood(WyyApplication.getInfo()
 					.getId(), moodEditText.getText().toString(), moodIndex, postMoodHandler);
+		}else {
+			moodEditText.setError(getString(R.string.nullcontentnotice));
+			moodEditText.requestFocus();
 		}
 	}
 

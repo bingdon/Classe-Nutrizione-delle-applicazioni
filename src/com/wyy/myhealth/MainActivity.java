@@ -396,6 +396,6 @@ public class MainActivity extends ActionBarActivity implements
 	
 	private void exitMain(){
 		finish();
-		System.exit(0);
+//		System.exit(0);
 	}
 }

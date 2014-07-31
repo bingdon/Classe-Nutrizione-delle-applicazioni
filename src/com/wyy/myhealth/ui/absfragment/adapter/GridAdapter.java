@@ -80,7 +80,7 @@ public class GridAdapter extends BaseAdapter {
 				
 			default:
 				
-				convertView=inflater.inflate(R.layout.pic_gird, null);
+				convertView=inflater.inflate(R.layout.pic_grid_f, null);
 				
 				break;
 			}

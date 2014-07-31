@@ -7,8 +7,7 @@
         android:id="@+id/food_case"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_food_show"
-        android:src="@drawable/pic_failure" />
+        android:background="@drawable/ic_food_show" />
 
     <include
         android:layout_width="match_parent"

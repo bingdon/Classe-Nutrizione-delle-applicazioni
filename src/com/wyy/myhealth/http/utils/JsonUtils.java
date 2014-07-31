@@ -3,12 +3,11 @@ package com.wyy.myhealth.http.utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.wyy.myhealth.bean.Foods;
 import com.wyy.myhealth.bean.HealthRecoderBean;
+import com.wyy.myhealth.bean.IceBoxFoodBean;
 import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.config.Config;
@@ -16,7 +15,8 @@ import com.wyy.myhealth.utils.BingLog;
 
 public class JsonUtils {
 
-	private static final String TAG=JsonUtils.class.getSimpleName();
+	private static final String TAG = JsonUtils.class.getSimpleName();
+
 	/**
 	 * 返回结果
 	 * 
@@ -40,8 +40,7 @@ public class JsonUtils {
 		return "";
 
 	}
-	
-	
+
 	/**
 	 * 解析对象
 	 * 
@@ -99,13 +98,13 @@ public class JsonUtils {
 
 		return false;
 	}
-	
-	
-	public static HealthRecoderBean getHealthRecoder(JSONObject object){
-		HealthRecoderBean healthRecoderBean=new HealthRecoderBean();
+
+	public static HealthRecoderBean getHealthRecoder(JSONObject object) {
+		HealthRecoderBean healthRecoderBean = new HealthRecoderBean();
 		try {
 			Gson gson = new Gson();
-			healthRecoderBean=gson.fromJson(object.toString(), HealthRecoderBean.class);
+			healthRecoderBean = gson.fromJson(object.toString(),
+					HealthRecoderBean.class);
 		} catch (Exception e) {
 			// TODO: handle exception
 			if (Config.DEVELOPER_MODE) {
@@ -113,16 +112,15 @@ public class JsonUtils {
 				BingLog.e(TAG, "解析错误");
 			}
 		}
-		
+
 		return healthRecoderBean;
 	}
-	
-	
-	public static NearFoodBean getNearFoodBean(JSONObject object){
-		NearFoodBean nearFoodBean=new NearFoodBean();
+
+	public static NearFoodBean getNearFoodBean(JSONObject object) {
+		NearFoodBean nearFoodBean = new NearFoodBean();
 		try {
 			Gson gson = new Gson();
-			nearFoodBean=gson.fromJson(object.toString(), NearFoodBean.class);
+			nearFoodBean = gson.fromJson(object.toString(), NearFoodBean.class);
 		} catch (Exception e) {
 			// TODO: handle exception
 			if (Config.DEVELOPER_MODE) {
@@ -130,9 +128,25 @@ public class JsonUtils {
 				BingLog.e(TAG, "解析错误");
 			}
 		}
-		
+
 		return nearFoodBean;
 	}
-	
-	
+
+	public static IceBoxFoodBean getIceBoxFoodBean(JSONObject object) {
+		IceBoxFoodBean iceBoxFoodBean = new IceBoxFoodBean();
+		try {
+			iceBoxFoodBean = new Gson().fromJson(object.toString(),
+					IceBoxFoodBean.class);
+		} catch (Exception e) {
+			// TODO: handle exception
+			if (Config.DEVELOPER_MODE) {
+				e.printStackTrace();
+				BingLog.e(TAG, "解析错误");
+			}
+		}
+
+		return iceBoxFoodBean;
+
+	}
+
 }

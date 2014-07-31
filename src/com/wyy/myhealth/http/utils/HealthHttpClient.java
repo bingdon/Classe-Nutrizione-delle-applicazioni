@@ -14,6 +14,8 @@ import com.wyy.myhealth.http.RequestParams;
  */
 public class HealthHttpClient {
 
+	public static final String URL = "http://115.28.164.99:7001/S_health/";
+
 	/**
 	 * 閿熸枻鎷烽敓鐭鎷峰潃
 	 */
@@ -39,6 +41,8 @@ public class HealthHttpClient {
 	 * 应用下载地址
 	 */
 	public static final String APP_URL = "http://115.28.164.99:7001/S_health/version/";
+
+	public static final String ICE_BOX = BASE_URL + "userIcebox";
 
 	private volatile static HealthHttpClient instance = null;
 
@@ -803,6 +807,22 @@ public class HealthHttpClient {
 		params.put("first", first);
 		client.post(BASE_URL + "userNutritions", params, handler);
 
+	}
+
+	/**
+	 * 获取冰箱内容
+	 * @param userid
+	 * @param first
+	 * @param limit
+	 * @param handler
+	 */
+	public static void getIceBoxFood(String userid, String first, String limit,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("first", first);
+		params.put("limit", limit);
+		client.post(ICE_BOX, params, handler);
 	}
 
 }

@@ -129,6 +129,7 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 
 	private void sendMoodaPic2Shai() {
 
+		moodEditText.setError(null);
 		if (!TextUtils.isEmpty(moodEditText.getText().toString())) {
 
 			if (TextUtils.isEmpty(moodIndex)) {
@@ -143,8 +144,8 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 			}
 
 		} else {
-			Toast.makeText(context, R.string.nullcontentnotice,
-					Toast.LENGTH_LONG).show();
+			moodEditText.setError(getString(R.string.nullcontentnotice));
+			moodEditText.requestFocus();
 		}
 	}
 

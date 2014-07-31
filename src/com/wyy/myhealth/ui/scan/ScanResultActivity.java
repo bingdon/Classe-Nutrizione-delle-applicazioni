@@ -53,7 +53,7 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 		context=this;
 		initScoreV();
 		
-
+		setIshasScale(true);
 		successlay=(FrameLayout)findViewById(R.id.recored_lay);
 		failurelay=(LinearLayout)findViewById(R.id.scan_failure_lay);
 		
