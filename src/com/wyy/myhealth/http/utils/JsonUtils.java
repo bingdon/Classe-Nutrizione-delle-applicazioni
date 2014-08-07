@@ -99,6 +99,29 @@ public class JsonUtils {
 		return false;
 	}
 
+	/**
+	 * 判断请求是否正确
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static Boolean isSuccess(String content) {
+		try {
+			JSONObject object = new JSONObject(content);
+			if (object.has("result")) {
+				int result = object.getInt("result");
+				if (result == 1) {
+					return true;
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	public static HealthRecoderBean getHealthRecoder(JSONObject object) {
 		HealthRecoderBean healthRecoderBean = new HealthRecoderBean();
 		try {
@@ -148,5 +171,44 @@ public class JsonUtils {
 		return iceBoxFoodBean;
 
 	}
+
+	public static IceBoxFoodBean getIceBoxFoodBean(String content) {
+		IceBoxFoodBean iceBoxFoodBean = new IceBoxFoodBean();
+		try {
+			JSONObject object = new JSONObject(content);
+			iceBoxFoodBean = new Gson().fromJson(object.toString(),
+					IceBoxFoodBean.class);
+		} catch (Exception e) {
+			// TODO: handle exception
+			if (Config.DEVELOPER_MODE) {
+				e.printStackTrace();
+				BingLog.e(TAG, "解析错误");
+			}
+		}
+
+		return iceBoxFoodBean;
+
+	}
+	
+	
+	public static IceBoxFoodBean getIceBox4ProFoodBean(String content) {
+		IceBoxFoodBean iceBoxFoodBean = new IceBoxFoodBean();
+		try {
+			JSONObject jsonObject = new JSONObject(content);
+			JSONObject object=jsonObject.getJSONObject("foods");
+			iceBoxFoodBean = new Gson().fromJson(object.toString(),
+					IceBoxFoodBean.class);
+		} catch (Exception e) {
+			// TODO: handle exception
+			if (Config.DEVELOPER_MODE) {
+				e.printStackTrace();
+				BingLog.e(TAG, "解析错误");
+			}
+		}
+
+		return iceBoxFoodBean;
+
+	}
+	
 
 }

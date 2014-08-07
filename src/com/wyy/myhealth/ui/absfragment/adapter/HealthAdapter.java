@@ -8,11 +8,13 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.absfragment.utils.TextViewUtils;
+import com.wyy.myhealth.utils.BingLog;
 
 import android.content.Context;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,8 +40,8 @@ public class HealthAdapter extends BaseAdapter {
 	private View popView;
 	private ImageView collectImageView;
 	private ImageView commentImageView;
-	
-	
+	int[] location = new int[2];
+
 	public ImageLoader getImageLoader() {
 		return imageLoader;
 	}
@@ -63,16 +65,17 @@ public class HealthAdapter extends BaseAdapter {
 				.cacheOnDisc(true).considerExifParams(true)
 				// .displayer(new RoundedBitmapDisplayer(20))
 				.build();
-		
-		popView=inflater.inflate(R.layout.shai_menu, null);
-		commentImageView=(ImageView)popView.findViewById(R.id.shai_pinglun);
-		collectImageView=(ImageView)popView.findViewById(R.id.shai_shoucang);
-		popupWindow=new PopupWindow(popView, ActionBar.LayoutParams.WRAP_CONTENT,
+
+		popView = inflater.inflate(R.layout.shai_menu, null);
+		commentImageView = (ImageView) popView.findViewById(R.id.shai_pinglun);
+		collectImageView = (ImageView) popView.findViewById(R.id.shai_shoucang);
+		popupWindow = new PopupWindow(popView,
+				ActionBar.LayoutParams.WRAP_CONTENT,
 				ActionBar.LayoutParams.WRAP_CONTENT);
 		popupWindow.setFocusable(false);
 		commentImageView.setFocusable(false);
 		collectImageView.setFocusable(false);
-		
+
 	}
 
 	public void setOnClickListener(ShaiItemOnclickListener listener) {
@@ -102,8 +105,7 @@ public class HealthAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		final int newposition = position;
-		
-		
+
 		ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
@@ -112,8 +114,8 @@ public class HealthAdapter extends BaseAdapter {
 					.findViewById(R.id.shai_username_txt);
 			holder.timeTextView = (TextView) convertView
 					.findViewById(R.id.shai_time_txt);
-			holder.day=(TextView)convertView.findViewById(R.id.hps_day);
-			holder.month=(TextView)convertView.findViewById(R.id.hps_month);
+			holder.day = (TextView) convertView.findViewById(R.id.hps_day);
+			holder.month = (TextView) convertView.findViewById(R.id.hps_month);
 			holder.shaitagTextView = (TextView) convertView
 					.findViewById(R.id.shai_top_txt);
 			holder.foodtagTextView = (TextView) convertView
@@ -122,25 +124,25 @@ public class HealthAdapter extends BaseAdapter {
 					.findViewById(R.id.shai_bottom_txt);
 			holder.shai_level_imgImageView = (ImageView) convertView
 					.findViewById(R.id.shai_start_img);
-//			holder.shoucangImageView = (ImageView) convertView
-//					.findViewById(R.id.shai_shoucang_img);
-//			holder.shoucangcounTextView = (TextView) convertView
-//					.findViewById(R.id.shai_shoucang_count_txt);
-//			holder.zanImageView = (ImageView) convertView
-//					.findViewById(R.id.shai_zan_img);
-//			holder.zanTextView = (TextView) convertView
-//					.findViewById(R.id.shai_zan_count_txt);
+			// holder.shoucangImageView = (ImageView) convertView
+			// .findViewById(R.id.shai_shoucang_img);
+			// holder.shoucangcounTextView = (TextView) convertView
+			// .findViewById(R.id.shai_shoucang_count_txt);
+			// holder.zanImageView = (ImageView) convertView
+			// .findViewById(R.id.shai_zan_img);
+			// holder.zanTextView = (TextView) convertView
+			// .findViewById(R.id.shai_zan_count_txt);
 			holder.commenImageView = (ImageButton) convertView
 					.findViewById(R.id.shai_pinglun_img);
-//			holder.commencounTextView = (TextView) convertView
-//					.findViewById(R.id.shai_pinglun_count_txt);
+			// holder.commencounTextView = (TextView) convertView
+			// .findViewById(R.id.shai_pinglun_count_txt);
 			holder.reasonTextView = (TextView) convertView
 					.findViewById(R.id.shai_reason_txt);
 			holder.commeninfoTextView = (TextView) convertView
 					.findViewById(R.id.shai_comment_txt);
 
-//			holder.shai_centerLayout = (LinearLayout) convertView
-//					.findViewById(R.id.shai_center_layout);
+			// holder.shai_centerLayout = (LinearLayout) convertView
+			// .findViewById(R.id.shai_center_layout);
 
 			// gridView
 			holder.picGridView = (GridView) convertView
@@ -178,7 +180,7 @@ public class HealthAdapter extends BaseAdapter {
 		if (list.get(position).containsKey("tastelevel")) {
 			int index = Integer.valueOf(list.get(position).get("tastelevel")
 					.toString());
-		
+
 			holder.levelTextView.setText("口味:");
 			if (index > 0) {
 				holder.shai_level_imgImageView
@@ -189,27 +191,25 @@ public class HealthAdapter extends BaseAdapter {
 
 		}
 
-		
 		if (list.get(position).containsKey("day")) {
-			holder.day.setText(""+list.get(position).get("day"));
+			holder.day.setText("" + list.get(position).get("day"));
 			holder.day.setVisibility(View.VISIBLE);
-		}else {
+		} else {
 			holder.day.setVisibility(View.INVISIBLE);
 		}
-		
-		
+
 		if (list.get(position).containsKey("month")) {
-			holder.month.setText(""+list.get(position).get("month"));
+			holder.month.setText("" + list.get(position).get("month"));
 			holder.month.setVisibility(View.VISIBLE);
-		}else {
+		} else {
 			holder.month.setVisibility(View.INVISIBLE);
 		}
-		
+
 		if (list.get(position).containsKey("moodindex")) {
 			int index = Integer.valueOf(list.get(position).get("moodindex")
 					.toString());
 			holder.levelTextView.setText("指数:");
-			Log.e("字数", "指数个数:"+index);
+			Log.e("字数", "指数个数:" + index);
 			if (index > 0) {
 				holder.shai_level_imgImageView.setVisibility(View.VISIBLE);
 				holder.shai_level_imgImageView
@@ -240,19 +240,17 @@ public class HealthAdapter extends BaseAdapter {
 			holder.commeninfoTextView.setVisibility(View.GONE);
 		}
 
-//		if (list.get(position).containsKey("username")) {
-//			holder.usernameTextView.setText(""
-//					+ list.get(position).get("username"));
-//		}
+		// if (list.get(position).containsKey("username")) {
+		// holder.usernameTextView.setText(""
+		// + list.get(position).get("username"));
+		// }
 
 		if (list.get(position).containsKey("grid_pic")) {
 			List<String> picList = new ArrayList<String>();
 			picList = (List<String>) list.get(position).get("grid_pic");
 			if (null != picList) {
 				if (picList.size() > 0) {
-					
-					
-					
+
 					setGridView(holder.picGridView, picList.size());
 					holder.gridAdapter = new GridAdapter(context, picList);
 					holder.picGridView.setAdapter(holder.gridAdapter);
@@ -276,15 +274,13 @@ public class HealthAdapter extends BaseAdapter {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				if (listener!=null) {
+				if (listener != null) {
 					listener.onPicClick(newposition, position);
 				}
-				
 
 			}
 		});
 
-		
 		holder.commenImageView.setFocusable(false);
 		holder.commenImageView.setFocusableInTouchMode(false);
 		holder.commenImageView.setOnClickListener(new OnClickListener() {
@@ -292,14 +288,26 @@ public class HealthAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (listener!=null) {
+				if (listener != null) {
+					BingLog.i(ShaiYiSaiAdapter.class.getSimpleName(), "宽度:"
+							+ popView.getWidth());
+					int width = popView.getWidth();
+					if (width == 0) {
+						width = 254;
+					}
 					if (popupWindow.isShowing()) {
 						popupWindow.dismiss();
-					}else {
-						popupWindow.showAsDropDown(v, -250, -60);
+						v.getLocationOnScreen(location);
+						
+						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+								location[0] - width, location[1]);
+					} else {
+						v.getLocationOnScreen(location);
+						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+								location[0] - width, location[1]);
 					}
 				}
-				
+
 			}
 		});
 
@@ -309,55 +317,51 @@ public class HealthAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				popupWindow.dismiss();
-				if (listener!=null) {
+				if (listener != null) {
 					listener.onCollectClick(newposition);
 				}
-				
+
 			}
 		});
 
 		commentImageView.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				popupWindow.dismiss();
-				if (listener!=null) {
+				if (listener != null) {
 					listener.onCommentClick(newposition);
 				}
 			}
 		});
-		
-//		holder.zanImageView.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				if (listener!=null) {
-//					listener.onZanClick(newposition);
-//				}
-//				
-//			}
-//		});
 
-		
-		
+		// holder.zanImageView.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		// if (listener!=null) {
+		// listener.onZanClick(newposition);
+		// }
+		//
+		// }
+		// });
+
 		convertView.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 					return true;
-				}else {
+				} else {
 					return false;
 				}
-			
-				
+
 			}
 		});
-		
 
 		return convertView;
 	}

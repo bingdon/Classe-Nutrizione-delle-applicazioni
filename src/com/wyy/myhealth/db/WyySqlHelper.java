@@ -1,6 +1,7 @@
 package com.wyy.myhealth.db;
 
 import com.wyy.myhealth.bean.CollectData;
+import com.wyy.myhealth.bean.IceBoxData;
 import com.wyy.myhealth.bean.MsgData;
 import com.wyy.myhealth.bean.PublicMsgData;
 import com.wyy.myhealth.bean.ShaiData;
@@ -14,7 +15,7 @@ public class WyySqlHelper extends SQLiteOpenHelper {
 
 	private static final String NAME = "wyy.db";
 
-	private static final int VERSION = 1;
+	private static final int VERSION = 2;
 
 	private static final String CREATE_SHAI_SQL = "CREATE TABLE "
 			+ ShaiData.TABLE_NAME + "(" + ShaiData._ID
@@ -41,6 +42,13 @@ public class WyySqlHelper extends SQLiteOpenHelper {
 			+ PublicMsgData.MSGTYPE + " INTEGER," + PublicMsgData.TIME
 			+ " TEXT" + ");";
 
+	private static final String CREATE_ICE_BOX_SQL = "CREATE TABLE "
+			+ IceBoxData.TABLE_NAME + "(" + IceBoxData._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + IceBoxData.NAME
+			+ " TEXT," + IceBoxData.TIME + " TEXT," + IceBoxData.TYPE + " TEXT,"
+			+ " TEXT," + IceBoxData.FOOD_PIC + " TEXT," + IceBoxData.FOOD_ID
+			+ " TEXT" + ");";
+
 	public WyySqlHelper(Context context, CursorFactory factory) {
 		super(context, NAME, factory, VERSION);
 		// TODO Auto-generated constructor stub
@@ -53,6 +61,7 @@ public class WyySqlHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_SHAI_SQL);
 		db.execSQL(CREATE_MSG_MOOENT_SQL);
 		db.execSQL(CREATE_PUBLIC_MSG_SQL);
+		db.execSQL(CREATE_ICE_BOX_SQL);
 
 	}
 

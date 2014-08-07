@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -27,16 +30,18 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.IceBoxFoodBean;
 import com.wyy.myhealth.contants.ConstantS;
+import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.JsonHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
 import com.wyy.myhealth.ui.customview.BingListView;
+import com.wyy.myhealth.ui.icebox.IceBoxChildAdapter.DelPicClickListener;
 import com.wyy.myhealth.utils.BingLog;
 
 public class IceBoxActivity extends BaseActivity implements ActivityInterface,
-		OnRefreshListener {
+		OnRefreshListener, DelPicClickListener {
 
 	private static final String TAG = IceBoxActivity.class.getSimpleName();
 
@@ -61,10 +66,19 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 	private List<IceBoxFoodBean> staplefoodsList = new ArrayList<>();
 
 	private List<IceBoxFoodBean> otherList = new ArrayList<>();
-	
-	private String json="";
-	
-	private IceBoxMainAdapter  iceBoxMainAdapter;
+
+	private String json = "";
+
+	private IceBoxMainAdapter iceBoxMainAdapter;
+
+	private boolean isLoading = false;
+
+	private static boolean isDeletevisible = false;
+
+
+	public static boolean isIsvisible() {
+		return isDeletevisible;
+	}
 
 	@Override
 	protected void onInitActionBar() {
@@ -80,7 +94,37 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ice_box);
 		initView();
-		
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+
+		getMenuInflater().inflate(R.menu.ice_box, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.ice_add:
+			showAddFood();
+			break;
+
+		case R.id.ice_manager:
+			showDelete();
+			break;
+
+		case R.id.ice_re:
+			showHistory();
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -89,7 +133,7 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		super.onDestroy();
 		saveCurrent_Result(json);
 	}
-	
+
 	@Override
 	public void initView() {
 		// TODO Auto-generated method stub
@@ -99,6 +143,8 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		animationHandler.sendEmptyMessageDelayed(0, 1000);
 		iceListv = (BingListView) findViewById(R.id.ice_box_list_v);
 		mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.list_swipe);
+		mSwipeRefreshLayout.setColorScheme(R.color.deepskyblue,
+				R.color.darkslategrey, R.color.themecolor, R.color.home_txt);
 		mSwipeRefreshLayout.setOnRefreshListener(this);
 		initData();
 	}
@@ -106,16 +152,18 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 	@Override
 	public void initData() {
 		// TODO Auto-generated method stub
-		
-		iceBoxMainAdapter=new IceBoxMainAdapter(iceBoxFoodBeansList, context);
+		iceBoxMainAdapter = new IceBoxMainAdapter(iceBoxFoodBeansList, context);
 		iceListv.setAdapter(iceBoxMainAdapter);
-		json=getLast_Result();
+		json = getLast_Result();
 		if (TextUtils.isEmpty(json)) {
 			reshIceBoxFood();
-		}else {
+		} else {
 			paresJson(json);
 			reshIceBoxFood();
 		}
+
+		iceBoxMainAdapter.setDelpicClickListener(this);
+
 	}
 
 	private void startOpenAnimation() {
@@ -165,29 +213,31 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 	@Override
 	public void onRefresh() {
 		// TODO Auto-generated method stub
-		mSwipeRefreshLayout.setRefreshing(false);
+		if (!isLoading) {
+			reshIceBoxFood();
+		}
+
 	}
 
 	private void reshIceBoxFood() {
-		HealthHttpClient.getIceBoxFood(/*WyyApplication.getInfo().getId()*/"6015", "0", null, responseHandler);
+		HealthHttpClient.getIceBoxFood(WyyApplication.getInfo().getId(), "0",
+				"100", responseHandler);
 	}
 
-	
-	
-	private JsonHttpResponseHandler responseHandler=new JsonHttpResponseHandler(){
-
+	private JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 
 		public void onSuccess(String content) {
 			super.onSuccess(content);
-			BingLog.i(TAG, "冰箱数据:"+content);
-			if (json==content) {
-				Toast.makeText(context, R.string.nonewmsg, Toast.LENGTH_LONG).show();
-			}else {
+			BingLog.i(TAG, "冰箱数据:" + content);
+			if (json.equals(content)) {
+				Toast.makeText(context, R.string.nonewmsg, Toast.LENGTH_LONG)
+						.show();
+			} else {
 				paresJson(content);
 			}
-			
+
 		};
-		
+
 		@Override
 		public void onFailure(Throwable e, JSONObject errorResponse) {
 			// TODO Auto-generated method stub
@@ -198,53 +248,81 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		public void onStart() {
 			// TODO Auto-generated method stub
 			super.onStart();
+			isLoading = true;
+			mSwipeRefreshLayout.setRefreshing(true);
 		}
 
 		@Override
 		public void onFinish() {
 			// TODO Auto-generated method stub
 			super.onFinish();
+			isLoading = false;
+			mSwipeRefreshLayout.setRefreshing(false);
 		}
-		
+
 	};
-	
-	
-	private void paresJson(String content){
+
+	private void paresJson(String content) {
 		try {
-			
-			JSONObject object=new JSONObject(content);
-			
+			iceBoxFoodBeansList.clear();
+			vegetablesList.clear();
+			fruitsList.clear();
+			meatList.clear();
+			staplefoodsList.clear();
+			otherList.clear();
+			JSONObject object = new JSONObject(content);
+
 			if (JsonUtils.isSuccess(object)) {
-				JSONArray foods=object.getJSONArray("foods");
-				int length=foods.length();
+				JSONArray foods = object.getJSONArray("foods");
+				int length = foods.length();
 				for (int i = 0; i < length; i++) {
-					IceBoxFoodBean iceBoxFoodBean=JsonUtils.getIceBoxFoodBean(foods.getJSONObject(i));
-					if (iceBoxFoodBean.getType().equals("1")) {
-						fruitsList.add(iceBoxFoodBean);
+					IceBoxFoodBean iceBoxFoodBean = JsonUtils
+							.getIceBoxFoodBean(foods.getJSONObject(i));
+					switch (iceBoxFoodBean.getType()) {
+					case 1:
 						vegetablesList.add(iceBoxFoodBean);
+						break;
+
+					case 2:
+						fruitsList.add(iceBoxFoodBean);
+						break;
+
+					case 3:
 						meatList.add(iceBoxFoodBean);
+						break;
+
+					case 4:
 						staplefoodsList.add(iceBoxFoodBean);
+						break;
+
+					case 5:
 						otherList.add(iceBoxFoodBean);
-						
+						break;
+
+					default:
+						break;
 					}
+
 				}
-				
+
 				iceBoxFoodBeansList.add(fruitsList);
 				iceBoxFoodBeansList.add(vegetablesList);
 				iceBoxFoodBeansList.add(meatList);
 				iceBoxFoodBeansList.add(staplefoodsList);
 				iceBoxFoodBeansList.add(otherList);
 				iceBoxMainAdapter.notifyDataSetChanged();
-				json=content;
-			}else {
-				Toast.makeText(context, R.string.nodata, Toast.LENGTH_LONG).show();
+				json = content;
+			} else {
+				Toast.makeText(context, R.string.nodata, Toast.LENGTH_LONG)
+						.show();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			Toast.makeText(context, R.string.parseerror, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.parseerror, Toast.LENGTH_LONG)
+					.show();
 		}
 	}
-	
+
 	/**
 	 * 保存此次数据
 	 * 
@@ -268,6 +346,129 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		String result = getSharedPreferences(TAG, Context.MODE_PRIVATE)
 				.getString(ConstantS.RESULT, "");
 		return result;
+	}
+
+	private void showAddFood() {
+		startActivity(new Intent(context, IceBoxAddFood.class));
+	}
+
+	private void showHistory() {
+		startActivity(new Intent(context, IceBoxHistory.class));
+	}
+
+	public class DelFood4Ice extends AsyncHttpResponseHandler {
+		int position;
+		int type;
+
+		public DelFood4Ice(int position, int type) {
+			this.position = position;
+			this.type = type;
+		}
+
+		@Override
+		public void onStart() {
+			// TODO Auto-generated method stub
+			super.onStart();
+		}
+
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			super.onFinish();
+		}
+
+		@Override
+		public void onSuccess(String content) {
+			// TODO Auto-generated method stub
+			super.onSuccess(content);
+			if (JsonUtils.isSuccess(content)) {
+				delFood4Ice(position, type);
+			}
+		}
+
+		@Override
+		public void onFailure(Throwable error, String content) {
+			// TODO Auto-generated method stub
+			super.onFailure(error, content);
+		}
+
+	}
+
+	private void delFood4Ice(int position, int type) {
+		switch (type) {
+		case 1:
+			type = 1;
+			break;
+
+		case 2:
+			type = 0;
+			break;
+
+		case 3:
+			type = 2;
+			break;
+
+		case 4:
+			type = 3;
+			break;
+
+		case 5:
+			type = 4;
+			break;
+
+		default:
+			break;
+		}
+		iceBoxFoodBeansList.get(type).remove(position);
+		iceBoxMainAdapter.notifyDataSetChanged();
+	}
+
+	private int getTypePostion(int type) {
+		switch (type) {
+		case 1:
+			type = 1;
+			break;
+
+		case 2:
+			type = 0;
+			break;
+
+		case 3:
+			type = 2;
+			break;
+
+		case 4:
+			type = 3;
+			break;
+
+		case 5:
+			type = 4;
+			break;
+
+		default:
+			break;
+		}
+
+		return type;
+
+	}
+
+	private void showDelete() {
+		if (isDeletevisible) {
+			isDeletevisible = false;
+		} else {
+			isDeletevisible = true;
+		}
+
+		iceBoxMainAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void delFood(int postion, int type) {
+		// TODO Auto-generated method stub
+		HealthHttpClient.delFood4Icebox(
+				iceBoxFoodBeansList.get(getTypePostion(type)).get(postion)
+						.getId(), new DelFood4Ice(postion, type));
 	}
 
 }

@@ -10,20 +10,22 @@ import android.widget.LinearLayout;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.HealthRecoderBean;
 import com.wyy.myhealth.bean.NearFoodBean;
+import com.wyy.myhealth.config.Config;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.baseactivity.BaseNutritionActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
+import com.wyy.myhealth.ui.scan.utils.DialogShowFeture;
 
 public class ScanResultActivity extends BaseNutritionActivity implements
 		ActivityInterface {
 
 	private FrameLayout successlay;
-	
+
 	private LinearLayout failurelay;
-	
+
 	private NearFoodBean samefood;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -50,20 +52,23 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 	@Override
 	public void initView() {
 		// TODO Auto-generated method stub
-		context=this;
+		context = this;
 		initScoreV();
-		
+
 		setIshasScale(true);
-		successlay=(FrameLayout)findViewById(R.id.recored_lay);
-		failurelay=(LinearLayout)findViewById(R.id.scan_failure_lay);
-		
+		successlay = (FrameLayout) findViewById(R.id.recored_lay);
+		failurelay = (LinearLayout) findViewById(R.id.scan_failure_lay);
+
 		findViewById(R.id.open_ligth).setOnClickListener(listener);
 		findViewById(R.id.take_pic).setOnClickListener(listener);
 		findViewById(R.id.take_bottom_lay).setOnClickListener(listener);
 		findViewById(R.id.loop_yuyin).setOnClickListener(listener);
 		findViewById(R.id.jilufood).setOnClickListener(listener);
-		
+
 		initData();
+
+		DialogShowFeture.showFetureDialog(context, Config.log + "\n"
+				+ Config.feture_Value + "\n" + Config.placeValue);
 
 	}
 
@@ -72,9 +77,9 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 		// TODO Auto-generated method stub
 		HealthRecoderBean healthRecoderBean = (HealthRecoderBean) getIntent()
 				.getSerializableExtra("foods");
-		
-		samefood=(NearFoodBean) getIntent().getSerializableExtra("samefood");
-		
+
+		samefood = (NearFoodBean) getIntent().getSerializableExtra("samefood");
+
 		if (null != healthRecoderBean
 				&& MainService.getNextHealthRecoderBeans() != null) {
 
@@ -91,17 +96,20 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 				getsugarimgs(sugarsocre);
 				energysocre = Integer.valueOf(healthRecoderBean.getEnergy());
 				getenergysimgs(energysocre);
-				
+
 			} catch (Exception e) {
 				// TODO: handle exception
 
 			}
 
-			HealthRecoderBean healthRecoderBeann = MainService
-					.getNextHealthRecoderBeans().get(
-							MainService.getNextHealthRecoderBeans().size() - 1);
+			
 
 			try {
+				
+				HealthRecoderBean healthRecoderBeann = MainService
+						.getNextHealthRecoderBeans().get(
+								MainService.getNextHealthRecoderBeans().size() - 1);
+				
 				getnextvitaminsimgs(Integer.valueOf(healthRecoderBeann
 						.getVitamin()));
 				getnextproteinsimgs(Integer.valueOf(healthRecoderBeann
@@ -116,7 +124,7 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 				// TODO: handle exception
 			}
 
-		}else {
+		} else {
 			successlay.setVisibility(View.INVISIBLE);
 			failurelay.setVisibility(View.VISIBLE);
 		}
@@ -139,27 +147,25 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 			case R.id.jilufood:
 				showShareFood();
 				break;
-				
+
 			default:
 				finish();
 				break;
 			}
-			
+
 		}
 	};
 
-	
-	private void showVoiceSearch(){
+	private void showVoiceSearch() {
 		startActivity(new Intent(context, VoiceSearceActivity.class));
 		finish();
 	}
-	
-	
-	private  void showShareFood(){
-		Intent intent=new Intent();
+
+	private void showShareFood() {
+		Intent intent = new Intent();
 		intent.putExtra("samefood", samefood);
 		intent.setClass(context, ShareFoodActivity.class);
 		startActivity(intent);
 	}
-	
+
 }

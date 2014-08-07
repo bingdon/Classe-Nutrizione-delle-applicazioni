@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.Foods;
 import com.wyy.myhealth.bean.PersonalInfo;
@@ -32,10 +33,12 @@ public class WyyApplication extends FrontiaApplication {
 	private static PersonalInfo info;
 	private static Foods foods;
 	private static List<ImageInfo> headerImaList = new ArrayList<ImageInfo>();
-	
+
 	public static ImageLoader imageLoader = ImageLoader.getInstance();
 
 	public static DisplayImageOptions options;
+
+	public static DisplayImageOptions optionscir;
 
 	public static List<ImageInfo> getHeaderImaList() {
 		return headerImaList;
@@ -94,15 +97,20 @@ public class WyyApplication extends FrontiaApplication {
 				.build();
 		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config);
-		
-		
-		
+
 		WyyApplication.options = new DisplayImageOptions.Builder()
-		.showImageOnLoading(R.drawable.pic_loading_)
-		.showImageForEmptyUri(R.drawable.pic_empty)
-		.showImageOnFail(R.drawable.pic_failure).cacheInMemory(true)
-		.cacheOnDisc(true).considerExifParams(true).build();
-		
+				.showImageOnLoading(R.drawable.pic_loading_)
+				.showImageForEmptyUri(R.drawable.pic_empty)
+				.showImageOnFail(R.drawable.pic_failure).cacheInMemory(true)
+				.cacheOnDisc(true).considerExifParams(true).build();
+
+		optionscir = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.pic_loading_)
+				.showImageForEmptyUri(R.drawable.pic_empty)
+				.showImageOnFail(R.drawable.pic_failure).cacheInMemory(true)
+				.displayer(new RoundedBitmapDisplayer(60))
+				.cacheOnDisc(true).considerExifParams(true).build();
+
 	}
 
 	/**

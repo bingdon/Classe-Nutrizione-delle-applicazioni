@@ -15,6 +15,7 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.HealthRecoderBean;
 import com.wyy.myhealth.bean.NearFoodBean;
+import com.wyy.myhealth.config.Config;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.utils.FileUtils;
 import com.wyy.myhealth.file.utils.SdUtils;
@@ -607,12 +608,10 @@ public class ScanFragment extends Fragment {
 
 	private void parseJson(String content) {
 		JSONObject mJsonObject = null;
-		String result = null;
 
 		if (content != null) {
 			try {
 				mJsonObject = new JSONObject(content);
-				result = mJsonObject.getString("result");
 				
 				try {
 					getFoodTag(mJsonObject.getJSONObject("samefood"));
@@ -621,7 +620,9 @@ public class ScanFragment extends Fragment {
 					e.printStackTrace();
 				}
 				
-				if (result.equals("1")) {
+				Config.log=mJsonObject.getString("log");
+				
+				if (JsonUtils.isSuccess(mJsonObject)) {
 					JSONArray comments = mJsonObject.getJSONArray("comments");
 					if (comments != null && comments.length() > 0) {
 						BingLog.i(TAG, "得到食物:"+comments.getJSONObject(0));
@@ -635,7 +636,6 @@ public class ScanFragment extends Fragment {
 				} else {
 					logindialogfire();
 				}
-				BingLog.i(TAG, "" + result);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -696,6 +696,7 @@ public class ScanFragment extends Fragment {
 		iscomple = false;
 		int feturenum = secFood();
 		BingLog.i(TAG, "计算:"+feturenum);
+		Config.feture_Value="特征值:"+feturenum;
 		if (feturenum > 15 && feturenum < 80) {
 			iscomple = true;
 			return true;
@@ -711,6 +712,7 @@ public class ScanFragment extends Fragment {
 		k=BitmapRatioUtils.ratio(PhoneUtlis
 				.getSmall40ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
 		BingLog.i(TAG, "阈值计算:"+k);
+		Config.placeValue="阈值:"+k;
 		isplace=true;
 		if (k>0.4) {
 			return true;

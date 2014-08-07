@@ -10,6 +10,7 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.service.MainService;
+import com.wyy.myhealth.utils.BingLog;
 
 import android.content.Context;
 import android.util.Log;
@@ -154,13 +155,21 @@ public class YaoyingyangAdapter extends BaseAdapter {
 
 		holder.taste.setImageResource(ConstantS.LEVEL_POINT[taste]);
 
+		final boolean isCollect=list.get(position).isIscollect();
+		
+		if (list.get(position).isIscollect()) {
+			holder.shoucang.setImageResource(R.drawable.shoucang_pressed);
+		}else {
+			holder.shoucang.setImageResource(R.drawable.shoucang_sec);
+		}
+		
 		holder.shoucang.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (listener != null) {
-					listener.onLocationClick(adapterPostion);
+					listener.onCollectClick(adapterPostion,isCollect);
 				}
 
 			}
@@ -203,6 +212,8 @@ public class YaoyingyangAdapter extends BaseAdapter {
 
 	public interface LocationListener {
 		public void onLocationClick(int postion);
+		
+		public void onCollectClick(int postion,boolean isCollect);
 	}
 
 }

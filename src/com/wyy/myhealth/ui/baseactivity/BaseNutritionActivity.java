@@ -230,8 +230,10 @@ public class BaseNutritionActivity extends BaseActivity {
 	
 	
 	private void startAnimation(ImageView v){
+		v.setVisibility(View.VISIBLE);
 		Animation mAnimation=AnimationUtils.loadAnimation(context, R.anim.nutritionscale);
 		v.startAnimation(mAnimation);
+		
 	}
 	
 

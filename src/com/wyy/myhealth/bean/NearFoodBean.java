@@ -11,6 +11,16 @@ public class NearFoodBean extends Foods{
 
 	private String visitcount;
 	
+	private boolean iscollect;
+	
+	public boolean isIscollect() {
+		return iscollect;
+	}
+
+	public void setIscollect(boolean iscollect) {
+		this.iscollect = iscollect;
+	}
+
 	public String getVisitcount() {
 		return visitcount;
 	}

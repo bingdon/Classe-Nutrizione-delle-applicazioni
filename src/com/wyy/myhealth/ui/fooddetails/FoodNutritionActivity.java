@@ -74,6 +74,10 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 
 			}
 
+			if (MainService.getNextHealthRecoderBeans().size()==0) {
+				return;
+			}
+			
 			HealthRecoderBean healthRecoderBean = MainService
 					.getNextHealthRecoderBeans().get(
 							MainService.getNextHealthRecoderBeans().size() - 1);

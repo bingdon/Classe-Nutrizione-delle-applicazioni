@@ -79,6 +79,14 @@ public class VoiceSearceActivity extends BaseActivity implements
 		setContentView(R.layout.activity_voice_search);
 		initView();
 	}
+	
+	
+	@Override
+	protected void onInitActionBar() {
+		// TODO Auto-generated method stub
+		super.onInitActionBar();
+		getSupportActionBar().setTitle(R.string.voice_search);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

@@ -23,56 +23,14 @@
         android:layout_height="30dp"
         android:layout_gravity="right"
         android:gravity="center"
-        android:text="一天"
+        android:text=""
         android:textSize="12sp" />
 
-    <FrameLayout
+    <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="15dp" >
-
-         <ImageView
-        android:id="@+id/ice_box_food_lable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
-        android:src="@drawable/ic_ice_box_fruit" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-        <TextView
-        android:id="@+id/foodname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/line1" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/hps_share_list_3" />
-
-        <ImageView
-            android:id="@+id/ice_box_energy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/heat1" />
-    </LinearLayout>
-    </LinearLayout>
-    </FrameLayout>
+        android:layout_marginBottom="15dp"
+        layout="@layout/ice_box_food_layer_lable" />
 
 </FrameLayout>

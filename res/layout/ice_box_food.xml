@@ -7,11 +7,12 @@
         android:id="@+id/food_case"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_food_show" />
+        android:background="@drawable/ic_food_show"
+        android:scaleType="centerCrop" />
 
     <include
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/ice_box_food_layer" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/ice_box_food_layer_merge" />
 
 </FrameLayout>

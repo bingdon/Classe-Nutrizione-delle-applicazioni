@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,13 +13,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.wyy.myhealth.R;
+import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.Comment;
+import com.wyy.myhealth.http.AsyncHttpResponseHandler;
+import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.ui.absfragment.utils.TimeUtils;
 import com.wyy.myhealth.ui.baseactivity.BaseListActivity;
 import com.wyy.myhealth.ui.fooddetails.FoodCommentAdapter.AdapterListener;
+import com.wyy.myhealth.utils.BingLog;
 
 public class FoodCommentInfoActivity extends BaseListActivity implements
 		AdapterListener {
+
+	private static final String TAG = FoodCommentInfoActivity.class
+			.getSimpleName();
 
 	private List<Comment> comments = new ArrayList<>();
 
@@ -32,6 +38,10 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 	// 评论按钮
 	private Button sendButton;
 
+	private int position = 0;
+
+	private String content = "";
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onInitView() {
@@ -40,12 +50,11 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 		sendView = findViewById(R.id.send_v);
 		initSendView(sendView);
 		try {
-			comments = (List<Comment>) getIntent().getSerializableExtra(
+			List<Comment > mcomments = (List<Comment>) getIntent().getSerializableExtra(
 					"comment");
-			TimeUtils.getCOmmentTime(comments);
-			adapter = new FoodCommentAdapter(comments, context);
-			baseListV.setAdapter(adapter);
-			adapter.setListener(this);
+			TimeUtils.getCOmmentTime(mcomments);
+			arrangeComment(mcomments);
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -63,6 +72,7 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 	@Override
 	public void comment(int position) {
 		// TODO Auto-generated method stub
+		this.position = position;
 		if (!sendView.isShown()) {
 			sendView.setVisibility(View.VISIBLE);
 		}
@@ -82,7 +92,7 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 			switch (v.getId()) {
 
 			case R.id.send_msg_btn:
-
+				replyComment();
 				break;
 
 			default:
@@ -91,7 +101,6 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 		}
 	};
 
-	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -102,10 +111,105 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 				sendView.setVisibility(View.GONE);
 				return true;
 			}
-		
+
 		}
 
 		return super.onKeyDown(keyCode, event);
 	}
+
+	private void replyComment() {
+		sendEditText.setError(null);
+		content = sendEditText.getText().toString();
+		if (TextUtils.isEmpty(content)) {
+			sendEditText.setError(getString(R.string.nullcontentnotice));
+			sendEditText.requestFocus();
+			return;
+		}
+
+		HealthHttpClient.postComment(WyyApplication.getInfo().getId(), comments
+				.get(position).getId(), content, comments.get(position)
+				.getFoodsid(), handler);
+
+	}
+
+	private AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+
+		@Override
+		public void onStart() {
+			// TODO Auto-generated method stub
+			super.onStart();
+			sendButton.setEnabled(false);
+			sendButton.setBackgroundColor(getResources().getColor(
+					R.color.home_txt));
+		}
+
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			super.onFinish();
+			sendButton.setEnabled(true);
+			sendButton.setText(R.string.send);
+			sendButton.setBackgroundColor(getResources().getColor(
+					R.color.transparent));
+		}
+
+		@Override
+		public void onSuccess(String content) {
+			// TODO Auto-generated method stub
+			super.onSuccess(content);
+			BingLog.i(TAG, "评论:" + content);
+			Toast.makeText(context, R.string.comment_success_,
+					Toast.LENGTH_LONG).show();
+			sendEditText.setText("");
+			sendView.setVisibility(View.GONE);
+		}
+
+		@Override
+		public void onFailure(Throwable error, String content) {
+			// TODO Auto-generated method stub
+			super.onFailure(error, content);
+			Toast.makeText(context, R.string.comment_faliure, Toast.LENGTH_LONG)
+					.show();
+		}
+
+	};
 	
+	
+	private synchronized void arrangeComment(List<Comment> list){
+		int length=list.size();
+		for (int i = 0; i < length; i++) {
+			Comment comment=list.get(i);
+			BingLog.i(TAG, "评论ID:"+comment.getCommentid());
+			if (comment.getCommentid()==-1) {
+				BingLog.i(TAG, "增加ID:"+comment.getId());
+				comments.add(comment);
+			}
+		}
+		
+		int clength=comments.size();
+		for (int k = 0; k <length; k++) {
+			Comment comment=list.get(k);
+			BingLog.i(TAG, "评论:"+"i:"+k);
+			for (int j = 0; j < clength; j++) {
+				BingLog.i(TAG, "评论:"+"i:"+k+"j:"+j);
+				if (comments.get(j).getId().equals(""+comment.getCommentid())) {
+					comments.get(j).comment.add(comment);
+					BingLog.i(TAG, "评论:"+comment);
+				}
+				
+				BingLog.i(TAG, "评论:"+"i:"+k+"j:"+j);
+				
+			}
+		}
+		
+		BingLog.i(TAG, "评论数量:"+comments.size());
+		
+		adapter = new FoodCommentAdapter(comments, context);
+		baseListV.setAdapter(adapter);
+		adapter.setListener(this);
+		
+		
+	}
+	
+
 }

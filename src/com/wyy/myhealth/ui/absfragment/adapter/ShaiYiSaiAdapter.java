@@ -8,11 +8,13 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.absfragment.utils.TextViewUtils;
+import com.wyy.myhealth.utils.BingLog;
 
 import android.content.Context;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,12 +46,14 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 	private View popView;
 	private ImageView collectImageView;
 	private ImageView commentImageView;
-	
-	
+	int[] location = new int[2];
+
 	public ImageLoader getImageLoader() {
 		return imageLoader;
 	}
 
+	private int realPostion=0;
+	
 	private Context context;
 	private static int[] levels = { R.drawable.shai_star1,
 			R.drawable.shai_star2, R.drawable.shai_star3,
@@ -69,16 +73,17 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 				.cacheOnDisc(true).considerExifParams(true)
 				// .displayer(new RoundedBitmapDisplayer(20))
 				.build();
-		
-		popView=inflater.inflate(R.layout.shai_menu, null);
-		commentImageView=(ImageView)popView.findViewById(R.id.shai_pinglun);
-		collectImageView=(ImageView)popView.findViewById(R.id.shai_shoucang);
-		popupWindow=new PopupWindow(popView, ActionBar.LayoutParams.WRAP_CONTENT,
+
+		popView = inflater.inflate(R.layout.shai_menu, null);
+		commentImageView = (ImageView) popView.findViewById(R.id.shai_pinglun);
+		collectImageView = (ImageView) popView.findViewById(R.id.shai_shoucang);
+		popupWindow = new PopupWindow(popView,
+				ActionBar.LayoutParams.WRAP_CONTENT,
 				ActionBar.LayoutParams.WRAP_CONTENT);
 		popupWindow.setFocusable(false);
 		commentImageView.setFocusable(false);
 		collectImageView.setFocusable(false);
-		
+
 	}
 
 	public void setOnClickListener(ShaiItemOnclickListener listener) {
@@ -108,12 +113,11 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		final int newposition = position;
-		
-		
+
 		ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.shai_ada_, null);
+			convertView = inflater.inflate(R.layout.shai_ada_,parent, false);
 			holder.userheadImageView = (ImageView) convertView
 					.findViewById(R.id.shai_head_img);
 			holder.usernameTextView = (TextView) convertView
@@ -130,25 +134,25 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 					.findViewById(R.id.shai_bottom_txt);
 			holder.shai_level_imgImageView = (ImageView) convertView
 					.findViewById(R.id.shai_start_img);
-//			holder.shoucangImageView = (ImageView) convertView
-//					.findViewById(R.id.shai_shoucang_img);
-//			holder.shoucangcounTextView = (TextView) convertView
-//					.findViewById(R.id.shai_shoucang_count_txt);
-//			holder.zanImageView = (ImageView) convertView
-//					.findViewById(R.id.shai_zan_img);
-//			holder.zanTextView = (TextView) convertView
-//					.findViewById(R.id.shai_zan_count_txt);
+			// holder.shoucangImageView = (ImageView) convertView
+			// .findViewById(R.id.shai_shoucang_img);
+			// holder.shoucangcounTextView = (TextView) convertView
+			// .findViewById(R.id.shai_shoucang_count_txt);
+			// holder.zanImageView = (ImageView) convertView
+			// .findViewById(R.id.shai_zan_img);
+			// holder.zanTextView = (TextView) convertView
+			// .findViewById(R.id.shai_zan_count_txt);
 			holder.commenImageView = (ImageButton) convertView
 					.findViewById(R.id.shai_pinglun_img);
-//			holder.commencounTextView = (TextView) convertView
-//					.findViewById(R.id.shai_pinglun_count_txt);
+			// holder.commencounTextView = (TextView) convertView
+			// .findViewById(R.id.shai_pinglun_count_txt);
 			holder.reasonTextView = (TextView) convertView
 					.findViewById(R.id.shai_reason_txt);
 			holder.commeninfoTextView = (TextView) convertView
 					.findViewById(R.id.shai_comment_txt);
 
-//			holder.shai_centerLayout = (LinearLayout) convertView
-//					.findViewById(R.id.shai_center_layout);
+			// holder.shai_centerLayout = (LinearLayout) convertView
+			// .findViewById(R.id.shai_center_layout);
 
 			// gridView
 			holder.picGridView = (GridView) convertView
@@ -195,21 +199,21 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 					.setText("" + list.get(position).get("new_time"));
 		}
 		if (list.get(position).containsKey("commentcount")) {
-//			holder.commencounTextView.setText(""
-//					+ list.get(position).get("commentcount"));
+			// holder.commencounTextView.setText(""
+			// + list.get(position).get("commentcount"));
 		}
 		if (list.get(position).containsKey("collectcount")) {
-//			holder.shoucangcounTextView.setText(""
-//					+ list.get(position).get("collectcount"));
+			// holder.shoucangcounTextView.setText(""
+			// + list.get(position).get("collectcount"));
 		}
 		if (list.get(position).containsKey("laudcount")) {
-//			holder.zanTextView
-//					.setText("" + list.get(position).get("laudcount"));
+			// holder.zanTextView
+			// .setText("" + list.get(position).get("laudcount"));
 		}
 		if (list.get(position).containsKey("tastelevel")) {
 			int index = Integer.valueOf(list.get(position).get("tastelevel")
 					.toString());
-		
+
 			holder.levelTextView.setText("口味:");
 			if (index > 0) {
 				holder.shai_level_imgImageView
@@ -224,7 +228,7 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 			int index = Integer.valueOf(list.get(position).get("moodindex")
 					.toString());
 			holder.levelTextView.setText("指数:");
-			Log.e("字数", "指数个数:"+index);
+			BingLog.e("字数", "指数个数:" + index);
 			if (index > 0) {
 				holder.shai_level_imgImageView.setVisibility(View.VISIBLE);
 				holder.shai_level_imgImageView
@@ -288,15 +292,13 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				if (listener!=null) {
+				if (listener != null) {
 					listener.onPicClick(newposition, position);
 				}
-				
 
 			}
 		});
 
-		
 		holder.commenImageView.setFocusable(false);
 		holder.commenImageView.setFocusableInTouchMode(false);
 		holder.commenImageView.setOnClickListener(new OnClickListener() {
@@ -304,14 +306,29 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (listener!=null) {
+				if (listener != null) {
+					realPostion=newposition;
+					int width = popView.getWidth();
+					if (width == 0) {
+						width = 254;
+					}
+
 					if (popupWindow.isShowing()) {
 						popupWindow.dismiss();
-					}else {
-						popupWindow.showAsDropDown(v, -250, -60);
+						v.getLocationOnScreen(location);
+						BingLog.i(ShaiYiSaiAdapter.class.getSimpleName(), "宽度:"
+								+ popView.getWidth());
+						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+								location[0] - width, location[1]);
+					} else {
+						v.getLocationOnScreen(location);
+						BingLog.i(ShaiYiSaiAdapter.class.getSimpleName(), "宽度:"
+								+ popView.getWidth());
+						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+								location[0] - width, location[1]);
 					}
 				}
-				
+
 			}
 		});
 
@@ -321,66 +338,63 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				popupWindow.dismiss();
-				if (listener!=null) {
+				if (listener != null) {
 					listener.onCollectClick(newposition);
 				}
-				
+
 			}
 		});
 
 		commentImageView.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				popupWindow.dismiss();
-				if (listener!=null) {
-					listener.onCommentClick(newposition);
+				if (listener != null) {
+					listener.onCommentClick(realPostion);
 				}
 			}
 		});
-		
-//		holder.zanImageView.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				if (listener!=null) {
-//					listener.onZanClick(newposition);
-//				}
-//				
-//			}
-//		});
+
+		// holder.zanImageView.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		// if (listener!=null) {
+		// listener.onZanClick(newposition);
+		// }
+		//
+		// }
+		// });
 
 		holder.userheadImageView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (listener!=null) {
+				if (listener != null) {
 					listener.onUserPicClick(newposition);
 				}
-				
+
 			}
 		});
-		
-		
+
 		convertView.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 					return true;
-				}else {
+				} else {
 					return false;
 				}
-			
-				
+
 			}
 		});
-		
 
 		return convertView;
 	}
@@ -394,17 +408,17 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 		public TextView shaitagTextView;
 		public TextView foodtagTextView;
 		public TextView levelTextView;
-//		public ImageView shoucangImageView;
-//		public TextView shoucangcounTextView;
-//		public ImageView zanImageView;
-//		public TextView zanTextView;
+		// public ImageView shoucangImageView;
+		// public TextView shoucangcounTextView;
+		// public ImageView zanImageView;
+		// public TextView zanTextView;
 		public ImageButton commenImageView;
-//		public TextView commencounTextView;
+		// public TextView commencounTextView;
 		public TextView reasonTextView;
 		public TextView commeninfoTextView;
 		public ImageView shai_level_imgImageView;
-//		public LinearLayout shai_centerLayout;
-//		public RelativeLayout shai_bottmo_Layout;
+		// public LinearLayout shai_centerLayout;
+		// public RelativeLayout shai_bottmo_Layout;
 		public GridView picGridView;
 		public GridAdapter gridAdapter;
 

@@ -8,6 +8,7 @@ import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.http.AsyncHttpClient;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.RequestParams;
+import com.wyy.myhealth.utils.BingLog;
 
 /**
  
@@ -19,20 +20,20 @@ public class HealthHttpClient {
 	/**
 	 * 閿熸枻鎷烽敓鐭鎷峰潃
 	 */
-	public static final String BASE_URL = "http://115.28.164.99:7001/S_health/api/";
+	public static final String BASE_URL = URL + "api/";
 
 	public static final String BASE_URL_NO = "http://115.28.164.99:7001/S_health/api";
 
 	/**
 	 * 鍥剧墖鍦板潃
 	 */
-	public static final String IMAGE_URL = "http://115.28.164.99:7001/S_health/upload/";
+	public static final String IMAGE_URL = URL + "upload/";
 
 	/**
 	 * 涓汉涓績
 	 */
 
-	public static final String PERSONAL_URL = "http://115.28.164.99:7001/S_health/api/ucenter/";
+	public static final String PERSONAL_URL = BASE_URL + "ucenter/";
 	/**
 	 * 小图片加载
 	 */
@@ -42,7 +43,15 @@ public class HealthHttpClient {
 	 */
 	public static final String APP_URL = "http://115.28.164.99:7001/S_health/version/";
 
-	public static final String ICE_BOX = BASE_URL + "userIcebox";
+	private static final String ICE_BOX = BASE_URL + "userIcebox";
+
+	private static final String ICE_ADD_FOOD = BASE_URL + "postIcebox";
+
+	private static final String ICE_DEL_FOOD = BASE_URL + "delIcebox";
+
+	private static final String DEL_COLLECT_FOOD = BASE_URL + "delCollect";
+
+	private static final String REPLY_COMMENT = BASE_URL + "postMoodComment";
 
 	private volatile static HealthHttpClient instance = null;
 
@@ -419,6 +428,7 @@ public class HealthHttpClient {
 		params.put("limit", limit);
 		params.put("userid", userid);
 		client.post(BASE_URL + "searchFoods", params, handler);
+		BingLog.i("发送", "bing:" + BASE_URL + "searchFoods" + "?" + params);
 	}
 
 	/**
@@ -811,6 +821,7 @@ public class HealthHttpClient {
 
 	/**
 	 * 获取冰箱内容
+	 * 
 	 * @param userid
 	 * @param first
 	 * @param limit
@@ -823,6 +834,63 @@ public class HealthHttpClient {
 		params.put("first", first);
 		params.put("limit", limit);
 		client.post(ICE_BOX, params, handler);
+	}
+
+	public static void addFood2IceBox(String userid, String name,
+			String numday, String foodpic, String type,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("name", name);
+		params.put("numday", numday);
+		params.put("foodpic", foodpic);
+		params.put("type", type);
+		client.post(ICE_ADD_FOOD, params, handler);
+	}
+
+	public static void changeFood2IceBox(String id, String userid, String name,
+			String numday, String foodpic, String type,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("id", id);
+		params.put("userid", userid);
+		params.put("name", name);
+		params.put("numday", numday);
+		params.put("foodpic", foodpic);
+		params.put("type", type);
+		client.post(ICE_ADD_FOOD, params, handler);
+	}
+
+	public static void delFood4Icebox(String id,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("id", id);
+		client.post(ICE_DEL_FOOD, params, handler);
+	}
+
+	/**
+	 * 删除食物抽藏
+	 * 
+	 * @param userid
+	 * @param foodsid
+	 * @param handler
+	 */
+	public static void delCollect(String userid, String foodsid,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("foodsid", foodsid);
+		client.post(DEL_COLLECT_FOOD, params, handler);
+	}
+
+	public static void postComment(String userid, String commentid,
+			String content, String foodid, AsyncHttpResponseHandler handler) {
+		RequestParams params=new RequestParams();
+		params.put("foodid", foodid);
+		params.put("content", content);
+		params.put("userid", userid);
+		params.put("commentid", commentid);
+		client.post(BASE_URL + "postFoodComment", params, handler);
 	}
 
 }

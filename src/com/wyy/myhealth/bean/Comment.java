@@ -1,6 +1,8 @@
 package com.wyy.myhealth.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Comment implements Serializable{
 	/**
@@ -23,6 +25,26 @@ public class Comment implements Serializable{
 	String sugar;
 	String energy;
 	String createtime;
+	
+	int commentid;
+	
+	public List<Comment> comment=new ArrayList<>();
+	
+	public List<Comment> getComment() {
+		return comment;
+	}
+
+	public void setComment(List<Comment> comment) {
+		this.comment = comment;
+	}
+
+	public int getCommentid() {
+		return commentid;
+	}
+
+	public void setCommentid(int commentid) {
+		this.commentid = commentid;
+	}
 
 	public String getCreatetime() {
 		return createtime;

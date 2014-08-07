@@ -27,14 +27,14 @@ public class FoodCommentAdapter extends BaseAdapter {
 
 	private DisplayImageOptions options;
 
-	private ImageLoader imageLoader ;
-	
+	private ImageLoader imageLoader;
+
 	private AdapterListener adapterListener;
 
 	public FoodCommentAdapter(List<Comment> list, Context context) {
 		this.list = list;
 		inflater = LayoutInflater.from(context);
-		this.imageLoader= ImageLoader.getInstance();
+		this.imageLoader = ImageLoader.getInstance();
 		this.options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.pic_loading_)
 				.showImageForEmptyUri(R.drawable.pic_empty)
@@ -42,11 +42,10 @@ public class FoodCommentAdapter extends BaseAdapter {
 				.cacheOnDisc(true).considerExifParams(true).build();
 	}
 
-	
-	public void setListener(AdapterListener adapterListener){
-		this.adapterListener=adapterListener;
+	public void setListener(AdapterListener adapterListener) {
+		this.adapterListener = adapterListener;
 	}
-	
+
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -68,7 +67,7 @@ public class FoodCommentAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		final int finaPosition=position;
+		final int finaPosition = position;
 		ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
@@ -82,33 +81,51 @@ public class FoodCommentAdapter extends BaseAdapter {
 			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.huifuContent = (TextView) convertView
 					.findViewById(R.id.huifu_comment_txt);
-			holder.comment=(ImageButton)convertView.findViewById(R.id.pinglun_img);
+			holder.comment = (ImageButton) convertView
+					.findViewById(R.id.pinglun_img);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		imageLoader.displayImage(list.get(position).getUserheadimage(), holder.userhead,
-				options);
-		
-		holder.userName.setText(""+list.get(position).getUsername());
-		holder.commenContent.setText(""+list.get(position).getContent());
-		holder.time.setText(""+list.get(position).getCreatetime());
+		imageLoader.displayImage(list.get(position).getUserheadimage(),
+				holder.userhead, options);
 
-		
+		holder.userName.setText("" + list.get(position).getUsername());
+		holder.commenContent.setText("" + list.get(position).getContent());
+		holder.time.setText("" + list.get(position).getCreatetime());
+
 		holder.comment.setFocusable(false);
 		holder.comment.setFocusableInTouchMode(false);
 		holder.comment.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (adapterListener!=null) {
+				if (adapterListener != null) {
 					adapterListener.comment(finaPosition);
 				}
-				
+
 			}
 		});
-		
+
+		List<Comment> comments = list.get(position).getComment();
+		if (comments != null) {
+			String mString = "";
+			for (int i = 0; i < comments.size(); i++) {
+				if (i > 0) {
+					mString = comments.get(i).getUsername() + ":"
+							+ comments.get(i).getContent()+"\n" + mString;
+				} else {
+					mString = comments.get(i).getUsername() + ":"
+							+ comments.get(i).getContent();
+				}
+
+			}
+
+			holder.huifuContent.setText("" + mString);
+
+		}
+
 		return convertView;
 	}
 
@@ -121,9 +138,8 @@ public class FoodCommentAdapter extends BaseAdapter {
 		public ImageButton comment;
 	}
 
-	
-	public interface AdapterListener{
+	public interface AdapterListener {
 		public void comment(int position);
 	}
-	
+
 }

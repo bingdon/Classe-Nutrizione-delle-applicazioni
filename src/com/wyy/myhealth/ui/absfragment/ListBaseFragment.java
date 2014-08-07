@@ -151,7 +151,7 @@ public class ListBaseFragment extends Fragment {
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			Log.i(TAG, content);
+			Log.i(TAG, ""+content);
 
 			if (content.equals(json) && !TextUtils.isEmpty(json)) {
 				if (null!=getActivity()) {

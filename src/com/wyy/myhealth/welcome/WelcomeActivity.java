@@ -36,7 +36,7 @@ public class WelcomeActivity extends Activity {
 	private static final int GO_HOME = 1000;
 	private static final int GO_LOGIN = 1001;
 	// —”≥Ÿ3√Î
-	private static final long SPLASH_DELAY_MILLIS = 3000;
+	private static final long SPLASH_DELAY_MILLIS = 1500;
 	private ProgressBar wait_Onbind;
 	
 	/**

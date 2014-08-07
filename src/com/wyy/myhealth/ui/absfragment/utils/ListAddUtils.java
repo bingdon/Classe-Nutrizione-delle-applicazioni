@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.wyy.myhealth.bean.NearFoodBean;
+import com.wyy.myhealth.utils.BingLog;
 
-import android.util.Log;
 
 
 public class ListAddUtils {
@@ -27,7 +27,7 @@ public class ListAddUtils {
 		for (int i = 0; i < tempshaiList.size(); i++) {
 			for (int j = 0; j < shaiList.size(); j++) {
 				if (maxindex==0) {
-					Log.i(TAG, "不同"+"新时间:"+tempshaiList.get(i).get("time")+":旧时间:"+shaiList.get(j).get("time"));
+					BingLog.i(TAG, "不同"+"新时间:"+tempshaiList.get(i).get("time")+":旧时间:"+shaiList.get(j).get("time"));
 				}
 				
 				if (tempshaiList.get(i).get("time").equals(shaiList.get(j).get("time"))) {
@@ -36,7 +36,7 @@ public class ListAddUtils {
 //					break;
 					i=tempshaiList.size();
 					j=shaiList.size();
-					Log.i(TAG, "不同处:"+maxindex);
+					BingLog.i(TAG, "不同处:"+maxindex);
 				}
 				
 				
@@ -87,7 +87,7 @@ public class ListAddUtils {
 		for (int i = 0; i < tempshaiList.size(); i++) {
 			for (int j = 0; j < shaiList.size(); j++) {
 				if (maxindex==0) {
-					Log.i(TAG, "不同"+"新时间:"+tempshaiList.get(i).getId()+":旧时间:"+shaiList.get(j).getId());
+					BingLog.i(TAG, "不同"+"新时间:"+tempshaiList.get(i).getId()+":旧时间:"+shaiList.get(j).getId());
 				}
 				
 				if (tempshaiList.get(i).getId().equals(shaiList.get(j).getId())) {
@@ -96,7 +96,7 @@ public class ListAddUtils {
 //					break;
 					i=tempshaiList.size();
 					j=shaiList.size();
-					Log.i(TAG, "不同处:"+maxindex);
+					BingLog.i(TAG, "不同处:"+maxindex);
 				}
 				
 				
@@ -120,7 +120,7 @@ public class ListAddUtils {
 			for (int i = 0; i < maxindex; i++) {
 				shaiList.add(tempshaiList.get(i));
 			}
-		}else {
+		}else  {
 			for (int i = maxindex; i < tempshaiList.size()&&locationdex<shaiList.size(); i++) {
 				shaiList.remove(locationdex);
 				shaiList.add(locationdex, tempshaiList.get(i));

@@ -32,7 +32,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -217,20 +216,10 @@ public class PersonCenterFragment extends Fragment implements
 
 			if (WyyApplication.getHeaderImaList().size() > 0) {
 				for (int i = 0; i < WyyApplication.getHeaderImaList().size(); i++) {
-					Log.e(PersonCenterFragment.class.getSimpleName(), "名称:"
-							+ WyyApplication.getHeaderImaList().get(i)
-									.getImaname()
-							+ "头像地址:"
-							+ WyyApplication.getHeaderImaList().get(i)
-									.getImapath());
 					if (WyyApplication.getHeaderImaList().get(i).getImaname()
 							.equals(WyyApplication.getInfo().getUsername())) {
 						headBitmap = BitmapFactory.decodeFile(WyyApplication
 								.getHeaderImaList().get(i).getImapath());
-						Log.e(PersonCenterFragment.class.getSimpleName(),
-								"头像地址:"
-										+ WyyApplication.getHeaderImaList()
-												.get(i).getImapath());
 						userHeadImageView.setImageBitmap(headBitmap);
 						return;
 					}

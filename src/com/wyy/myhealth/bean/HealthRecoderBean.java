@@ -24,6 +24,16 @@ public class HealthRecoderBean implements Serializable{
 	private String sugar;
 	
 	private String createtime;
+	
+	private String log;
+
+	public String getLog() {
+		return log;
+	}
+
+	public void setLog(String log) {
+		this.log = log;
+	}
 
 	public String getMineral() {
 		return mineral;

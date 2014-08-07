@@ -22,6 +22,7 @@ import com.wyy.myhealth.bean.ListDataBead;
 import com.wyy.myhealth.db.utils.ShaiDatebaseUtils;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
+import com.wyy.myhealth.support.collect.CollectUtils;
 import com.wyy.myhealth.ui.absfragment.ListBaseFragment;
 import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter.ShaiItemOnclickListener;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
@@ -29,7 +30,8 @@ import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
 
 public class ShaiyishaiFragment extends ListBaseFragment implements
-		ShaiItemOnclickListener, OnRefreshListener, IXListViewListener, OnItemClickListener {
+		ShaiItemOnclickListener, OnRefreshListener, IXListViewListener,
+		OnItemClickListener {
 
 	// 数据库ID
 	private int _id = 0;
@@ -43,12 +45,10 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	private String shaiFoodsid = "";
 	// 心情ID
 	private String shaimoodsid = "";
-	
-	
+
 	public View getSendView() {
 		return sendView;
 	}
-
 
 	@Override
 	protected void initView(View v) {
@@ -143,6 +143,8 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	@Override
 	public void onCommentClick(int position) {
 		// TODO Auto-generated method stub
+
+		Toast.makeText(getActivity(), "数字z:"+position, Toast.LENGTH_LONG).show();
 		
 		if (thList.get(position).containsKey("foodsid")) {
 			shaiFoodsid = thList.get(position).get("foodsid").toString();
@@ -154,8 +156,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			shaiFoodsid = "";
 
 		}
-		
-		
+
 		sendView.setVisibility(View.VISIBLE);
 	}
 
@@ -168,16 +169,25 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	@Override
 	public void onCollectClick(int position) {
 		// TODO Auto-generated method stub
+		
+		if (thList.get(position).containsKey("foodsid")) {
+			String foodsid = thList.get(position).get("foodsid").toString();
+			CollectUtils.collectFood(foodsid, getActivity());
 
+		} else if (thList.get(position).containsKey("moodsid")) {
+			String moodsid = thList.get(position).get("moodsid").toString();
+			CollectUtils.postMoodCollect(moodsid, getActivity());
+		}
 	}
 
 	@Override
 	public void onPicClick(int listPostino, int picPostion) {
 		// TODO Auto-generated method stub
-		 if (thList.get(listPostino).containsKey("grid_pic")) {
+		if (thList.get(listPostino).containsKey("grid_pic")) {
 			@SuppressWarnings("unchecked")
-			List<String> list=(List<String>) thList.get(listPostino).get("grid_pic");
-			Intent intent=new Intent();
+			List<String> list = (List<String>) thList.get(listPostino).get(
+					"grid_pic");
+			Intent intent = new Intent();
 			intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
 			intent.putExtra("postion", picPostion);
 			intent.setClass(getActivity(), PhotoPagerActivity.class);
@@ -190,8 +200,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		sendEditText = (EditText) v.findViewById(R.id.send_msg_editText);
 		sendButton.setOnClickListener(listener);
 	}
-	
-	
+
 	private OnClickListener listener = new OnClickListener() {
 
 		@Override
@@ -213,7 +222,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			}
 		}
 	};
-	
+
 	/**
 	 * 发送评论
 	 * 
@@ -222,15 +231,15 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	 */
 	private void sendComment(String foodsid) {
 		if (TextUtils.isEmpty(sendEditText.getText().toString())) {
-			Toast.makeText(getActivity(), R.string.nullcontentnotice, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.nullcontentnotice,
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 		HealthHttpClient.doHttpPostComment(foodsid, sendEditText.getText()
 				.toString(), "5", WyyApplication.getInfo().getId(),
 				commentHandler);
 	}
-	
-	
+
 	/**
 	 * 发送评论
 	 * 
@@ -239,14 +248,14 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	 */
 	private void sendMoodComment(String moodsid) {
 		if (TextUtils.isEmpty(sendEditText.getText().toString())) {
-			Toast.makeText(getActivity(), R.string.nullcontentnotice, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.nullcontentnotice,
+					Toast.LENGTH_LONG).show();
 			return;
 		}
-		HealthHttpClient.postMoodComment( WyyApplication.getInfo().getId(),
+		HealthHttpClient.postMoodComment(WyyApplication.getInfo().getId(),
 				moodsid, sendEditText.getText().toString(), commentHandler);
 	}
-	
-	
+
 	private AsyncHttpResponseHandler commentHandler = new AsyncHttpResponseHandler() {
 
 		@Override
@@ -272,23 +281,24 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			Log.i(TAG, "返回:"+content);
-			Toast.makeText(getActivity(), R.string.comment_success_, Toast.LENGTH_LONG).show();
+			Log.i(TAG, "返回:" + content);
+			Toast.makeText(getActivity(), R.string.comment_success_,
+					Toast.LENGTH_LONG).show();
 			sendEditText.setText("");
 			sendView.setVisibility(View.GONE);
-			shaiFoodsid="";
-			shaimoodsid="";
+			shaiFoodsid = "";
+			shaimoodsid = "";
 		}
 
 		@Override
 		public void onFailure(Throwable error, String content) {
 			// TODO Auto-generated method stub
 			super.onFailure(error, content);
-			Toast.makeText(getActivity(), R.string.comment_faliure, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.comment_faliure,
+					Toast.LENGTH_LONG).show();
 		}
 
 	};
-
 
 	@Override
 	public void onRefresh() {
@@ -302,22 +312,20 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		if (!loadflag) {
-			getLoadMore(""+first, limit);
+			getLoadMore("" + first, limit);
 		}
 	}
-
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
 		if (thList.get(position).containsKey("foodsid")) {
-			PreferencesFoodsInfo.setfoodId(getActivity(),
-					thList.get(position).get("foodsid")+"");
-			startActivity(new Intent(getActivity(),
-					FoodDetailsActivity.class));
+			PreferencesFoodsInfo.setfoodId(getActivity(), thList.get(position)
+					.get("foodsid") + "");
+			startActivity(new Intent(getActivity(), FoodDetailsActivity.class));
 		}
-		
+
 	}
-	
+
 }

@@ -34,14 +34,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/jianyi_vitaminsimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
@@ -85,14 +87,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/jianyi_proteinsimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
@@ -134,14 +138,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/jianyi_mineralsimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
@@ -185,14 +191,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/jianyi_fatimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
@@ -236,14 +244,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/jianyi_sugarimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
@@ -287,14 +297,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/jianyi_sao_energyimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/point0" />
+                android:background="@drawable/point0"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView

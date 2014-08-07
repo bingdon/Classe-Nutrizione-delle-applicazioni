@@ -38,7 +38,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 
 public class MainActivity extends ActionBarActivity implements
 		OnQueryTextListener, OnPageChangeListener {

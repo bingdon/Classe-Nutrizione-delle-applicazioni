@@ -5,6 +5,7 @@ import java.util.List;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.IceBoxFoodBean;
 import com.wyy.myhealth.ui.customview.BingGridView;
+import com.wyy.myhealth.ui.icebox.IceBoxChildAdapter.DelPicClickListener;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,6 +20,12 @@ public class IceBoxMainAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 
 	private Context context;
+
+	private DelPicClickListener picClickListener;
+
+	public void setDelpicClickListener(DelPicClickListener picClickListener) {
+		this.picClickListener = picClickListener;
+	}
 
 	public IceBoxMainAdapter(List<List<IceBoxFoodBean>> iceBoxFoodBeansList,
 			Context context) {
@@ -63,6 +70,17 @@ public class IceBoxMainAdapter extends BaseAdapter {
 				context);
 
 		holder.bingGridView.setAdapter(holder.iceBoxChildAdapter);
+		holder.iceBoxChildAdapter.setDelListener(new DelPicClickListener() {
+
+			@Override
+			public void delFood(int postion, int type) {
+				// TODO Auto-generated method stub
+				if (picClickListener != null) {
+					picClickListener.delFood(postion, type);
+				}
+
+			}
+		});
 
 		return convertView;
 	}

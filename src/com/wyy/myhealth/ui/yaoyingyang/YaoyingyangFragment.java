@@ -33,6 +33,7 @@ import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.GeographyLocation;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
+import com.wyy.myhealth.support.collect.CollectUtils;
 import com.wyy.myhealth.ui.absfragment.ListBaseFragYP;
 import com.wyy.myhealth.ui.absfragment.utils.ListAddUtils;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
@@ -93,24 +94,21 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		bingListView.setOnItemClickListener(this);
 	}
 
-	
-	
 	@Override
 	public void onDetach() {
 		// TODO Auto-generated method stub
 		super.onDetach();
-		BingLog.i(TAG, "保存数据:"+lastJson);
 		if (!TextUtils.isEmpty(lastJson)) {
 			saveLie_Current_Result(lastJson);
 		}
-		
+
 		getActivity().unregisterReceiver(searchReceiver);
-		
+
 	}
 
 	private void getNerabyFoods() {
 		lastJson = getLast_Result();
-//		BingLog.i(TAG, "上次数据:"+lastJson);
+		// BingLog.i(TAG, "上次数据:"+lastJson);
 		if (!TextUtils.isEmpty(lastJson)) {
 			parseFoodsReshList(lastJson);
 		}
@@ -196,7 +194,8 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			if (lastJson == content) {
+			BingLog.i(TAG, "附近数据:" + content);
+			if (lastJson.equals(content)) {
 				Toast.makeText(getActivity(), R.string.nomore,
 						Toast.LENGTH_LONG).show();
 			} else {
@@ -345,7 +344,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 						if (Config.DEVELOPER_MODE) {
 							Log.w(TAG, "解析异常");
 						}
-						
+
 					}
 
 				}
@@ -360,8 +359,6 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 				yaoyingyangAdapter.notifyDataSetChanged();
 				lastJson = content;
 
-				
-				
 			} else {
 				Toast.makeText(getActivity(), getString(R.string.parseerror),
 						Toast.LENGTH_LONG).show();
@@ -378,7 +375,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 	public void onRefresh() {
 		// TODO Auto-generated method stub
 		if (!isLoaing) {
-			if (!searchFlag && !TextUtils.isEmpty(key)) {
+			if (!searchFlag && TextUtils.isEmpty(key)) {
 				ReshNerabyFoods();
 			} else {
 				searchReshFoodbyKey(key, "0");
@@ -451,7 +448,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 	 * @param result
 	 */
 	private void saveLie_Current_Result(String result) {
-		BingLog.i(TAG, "保存此次数据:"+result);
+		BingLog.i(TAG, "保存此次数据:" + result);
 		SharedPreferences preferences = getActivity()
 				.getSharedPreferences(
 						YaoyingyangFragment.class.getSimpleName(),
@@ -519,16 +516,35 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 			key = intent.getStringExtra("key");
 			currtuindex = 0;
 			if (TextUtils.isEmpty(key)) {
-				searchFlag=false;
+				searchFlag = false;
 				ReshNerabyFoods();
-			}else {
-				searchFlag=true;
+			} else {
+				searchFlag = true;
 				list.clear();
 				yaoyingyangAdapter.notifyDataSetChanged();
 				searchReshFoodbyKey(key, "" + currtuindex);
 			}
-			
+
 		}
 	};
+
+	@Override
+	public void onCollectClick(int postion, boolean isCollect) {
+		// TODO Auto-generated method stub
+		try {
+
+			if (isCollect) {
+				CollectUtils.delCollectFood(WyyApplication.getInfo().getId(),
+						list.get(postion).getId(), getActivity());
+			} else {
+				CollectUtils.collectFood(list.get(postion).getId(),
+						getActivity());
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
 
 }

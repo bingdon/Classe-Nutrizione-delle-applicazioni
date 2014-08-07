@@ -26,7 +26,15 @@ public class IceBoxFoodBean implements Serializable {
 	
 	private String source;
 	
-	private String type;
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	private int type;
 	
 	private String userid;
 
@@ -92,14 +100,6 @@ public class IceBoxFoodBean implements Serializable {
 
 	public void setSource(String source) {
 		this.source = source;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public String getUserid() {

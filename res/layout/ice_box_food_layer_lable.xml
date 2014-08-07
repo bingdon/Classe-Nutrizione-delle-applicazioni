@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ice_box_lable_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/foodname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="" />
+
+    <ImageView
+        android:id="@+id/ImageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/foodname"
+        android:src="@drawable/line1" />
+
+    <TextView
+        android:id="@+id/enager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ImageView1"
+        android:layout_gravity="center_vertical"
+        android:drawableRight="@drawable/heat1"
+        android:text="@string/hps_share_list_3" />
 
     <ImageView
         android:id="@+id/ice_box_food_lable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
         android:src="@drawable/ic_ice_box_fruit" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-        <TextView
-        android:id="@+id/foodname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/line1" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/hps_share_list_3" />
-
-        <ImageView
-            android:id="@+id/ice_box_energy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/heat1" />
-    </LinearLayout>
-    </LinearLayout>
-
-</FrameLayout>
+</RelativeLayout>

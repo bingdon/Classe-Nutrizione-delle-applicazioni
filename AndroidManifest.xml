@@ -167,6 +167,10 @@
         <activity android:name=".ui.healthbar.MsgListActivity"></activity>
         <activity android:name=".ui.icebox.IceBoxActivity"></activity>
         <activity android:name=".ui.login.MicroCodeLoginActivity"></activity>
+        <activity android:name=".ui.icebox.IceBoxAddFood"></activity>
+        <activity android:name=".ui.icebox.IceFoodGarDayActivity"></activity>
+        <activity android:name=".ui.icebox.FoodTypeActivity"></activity>
+        <activity android:name=".ui.icebox.IceBoxHistory"></activity>
        
     </application>
 

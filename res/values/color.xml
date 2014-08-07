@@ -30,4 +30,11 @@
     <!-- 主题颜色 -->
     <color name="themecolor">#56c841</color>
 
+    <!-- 冰箱主色调 -->
+    <color name="iceline1">#99ce33</color>
+    <color name="iceline2">#33cc33</color>
+    <color name="iceline3">#e47133</color>
+    <color name="iceline4">#e48833</color>
+    <color name="iceline5">#a0a0a0</color>
+
 </resources>
