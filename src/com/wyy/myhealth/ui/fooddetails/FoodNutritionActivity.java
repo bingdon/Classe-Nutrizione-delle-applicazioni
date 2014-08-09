@@ -3,6 +3,8 @@ package com.wyy.myhealth.ui.fooddetails;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.wyy.myhealth.R;
@@ -43,8 +45,17 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 				(ImageView) findViewById(R.id.food_pic),
 				FoodDetailsActivity.imgurl);
 		initScoreV();
-//		initData();
+		// initData();
 		mHandler.sendEmptyMessageDelayed(0, 1000);
+
+		findViewById(R.id.wrapper).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 
 	}
 
@@ -74,10 +85,10 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 
 			}
 
-			if (MainService.getNextHealthRecoderBeans().size()==0) {
+			if (MainService.getNextHealthRecoderBeans().size() == 0) {
 				return;
 			}
-			
+
 			HealthRecoderBean healthRecoderBean = MainService
 					.getNextHealthRecoderBeans().get(
 							MainService.getNextHealthRecoderBeans().size() - 1);
@@ -101,8 +112,8 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 
 	}
 
-	private Handler mHandler=new Handler(new Handler.Callback() {
-		
+	private Handler mHandler = new Handler(new Handler.Callback() {
+
 		@Override
 		public boolean handleMessage(Message msg) {
 			// TODO Auto-generated method stub
@@ -110,5 +121,5 @@ public class FoodNutritionActivity extends BaseNutritionActivity implements
 			return false;
 		}
 	});
-	
+
 }

@@ -10,6 +10,8 @@
     <string name="login">登陆</string>
     <string name="saoyy">扫营养</string>
     <string name="yaoyy">YAO营养</string>
+    <string name="find">发现</string>
+    <string name="me">我的</string>
     <string name="denglu">登录</string>
     <string name="sao">扫描</string>
     <string name="help">帮助</string>
@@ -317,5 +319,8 @@
     <string name="health_expert">健康专家</string>
     <string name="gy_doyen">公益达人</string>
     <string name="health_doyen">健康达人</string>
+    <string name="use_help">使用帮助</string>
+    <string name="use_scan_notice">请对准中式菜品,再点击按钮即可</string>
+      <string name="action_bar_search">搜索</string>
 
 </resources>

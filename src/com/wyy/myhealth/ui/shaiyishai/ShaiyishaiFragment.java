@@ -7,7 +7,6 @@ import java.util.Map;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -29,6 +28,7 @@ import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter.ShaiItemOnclickL
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
+import com.wyy.myhealth.utils.BingLog;
 
 public class ShaiyishaiFragment extends ListBaseFragment implements
 		ShaiItemOnclickListener, OnRefreshListener, IXListViewListener,
@@ -108,13 +108,13 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		long m;
 		if (lastDataBeads.size() == 0) {
 			m = shaiDatebaseUtils.insert(json, postion);
-			Log.i(TAG, "插入:" + m);
+			BingLog.i(TAG, "插入:" + m);
 		} else {
 			m = shaiDatebaseUtils.update(json, postion, 1);
 			if (m == 0) {
 				shaiDatebaseUtils.update(json, postion, _id);
 			}
-			Log.i(TAG, "更新:" + m);
+			BingLog.i(TAG, "更新:" + m);
 		}
 
 		shaiDatebaseUtils.close();
@@ -151,7 +151,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			shaimoodsid = "";
 
 		} else if (thList.get(position).containsKey("moodsid")) {
-			Log.i(TAG, "" + thList.get(position).get("moodsid"));
+			BingLog.i(TAG, "" + thList.get(position).get("moodsid"));
 			shaimoodsid = thList.get(position).get("moodsid").toString();
 			shaiFoodsid = "";
 
@@ -301,7 +301,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			Log.i(TAG, "返回:" + content);
+			BingLog.i(TAG, "返回:" + content);
 			Toast.makeText(getActivity(), R.string.comment_success_,
 					Toast.LENGTH_LONG).show();
 			// sendEditText.setText("");

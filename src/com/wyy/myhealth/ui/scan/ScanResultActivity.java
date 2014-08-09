@@ -2,6 +2,8 @@ package com.wyy.myhealth.ui.scan;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -15,6 +17,7 @@ import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.baseactivity.BaseNutritionActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
+import com.wyy.myhealth.ui.scan.utils.DialogShow;
 import com.wyy.myhealth.ui.scan.utils.DialogShowFeture;
 
 public class ScanResultActivity extends BaseNutritionActivity implements
@@ -40,6 +43,27 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		sendChangeUI();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		getMenuInflater().inflate(R.menu.scan_, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.help:
+			DialogShow.showHelpDialog(context, getString(R.string.sao_help));
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -102,14 +126,12 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 
 			}
 
-			
-
 			try {
-				
+
 				HealthRecoderBean healthRecoderBeann = MainService
-						.getNextHealthRecoderBeans().get(
-								MainService.getNextHealthRecoderBeans().size() - 1);
-				
+						.getNextHealthRecoderBeans()
+						.get(MainService.getNextHealthRecoderBeans().size() - 1);
+
 				getnextvitaminsimgs(Integer.valueOf(healthRecoderBeann
 						.getVitamin()));
 				getnextproteinsimgs(Integer.valueOf(healthRecoderBeann

@@ -11,6 +11,7 @@ import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.discover.DiscoverFragment;
 import com.wyy.myhealth.ui.personcenter.PersonCenterFragment;
 import com.wyy.myhealth.ui.scan.ScanFragment;
+import com.wyy.myhealth.ui.scan.utils.DialogShow;
 import com.wyy.myhealth.ui.setting.SettingActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
 import com.wyy.myhealth.utils.BingLog;
@@ -38,6 +39,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 
 public class MainActivity extends ActionBarActivity implements
 		OnQueryTextListener, OnPageChangeListener {
@@ -67,6 +70,10 @@ public class MainActivity extends ActionBarActivity implements
 
 	private MainService mservice;
 
+	SearchView searchView;
+
+	ImageView help;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,19 +101,23 @@ public class MainActivity extends ActionBarActivity implements
 		initService();
 
 		initFilter();
-		
+
 		finshLogin();
 
 	}
 
 	private void initActionBar() {
-		SearchView searchView = new SearchView(this);
-		getSupportActionBar().setCustomView(searchView,
+		View actionView = getLayoutInflater().inflate(R.layout.main_menu_v,
+				null);
+		searchView = (SearchView) actionView.findViewById(R.id.search_view);
+		help = (ImageView) actionView.findViewById(R.id.help);
+		getSupportActionBar().setCustomView(actionView,
 				new ActionBar.LayoutParams(Gravity.RIGHT));
 		getSupportActionBar().setDisplayShowCustomEnabled(true);
 		getSupportActionBar().setBackgroundDrawable(
 				getResources().getDrawable(R.drawable.actionbar_g_bg));
 		searchView.setOnQueryTextListener(this);
+		help.setOnClickListener(listener);
 	}
 
 	@Override
@@ -161,7 +172,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (id == R.id.action_setting) {
 			showSetting();
 			return true;
-		}else if (id==R.id.exit) {
+		} else if (id == R.id.exit) {
 			exitMain();
 			return true;
 		}
@@ -170,7 +181,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	public class MyPagerAdapter extends FragmentPagerAdapter {
 
-		private final String[] TITLES = { "扫营养", "yao营养", "发现", "我的" };
+		private final String[] TITLES = { getString(R.string.saoyy),
+				getString(R.string.yaoyy), getString(R.string.find),
+				getString(R.string.me) };
 
 		public MyPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -298,6 +311,14 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageSelected(int arg0) {
 		// TODO Auto-generated method stub
+		curpostion = arg0;
+		if (curpostion == 0) {
+			searchView.setVisibility(View.GONE);
+			help.setVisibility(View.VISIBLE);
+		} else {
+			searchView.setVisibility(View.VISIBLE);
+			help.setVisibility(View.GONE);
+		}
 		if (arg0 == 0) {
 			sendPageIndex(arg0);
 		}
@@ -371,30 +392,45 @@ public class MainActivity extends ActionBarActivity implements
 		startActivity(new Intent(MainActivity.this, SettingActivity.class));
 	}
 
-	private void finshLogin(){
+	private void finshLogin() {
 		sendBroadcast(new Intent(ConstantS.ACTION_LOGIN_FINISH));
 	}
-	
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK
 				&& event.getAction() == KeyEvent.ACTION_DOWN) {
-			
+
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_MAIN);
-			intent.addCategory(Intent.CATEGORY_HOME);           
+			intent.addCategory(Intent.CATEGORY_HOME);
 			startActivity(intent);
 			return true;
 		}
 
 		return super.onKeyDown(keyCode, event);
 	}
-	
-	
-	private void exitMain(){
+
+	private void exitMain() {
 		finish();
-//		System.exit(0);
+		// System.exit(0);
 	}
+
+	private OnClickListener listener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+			case R.id.help:
+				DialogShow.showHelpDialog(MainActivity.this, getString(R.string.sao_help));
+				break;
+
+			default:
+				break;
+			}
+		}
+	};
+
 }

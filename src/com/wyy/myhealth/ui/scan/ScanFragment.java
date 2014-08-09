@@ -811,7 +811,6 @@ public class ScanFragment extends Fragment {
 				parameters = mCamera.getParameters();
 				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);// 关闭闪光灯
 				mCamera.setParameters(parameters);
-				openlight.setImageResource(R.drawable.light_close);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -820,7 +819,6 @@ public class ScanFragment extends Fragment {
 				parameters = mCamera.getParameters();
 				parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);// 打开闪光灯
 				mCamera.setParameters(parameters);
-				openlight.setImageResource(R.drawable.light_open);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}

@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -44,11 +46,20 @@ public class ScanView extends View {
 	private static final int LINE_HEIGHT = 100;
 
 	private Rect dst;
-	
-	private boolean isScroll=false;
-	
-	
-	
+
+	private boolean isScroll = false;
+	/**
+	 * 手机的屏幕密度
+	 */
+	private static float density;
+	/**
+	 * 字体大小
+	 */
+	private static final int TEXT_SIZE = 16;
+	/**
+	 * 字体距离扫描框下面的距离
+	 */
+	private static final int TEXT_PADDING_TOP = 30;
 
 	public boolean isScroll() {
 		return isScroll;
@@ -68,6 +79,7 @@ public class ScanView extends View {
 		resultColor = resources.getColor(R.color.result_view);
 		frameColor = resources.getColor(R.color.viewfinder_frame);
 		resultPointColor = resources.getColor(R.color.possible_result_points);
+		density = context.getResources().getDisplayMetrics().density;
 	}
 
 	@Override
@@ -86,7 +98,7 @@ public class ScanView extends View {
 			if (slideTop == 0) {
 				slideBottom = bottom - LINE_HEIGHT;
 				slideTop = top;
-				
+
 			}
 
 			paint.setColor(maskColor);
@@ -94,12 +106,19 @@ public class ScanView extends View {
 			canvas.drawRect(0, top, left, height, paint);
 			canvas.drawRect(right, top, width, height, paint);
 			canvas.drawRect(left, bottom, right, height, paint);
-			
+
+			paint.setTextAlign(Align.CENTER);
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(TEXT_SIZE * density);
+			paint.setAlpha(0x40);
+			canvas.drawText(getResources().getString(R.string.use_scan_notice),
+					width / 2, bottom + TEXT_PADDING_TOP * density, paint);
+
 			slideTop += SPEEN_DISTANCE;
 			if (slideTop >= slideBottom) {
 				slideTop = top;
 			}
-			if (drawBitmap != null&&isScroll) {
+			if (drawBitmap != null && isScroll) {
 				dst = new Rect(left, slideTop, right, slideTop + LINE_HEIGHT);
 				// canvas.drawBitmap(drawBitmap, left, slideTop, paint);
 				canvas.drawBitmap(drawBitmap, null, dst, paint);

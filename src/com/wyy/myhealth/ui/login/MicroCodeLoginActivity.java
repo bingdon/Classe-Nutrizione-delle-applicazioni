@@ -90,7 +90,7 @@ public class MicroCodeLoginActivity extends BaseActivity implements
 			if (WyyApplication.getHeaderImaList().size() > 0) {
 				for (int i = 0; i < WyyApplication.getHeaderImaList().size(); i++) {
 					if (WyyApplication.getHeaderImaList().get(i).getImaname()
-							.equals(WyyApplication.getInfo().getUsername())) {
+							.equals(info.getUsername())) {
 						headBitmap = BitmapFactory.decodeFile(WyyApplication
 								.getHeaderImaList().get(i).getImapath());
 						userHeadImageView.setImageBitmap(headBitmap);

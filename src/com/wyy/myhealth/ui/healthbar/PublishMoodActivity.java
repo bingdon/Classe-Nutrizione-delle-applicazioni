@@ -33,9 +33,9 @@ import com.wyy.myhealth.ui.shaiyishai.PublishAdapter;
 import com.wyy.myhealth.ui.shaiyishai.PublishAdapter.PicClickListener;
 import com.wyy.myhealth.utils.NoticeUtils;
 
-public class PublishMoodActivity extends SubmitActivity implements PicClickListener {
+public class PublishMoodActivity extends SubmitActivity implements
+		PicClickListener {
 
-	
 	private static final String TAG = PublishMoodActivity.class.getSimpleName();
 	private GridView publishGridView;
 	private PublishAdapter publishAdapter;
@@ -45,21 +45,20 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 	private RatingBar moodRatingBar;
 	private String moodIndex = "";
 
-	
 	@Override
 	protected void submitMsg() {
 		// TODO Auto-generated method stub
 		moodEditText.setError(null);
 		if (!TextUtils.isEmpty(moodEditText.getText().toString())) {
-			HealthHttpClient.doHttpPostMood(WyyApplication.getInfo()
-					.getId(), moodEditText.getText().toString(), moodIndex, postMoodHandler);
-		}else {
+			HealthHttpClient.doHttpPostMood(WyyApplication.getInfo().getId(),
+					moodEditText.getText().toString(), moodIndex,
+					postMoodHandler);
+		} else {
 			moodEditText.setError(getString(R.string.nullcontentnotice));
 			moodEditText.requestFocus();
 		}
 	}
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -78,8 +77,7 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 		actionBar.setTitle(R.string.publish_mood);
 
 	}
-	
-	
+
 	private void initView() {
 
 		moodRatingBar = (RatingBar) findViewById(R.id.mood_index);
@@ -106,8 +104,7 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 		publishAdapter.setPicClickListerter(this);
 
 	}
-	
-	
+
 	@Override
 	public void onPicClick(int position) {
 		// TODO Auto-generated method stub
@@ -116,7 +113,6 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 		}
 	}
 
-	
 	/**
 	 * 发送返回处理
 	 */
@@ -206,7 +202,7 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 				// TODO Auto-generated method stub
 
 				NoticeUtils.removeNotice(ConstantS.PUBLISH_SHAI_ID, context);
-				NoticeUtils.showProgressPublish(context, 0, list.size() - 2,
+				NoticeUtils.showProgressPublish(context, 0, list.size() - 1,
 						ConstantS.PUBLISH_SHAI_ID);
 				HealthHttpClient.doHttpPostMoodPic(
 						moodid,
@@ -234,8 +230,8 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			NoticeUtils.showProgressPublish(context, index, list.size() - 2,
-					ConstantS.PUBLISH_SHAI_ID);
+			NoticeUtils.showProgressPublish(context, index + 1,
+					list.size() - 1, ConstantS.PUBLISH_SHAI_ID);
 			if (index < list.size() - 2) {
 				index++;
 				HealthHttpClient.doHttpPostMoodPic(
@@ -262,7 +258,7 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 		}
 
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
@@ -313,6 +309,5 @@ public class PublishMoodActivity extends SubmitActivity implements PicClickListe
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-	
+
 }

@@ -13,4 +13,12 @@
         android:layout_height="wrap_content"
         layout="@layout/setting_lay" />
 
+    <Button
+        android:id="@+id/login_out"
+        android:layout_width="125dp"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/login_out_sec"
+        android:text="@string/loginout" />
+
 </FrameLayout>
