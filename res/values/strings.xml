@@ -243,7 +243,7 @@
     <string name="title_activity_food_details">美食详情</string>
     <string name="share">分享</string>
     <string name="commentinfo">评价详情</string>
-    <string name="healthzs">营养指数</string>
+    <string name="healthzs">营养预警</string>
     <string name="comment">评价 </string>
     <string name="call">拨打电话</string>
     <string name="canelcomment">取消收藏</string>
@@ -297,19 +297,25 @@
     <string name="ok">确定</string>
     <string name="ice_add">添加</string>
     <string name="ice_manager">管理</string>
-	<string name="ice_re">记录</string>
-	<string name="voice_search">语音搜索</string>
-	<string name="sec_food_type">请选择</string>
-	<string name="input_day_hint">请输入保质期</string>
-	<string name="food_type">食品类别</string>
-	<string name="good_day">保质期</string>
-	<string name="fruit">水果</string>
-	<string name="vgetablis">蔬菜</string>
-	<string name="meat">肉类</string>
-	<string name="stable_food">主食</string>
-	<string name="other">其他</string>
-	<string name="input_name_hint">请输入食品名称</string>
-	<string name="empty_img_notice">请传入图片</string>
-	<string name="ice_box_history">历史记录</string>
-    
+    <string name="ice_re">记录</string>
+    <string name="voice_search">语音搜索</string>
+    <string name="sec_food_type">请选择</string>
+    <string name="input_day_hint">请输入保质期</string>
+    <string name="food_type">食品类别</string>
+    <string name="good_day">保质期</string>
+    <string name="fruit">水果</string>
+    <string name="vgetablis">蔬菜</string>
+    <string name="meat">肉类</string>
+    <string name="stable_food">主食</string>
+    <string name="other">其他</string>
+    <string name="input_name_hint">请输入食品名称</string>
+    <string name="empty_img_notice">请传入图片</string>
+    <string name="ice_box_history">历史记录</string>
+    <string name="my_money">我的营养币</string>
+    <string name="health_junior">健康新手</string>
+    <string name="health_adviser">健康顾问</string>
+    <string name="health_expert">健康专家</string>
+    <string name="gy_doyen">公益达人</string>
+    <string name="health_doyen">健康达人</string>
+
 </resources>

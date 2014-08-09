@@ -1,11 +1,13 @@
 package com.wyy.myhealth.ui.healthrecorder;
 
 import org.achartengine.ChartFactory;
+import org.achartengine.chart.PointStyle;
 import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.contants.ConstantS;
@@ -22,8 +24,9 @@ import android.widget.FrameLayout;
 
 public class RecorderChatFragment extends Fragment {
 
-	private static final String TAG=RecorderChatFragment.class.getSimpleName();
-	
+	private static final String TAG = RecorderChatFragment.class
+			.getSimpleName();
+
 	private FrameLayout wrapper;
 
 	private static final int TYPE_SIZE = 2;
@@ -42,15 +45,13 @@ public class RecorderChatFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		re_type=getArguments().getInt(ConstantS.RECEODER, ConstantS.YINSHI);
-		if (savedInstanceState!=null) {
+		re_type = getArguments().getInt(ConstantS.RECEODER, ConstantS.YINSHI);
+		if (savedInstanceState != null) {
 			re_type = savedInstanceState.getInt(ConstantS.RECEODER);
 		}
-		
 
 	}
-	
-	
+
 	@Override
 	public void onDetach() {
 		// TODO Auto-generated method stub
@@ -72,11 +73,12 @@ public class RecorderChatFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState!=null) {
+		if (savedInstanceState != null) {
 			re_type = savedInstanceState.getInt(ConstantS.RECEODER);
 		}
-		BingLog.i(TAG, "============onActivityCreated========re_type===="+re_type);
-		
+		BingLog.i(TAG, "============onActivityCreated========re_type===="
+				+ re_type);
+
 		wrapper.addView(getChatView());
 	}
 
@@ -90,17 +92,17 @@ public class RecorderChatFragment extends Fragment {
 	private XYMultipleSeriesDataset getBarDemoDataset() {
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		int nr = MainService.getThHealthRecoderBeans().size();
-		if (re_type==ConstantS.YUNDONG) {
-			nr=MainService.getSports().size();
+		if (re_type == ConstantS.YUNDONG) {
+			nr = MainService.getSports().size();
 		}
 		for (int i = 0; i < TYPE_SIZE; i++) {
 			CategorySeries series = new CategorySeries("Demo series " + (i + 1));
-			if (i==0) {
-				 series = new CategorySeries(getString(R.string.shijiajilu));
-			}else {
-				 series = new CategorySeries(getString(R.string.jianyijilu));
+			if (i == 0) {
+				series = new CategorySeries(getString(R.string.shijiajilu));
+			} else {
+				series = new CategorySeries(getString(R.string.jianyijilu));
 			}
-		
+
 			for (int k = 0; k < nr; k++) {
 				try {
 					if (i == 0) {
@@ -150,11 +152,41 @@ public class RecorderChatFragment extends Fragment {
 		return renderer;
 	}
 
+	private XYMultipleSeriesRenderer getDemoRenderer() {
+		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
+		renderer.setAxisTitleTextSize(16);
+		renderer.setChartTitleTextSize(20);
+		renderer.setLabelsTextSize(15);
+		renderer.setLegendTextSize(15);
+		renderer.setPointSize(5f);
+		renderer.setMargins(new int[] { 20, 30, 15, 0 });
+		XYSeriesRenderer r = new XYSeriesRenderer();
+		r.setColor(Color.BLUE);
+		r.setPointStyle(PointStyle.SQUARE);
+		r.setFillBelowLine(true);
+		r.setFillBelowLineColor(Color.WHITE);
+		r.setFillPoints(true);
+		renderer.addSeriesRenderer(r);
+		r = new XYSeriesRenderer();
+		r.setPointStyle(PointStyle.CIRCLE);
+		r.setColor(Color.GREEN);
+		r.setFillPoints(true);
+		renderer.addSeriesRenderer(r);
+		renderer.setAxesColor(Color.DKGRAY);
+		renderer.setLabelsColor(Color.LTGRAY);
+		return renderer;
+	}
+
 	private View getChatView() {
-		XYMultipleSeriesRenderer renderer = getBarDemoRenderer();
+		XYMultipleSeriesRenderer renderer = getDemoRenderer();
 		setChartSettings(renderer);
-		return ChartFactory.getBarChartView(getActivity(), getBarDemoDataset(),
-				renderer, Type.DEFAULT);
+		// return ChartFactory.getBarChartView(getActivity(),
+		// getBarDemoDataset(),
+		// renderer, Type.DEFAULT);
+
+		return ChartFactory.getLineChartView(getActivity(),
+				getBarDemoDataset(), renderer);
+
 	}
 
 	private double getThReceoder(int index) {
@@ -162,7 +194,8 @@ public class RecorderChatFragment extends Fragment {
 		switch (re_type) {
 		case ConstantS.YINSHI:
 			try {
-				v=Double.valueOf(MainService.getThHealthRecoderBeans().get(index).getReasonable());
+				v = Double.valueOf(MainService.getThHealthRecoderBeans()
+						.get(index).getReasonable());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -170,7 +203,7 @@ public class RecorderChatFragment extends Fragment {
 
 		case ConstantS.YUNDONG:
 			try {
-				v=Double.valueOf(MainService.getSports().get(index));
+				v = Double.valueOf(MainService.getSports().get(index));
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -178,7 +211,8 @@ public class RecorderChatFragment extends Fragment {
 
 		case ConstantS.ZHIFANG:
 			try {
-				v=Double.valueOf(MainService.getThHealthRecoderBeans().get(index).getFat());
+				v = Double.valueOf(MainService.getThHealthRecoderBeans()
+						.get(index).getFat());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -187,17 +221,19 @@ public class RecorderChatFragment extends Fragment {
 		case ConstantS.TANGLEI:
 
 			try {
-				v=Double.valueOf(MainService.getThHealthRecoderBeans().get(index).getSugar());
+				v = Double.valueOf(MainService.getThHealthRecoderBeans()
+						.get(index).getSugar());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			
+
 			break;
 
 		case ConstantS.DANGBAIZHI:
 
 			try {
-				v=Double.valueOf(MainService.getThHealthRecoderBeans().get(index).getProtein());
+				v = Double.valueOf(MainService.getThHealthRecoderBeans()
+						.get(index).getProtein());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -206,7 +242,8 @@ public class RecorderChatFragment extends Fragment {
 		case ConstantS.WEISHENGSU:
 
 			try {
-				v=Double.valueOf(MainService.getThHealthRecoderBeans().get(index).getVitamin());
+				v = Double.valueOf(MainService.getThHealthRecoderBeans()
+						.get(index).getVitamin());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -215,7 +252,8 @@ public class RecorderChatFragment extends Fragment {
 		case ConstantS.KUANGWUZHI:
 
 			try {
-				v=Double.valueOf(MainService.getThHealthRecoderBeans().get(index).getMineral());
+				v = Double.valueOf(MainService.getThHealthRecoderBeans()
+						.get(index).getMineral());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -224,20 +262,18 @@ public class RecorderChatFragment extends Fragment {
 		default:
 			break;
 		}
-		
-		
+
 		return v;
-		
+
 	}
-	
-	
-	
+
 	private double getNeReceoder(int index) {
 		double v = 0;
 		switch (re_type) {
 		case ConstantS.YINSHI:
 			try {
-				v=Double.valueOf(MainService.getNextHealthRecoderBeans().get(index).getReasonable());
+				v = Double.valueOf(MainService.getNextHealthRecoderBeans()
+						.get(index).getReasonable());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -249,7 +285,8 @@ public class RecorderChatFragment extends Fragment {
 
 		case ConstantS.ZHIFANG:
 			try {
-				v=Double.valueOf(MainService.getNextHealthRecoderBeans().get(index).getFat());
+				v = Double.valueOf(MainService.getNextHealthRecoderBeans()
+						.get(index).getFat());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -258,17 +295,19 @@ public class RecorderChatFragment extends Fragment {
 		case ConstantS.TANGLEI:
 
 			try {
-				v=Double.valueOf(MainService.getNextHealthRecoderBeans().get(index).getSugar());
+				v = Double.valueOf(MainService.getNextHealthRecoderBeans()
+						.get(index).getSugar());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			
+
 			break;
 
 		case ConstantS.DANGBAIZHI:
 
 			try {
-				v=Double.valueOf(MainService.getNextHealthRecoderBeans().get(index).getProtein());
+				v = Double.valueOf(MainService.getNextHealthRecoderBeans()
+						.get(index).getProtein());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -277,7 +316,8 @@ public class RecorderChatFragment extends Fragment {
 		case ConstantS.WEISHENGSU:
 
 			try {
-				v=Double.valueOf(MainService.getNextHealthRecoderBeans().get(index).getVitamin());
+				v = Double.valueOf(MainService.getNextHealthRecoderBeans()
+						.get(index).getVitamin());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -286,7 +326,8 @@ public class RecorderChatFragment extends Fragment {
 		case ConstantS.KUANGWUZHI:
 
 			try {
-				v=Double.valueOf(MainService.getNextHealthRecoderBeans().get(index).getMineral());
+				v = Double.valueOf(MainService.getNextHealthRecoderBeans()
+						.get(index).getMineral());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -295,13 +336,9 @@ public class RecorderChatFragment extends Fragment {
 		default:
 			break;
 		}
-		
-		
+
 		return v;
-		
+
 	}
-	
-	
-	
 
 }

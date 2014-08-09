@@ -17,7 +17,9 @@ import com.wyy.myhealth.imag.utils.PhoneUtlis;
 import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.shaiyishai.PublishAdapter.PicClickListener;
+import com.wyy.myhealth.utils.BingLog;
 import com.wyy.myhealth.utils.NoticeUtils;
+import com.wyy.myhealth.welcome.WelcomeActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -99,11 +101,10 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 							float rating, boolean fromUser) {
 						// TODO Auto-generated method stub
 						try {
-							moodIndex = "" + (int)rating;
+							moodIndex = "" + (int) rating;
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
-						
 
 						Log.i(TAG, "指数:" + rating);
 					}
@@ -117,6 +118,10 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 		publishGridView.setAdapter(publishAdapter);
 		publishAdapter.setPicClickListerter(this);
 
+		
+		Intent intent = getIntent();
+		handelIntent(intent);
+		
 	}
 
 	@Override
@@ -129,6 +134,15 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 
 	private void sendMoodaPic2Shai() {
 
+		if (WyyApplication.getInfo()==null) {
+			WelcomeActivity.getPersonInfo(context);
+		}
+		
+		if (WyyApplication.getInfo()==null) {
+			startActivity(new Intent(context, WelcomeActivity.class));
+			return;
+		}
+		
 		moodEditText.setError(null);
 		if (!TextUtils.isEmpty(moodEditText.getText().toString())) {
 
@@ -238,7 +252,7 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 				// TODO Auto-generated method stub
 
 				NoticeUtils.removeNotice(ConstantS.PUBLISH_SHAI_ID, context);
-				NoticeUtils.showProgressPublish(context, 0, list.size() - 2,
+				NoticeUtils.showProgressPublish(context, 0, list.size() - 1,
 						ConstantS.PUBLISH_SHAI_ID);
 				HealthHttpClient.doHttpPostMoodPic(
 						moodid,
@@ -266,8 +280,8 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			NoticeUtils.showProgressPublish(context, index, list.size() - 2,
-					ConstantS.PUBLISH_SHAI_ID);
+			NoticeUtils.showProgressPublish(context, index + 1,
+					list.size() - 1, ConstantS.PUBLISH_SHAI_ID);
 			if (index < list.size() - 2) {
 				index++;
 				HealthHttpClient.doHttpPostMoodPic(
@@ -344,6 +358,74 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 		publishAdapter.notifyDataSetChanged();
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	private void handleSendMultipleImages(Intent intent) {
+		// TODO Auto-generated method stub
+
+		String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+		if (!TextUtils.isEmpty(sharedText)) {
+			moodEditText.setText(sharedText);
+		}
+
+		ArrayList<Uri> imageUris = intent
+				.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+		if (imageUris != null) {
+			// Update UI to reflect multiple images being shared
+			for (int i = 0; i < imageUris.size(); i++) {
+				String path = PhotoUtils.getPicPathFromUri(imageUris.get(i),
+						this);
+				BingLog.i(TAG, "路径:" + path);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("url", path);
+				list.add(0, map);
+			}
+
+		}
+
+		publishAdapter.notifyDataSetChanged();
+
+	}
+
+	private void handelIntent(Intent intent) {
+		String action = intent.getAction();
+		String type = intent.getType();
+		if (Intent.ACTION_SEND.equals(action) && type != null) {
+			if ("text/plain".equals(type)) {
+				handleSendText(intent); // Handle text being sent
+			} else if (type.startsWith("image/")) {
+				handleSendImage(intent); // Handle single image being sent
+			}
+		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+			if (type.startsWith("image/")) {
+				handleSendMultipleImages(intent); // Handle multiple images
+													// being sent
+			}
+		} else {
+			// Handle other intents, such as being started from the home screen
+		}
+	}
+
+	private void handleSendImage(Intent intent) {
+		// TODO Auto-generated method stub
+		Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+		if (imageUri != null) {
+			// Update UI to reflect image being shared
+			String path = PhotoUtils.getPicPathFromUri(imageUri, this);
+			BingLog.i(TAG, "路径:" + path);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("url", path);
+			list.add(0, map);
+			publishAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void handleSendText(Intent intent) {
+		// TODO Auto-generated method stub
+		String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+		if (!TextUtils.isEmpty(sharedText)) {
+			moodEditText.setText(sharedText);
+		}
 	}
 
 }

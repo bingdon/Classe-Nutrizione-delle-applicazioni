@@ -6,10 +6,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.Comment;
-import com.wyy.myhealth.http.utils.HealthHttpClient;
+import com.wyy.myhealth.utils.ListUtils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class FoodCommentAdapter extends BaseAdapter {
@@ -24,6 +24,8 @@ public class FoodCommentAdapter extends BaseAdapter {
 	private List<Comment> list;
 
 	private LayoutInflater inflater;
+
+	private Context context;
 
 	private DisplayImageOptions options;
 
@@ -34,6 +36,7 @@ public class FoodCommentAdapter extends BaseAdapter {
 	public FoodCommentAdapter(List<Comment> list, Context context) {
 		this.list = list;
 		inflater = LayoutInflater.from(context);
+		this.context = context;
 		this.imageLoader = ImageLoader.getInstance();
 		this.options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.pic_loading_)
@@ -71,7 +74,7 @@ public class FoodCommentAdapter extends BaseAdapter {
 		ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.comment_lay, null);
+			convertView = inflater.inflate(R.layout.comment_lay, parent, false);
 			holder.userhead = (ImageView) convertView
 					.findViewById(R.id.userhead);
 			holder.userName = (TextView) convertView
@@ -79,8 +82,8 @@ public class FoodCommentAdapter extends BaseAdapter {
 			holder.commenContent = (TextView) convertView
 					.findViewById(R.id.commentinfo);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
-			holder.huifuContent = (TextView) convertView
-					.findViewById(R.id.huifu_comment_txt);
+			holder.huifuContent = (ListView) convertView
+					.findViewById(R.id.comments);
 			holder.comment = (ImageButton) convertView
 					.findViewById(R.id.pinglun_img);
 			convertView.setTag(holder);
@@ -108,23 +111,16 @@ public class FoodCommentAdapter extends BaseAdapter {
 			}
 		});
 
+		holder.huifuContent.setFocusable(false);
+		holder.huifuContent.setFocusableInTouchMode(false);
+
 		List<Comment> comments = list.get(position).getComment();
-		if (comments != null) {
-			String mString = "";
-			for (int i = 0; i < comments.size(); i++) {
-				if (i > 0) {
-					mString = comments.get(i).getUsername() + ":"
-							+ comments.get(i).getContent()+"\n" + mString;
-				} else {
-					mString = comments.get(i).getUsername() + ":"
-							+ comments.get(i).getContent();
-				}
 
-			}
+		holder.commentsonAdapter = new CommentsonAdapter(context, comments);
 
-			holder.huifuContent.setText("" + mString);
+		holder.huifuContent.setAdapter(holder.commentsonAdapter);
 
-		}
+		ListUtils.setListViewHeightBasedOnChildren(holder.huifuContent);
 
 		return convertView;
 	}
@@ -134,8 +130,9 @@ public class FoodCommentAdapter extends BaseAdapter {
 		public TextView userName;
 		public TextView commenContent;
 		public TextView time;
-		public TextView huifuContent;
+		public ListView huifuContent;
 		public ImageButton comment;
+		public CommentsonAdapter commentsonAdapter;
 	}
 
 	public interface AdapterListener {

@@ -75,7 +75,6 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 
 	private static boolean isDeletevisible = false;
 
-
 	public static boolean isIsvisible() {
 		return isDeletevisible;
 	}
@@ -264,15 +263,18 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 
 	private void paresJson(String content) {
 		try {
-			iceBoxFoodBeansList.clear();
-			vegetablesList.clear();
-			fruitsList.clear();
-			meatList.clear();
-			staplefoodsList.clear();
-			otherList.clear();
+
 			JSONObject object = new JSONObject(content);
 
 			if (JsonUtils.isSuccess(object)) {
+
+				iceBoxFoodBeansList.clear();
+				vegetablesList.clear();
+				fruitsList.clear();
+				meatList.clear();
+				staplefoodsList.clear();
+				otherList.clear();
+
 				JSONArray foods = object.getJSONArray("foods");
 				int length = foods.length();
 				for (int i = 0; i < length; i++) {

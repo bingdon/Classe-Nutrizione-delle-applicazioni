@@ -50,11 +50,11 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 		sendView = findViewById(R.id.send_v);
 		initSendView(sendView);
 		try {
-			List<Comment > mcomments = (List<Comment>) getIntent().getSerializableExtra(
-					"comment");
+			List<Comment> mcomments = (List<Comment>) getIntent()
+					.getSerializableExtra("comment");
 			TimeUtils.getCOmmentTime(mcomments);
 			arrangeComment(mcomments);
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -138,19 +138,27 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 		public void onStart() {
 			// TODO Auto-generated method stub
 			super.onStart();
-			sendButton.setEnabled(false);
+
+			Comment comment = new Comment();
+			comment.setUsername(WyyApplication.getInfo().getUsername());
+			comment.setContent(content);
+
+			comments.get(position).getComment().add(comment);
+			adapter.notifyDataSetChanged();
+
+			sendEditText.setText("");
+			sendView.setVisibility(View.GONE);
+			sendButton.setEnabled(true);
+			sendButton.setText(R.string.send);
 			sendButton.setBackgroundColor(getResources().getColor(
-					R.color.home_txt));
+					R.color.transparent));
 		}
 
 		@Override
 		public void onFinish() {
 			// TODO Auto-generated method stub
 			super.onFinish();
-			sendButton.setEnabled(true);
-			sendButton.setText(R.string.send);
-			sendButton.setBackgroundColor(getResources().getColor(
-					R.color.transparent));
+
 		}
 
 		@Override
@@ -160,8 +168,7 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 			BingLog.i(TAG, "评论:" + content);
 			Toast.makeText(context, R.string.comment_success_,
 					Toast.LENGTH_LONG).show();
-			sendEditText.setText("");
-			sendView.setVisibility(View.GONE);
+
 		}
 
 		@Override
@@ -173,43 +180,40 @@ public class FoodCommentInfoActivity extends BaseListActivity implements
 		}
 
 	};
-	
-	
-	private synchronized void arrangeComment(List<Comment> list){
-		int length=list.size();
+
+	private synchronized void arrangeComment(List<Comment> list) {
+		int length = list.size();
 		for (int i = 0; i < length; i++) {
-			Comment comment=list.get(i);
-			BingLog.i(TAG, "评论ID:"+comment.getCommentid());
-			if (comment.getCommentid()==-1) {
-				BingLog.i(TAG, "增加ID:"+comment.getId());
+			Comment comment = list.get(i);
+			BingLog.i(TAG, "评论ID:" + comment.getCommentid());
+			if (comment.getCommentid() == -1) {
+				BingLog.i(TAG, "增加ID:" + comment.getId());
 				comments.add(comment);
 			}
 		}
-		
-		int clength=comments.size();
-		for (int k = 0; k <length; k++) {
-			Comment comment=list.get(k);
-			BingLog.i(TAG, "评论:"+"i:"+k);
+
+		int clength = comments.size();
+		for (int k = 0; k < length; k++) {
+			Comment comment = list.get(k);
+			BingLog.i(TAG, "评论:" + "i:" + k);
 			for (int j = 0; j < clength; j++) {
-				BingLog.i(TAG, "评论:"+"i:"+k+"j:"+j);
-				if (comments.get(j).getId().equals(""+comment.getCommentid())) {
+				BingLog.i(TAG, "评论:" + "i:" + k + "j:" + j);
+				if (comments.get(j).getId().equals("" + comment.getCommentid())) {
 					comments.get(j).comment.add(comment);
-					BingLog.i(TAG, "评论:"+comment);
+					BingLog.i(TAG, "评论:" + comment);
 				}
-				
-				BingLog.i(TAG, "评论:"+"i:"+k+"j:"+j);
-				
+
+				BingLog.i(TAG, "评论:" + "i:" + k + "j:" + j);
+
 			}
 		}
-		
-		BingLog.i(TAG, "评论数量:"+comments.size());
-		
+
+		BingLog.i(TAG, "评论数量:" + comments.size());
+
 		adapter = new FoodCommentAdapter(comments, context);
 		baseListV.setAdapter(adapter);
 		adapter.setListener(this);
-		
-		
+
 	}
-	
 
 }

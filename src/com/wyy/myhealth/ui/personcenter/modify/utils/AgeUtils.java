@@ -5,10 +5,15 @@ public class AgeUtils {
 	public static boolean isAge(String content) {
 		boolean isage=false;
 		if (HwUtlis.isNum(content)) {
-			int age=Integer.valueOf(content);
-			if (age>0&&age<100) {
-				isage=true;
+			try {
+				int age=Integer.valueOf(content);
+				if (age>0&&age<100) {
+					isage=true;
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
+			
 		}
 		
 		return isage;

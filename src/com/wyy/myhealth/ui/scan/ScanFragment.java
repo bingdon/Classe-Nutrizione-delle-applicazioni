@@ -79,12 +79,12 @@ public class ScanFragment extends Fragment {
 	private boolean isfit = false;
 	// 计算完成标志
 	private boolean iscomple = false;
-	//阈值计算是否完成
-	private boolean isplace=false;
+	// 阈值计算是否完成
+	private boolean isplace = false;
 	// 上传返回完成标志
 	private boolean isfasongcm = false;
-	
-	private boolean isplacefit=false;
+
+	private boolean isplacefit = false;
 
 	private boolean voiceflage = false;
 
@@ -95,25 +95,25 @@ public class ScanFragment extends Fragment {
 	public ImageView saoImageView;
 	// 发挥json数据
 	private String json = "";
-	
+
 	private cameraView cView;
-	
-	private boolean isSurface=false;
-	
+
+	private boolean isSurface = false;
+
 	private ScanView scanView;
-	
+
 	private ImageView takepic;
-	
+
 	private ImageView openlight;
-	
+
 	private ImageView voiceSearch;
-	
+
 	private FrameLayout bottomLayout;
-	
+
 	private TextView scantTextView;
-	
+
 	private NearFoodBean sameNearFoodBean;
-	
+
 	public static ScanFragment newInstance(int postion) {
 		ScanFragment scanFragment = new ScanFragment();
 		scanFragment.setArguments(new Bundle());
@@ -125,9 +125,9 @@ public class ScanFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		BingLog.i(TAG, "======onCreateView======");
-		
+
 		initFilter();
-		View rootView = inflater.inflate(R.layout.scan_lay, container,false);
+		View rootView = inflater.inflate(R.layout.scan_lay, container, false);
 		initView(rootView);
 		return rootView;
 
@@ -199,25 +199,22 @@ public class ScanFragment extends Fragment {
 		context = getActivity();
 		if (count == 0) {
 			initCameraView();
-			count=1;
+			count = 1;
 		}
 
 	}
 
-	
-	
-	
 	private void initView(View v) {
 		saoImageView = (ImageView) v.findViewById(R.id.saomiao_k_img);
 		mFrameLayout = (FrameLayout) v.findViewById(R.id.camera_view);
-		
-		takepic=(ImageView)v.findViewById(R.id.take_pic);
-		openlight=(ImageView)v.findViewById(R.id.open_ligth);
-		voiceSearch=(ImageView)v.findViewById(R.id.loop_yuyin);
-		scanView=(ScanView)v.findViewById(R.id.scanView0);
-		bottomLayout=(FrameLayout)v.findViewById(R.id.take_bottom_lay);
-		scantTextView=(TextView)v.findViewById(R.id.scan_notice_txt);
-		
+
+		takepic = (ImageView) v.findViewById(R.id.take_pic);
+		openlight = (ImageView) v.findViewById(R.id.open_ligth);
+		voiceSearch = (ImageView) v.findViewById(R.id.loop_yuyin);
+		scanView = (ScanView) v.findViewById(R.id.scanView0);
+		bottomLayout = (FrameLayout) v.findViewById(R.id.take_bottom_lay);
+		scantTextView = (TextView) v.findViewById(R.id.scan_notice_txt);
+
 		ViewTreeObserver vto2 = saoImageView.getViewTreeObserver();
 		vto2.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
@@ -231,20 +228,19 @@ public class ScanFragment extends Fragment {
 				ScanView.saoHeigth = saoImageView.getHeight();
 			}
 		});
-		
-		
+
 		takepic.setOnClickListener(listener);
 		openlight.setOnClickListener(listener);
 		voiceSearch.setOnClickListener(listener);
-		
+
 	}
 
 	private void initCameraView() {
 		if (mCamera == null) {
 			mCamera = Camera.open();
 		}
-		
-		cView=new cameraView(context, mCamera);
+
+		cView = new cameraView(context, mCamera);
 		mFrameLayout.addView(new cameraView(context, mCamera));
 
 	}
@@ -294,8 +290,8 @@ public class ScanFragment extends Fragment {
 			// mCamera.takePicture(null, null,BingCamera.this );
 			new Thread(face_recon).start();
 
-//			mCamera.setPreviewCallback(previewCallback);
-			
+			// mCamera.setPreviewCallback(previewCallback);
+
 		}
 
 		private Size getOptimalPreviewSize(List<Size> sizes, int width,
@@ -340,8 +336,8 @@ public class ScanFragment extends Fragment {
 		public void surfaceCreated(SurfaceHolder holder) {
 			// TODO Auto-generated method stub
 
-			isSurface=true;
-			
+			isSurface = true;
+
 			try {
 				// Log.i(TAG, "Camera:" + mCamera);
 				if (null == mCamera) {
@@ -358,7 +354,7 @@ public class ScanFragment extends Fragment {
 		@Override
 		public void surfaceDestroyed(SurfaceHolder holder) {
 			// TODO Auto-generated method stub
-			isSurface=false;
+			isSurface = false;
 			if (mCamera != null) {
 				mCamera.setPreviewCallback(null);
 				mCamera.stopPreview();
@@ -454,7 +450,7 @@ public class ScanFragment extends Fragment {
 		@Override
 		public void onAutoFocus(boolean success, Camera camera) {
 			// TODO Auto-generated method stub
-			foucs=success;
+			foucs = success;
 			if (success) {
 				mCamera.takePicture(null, null, pictureCallback);
 				takpic = false;
@@ -463,7 +459,7 @@ public class ScanFragment extends Fragment {
 						Toast.LENGTH_LONG).show();
 				takepic.setEnabled(true);
 				scantTextView.setVisibility(View.GONE);
-				voiceflage=false;
+				voiceflage = false;
 			}
 
 		}
@@ -486,42 +482,38 @@ public class ScanFragment extends Fragment {
 			mCamera.startPreview();
 			if (!voiceflage) {
 				compareFood();
-			}else {
+			} else {
 				showVoiceSearch();
-				
+
 			}
-			
 
 		}
 	};
-	
-	
-	
-	private void compareFood(){
+
+	private void compareFood() {
 		ExecutorService tExecutorService = Executors.newFixedThreadPool(3);
 		tExecutorService.execute(cmpPicRunnable);
 		tExecutorService.execute(sendbmp);
 		tExecutorService.execute(cmpPlaceRunnable);
 	}
 
-	
-	Runnable cmpPlaceRunnable=new Runnable() {
-		
+	Runnable cmpPlaceRunnable = new Runnable() {
+
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			isplacefit=isExitPlace();
-			if (isfasongcm&&iscomple) {
-				if ( isfit&&isplacefit&& !TextUtils.isEmpty(json)) {
+			isplacefit = isExitPlace();
+			if (isfasongcm && iscomple) {
+				if (isfit && isplacefit && !TextUtils.isEmpty(json)) {
 					parseJson(json);
-				}else {
+				} else {
 					logindialogfire();
 				}
 			}
-			
+
 		}
 	};
-	
+
 	// 上传比较线程
 	Runnable sendbmp = new Runnable() {
 
@@ -556,8 +548,8 @@ public class ScanFragment extends Fragment {
 			// TODO Auto-generated method stub
 			BingLog.i(TAG, "=============计算线程============");
 			isfit = isComfortAble();
-			if (isfasongcm&&isplace) {
-				if (isfit && !TextUtils.isEmpty(json)&&isplacefit) {
+			if (isfasongcm && isplace) {
+				if (isfit && !TextUtils.isEmpty(json) && isplacefit) {
 					BingLog.i(TAG, "=============计算处理============");
 					parseJson(json);
 				} else {
@@ -579,12 +571,12 @@ public class ScanFragment extends Fragment {
 			json = content;
 			if (iscomple && isplace) {
 				BingLog.i(TAG, "=============发送处理============");
-				if (isfit&&isplacefit) {
+				if (isfit && isplacefit) {
 					parseJson(content);
-				}else {
+				} else {
 					logindialogfire();
 				}
-				
+
 			}
 
 		}
@@ -596,13 +588,12 @@ public class ScanFragment extends Fragment {
 			isfasongcm = true;
 			logindialogfire();
 		}
-		
+
 		public void onFinish() {
 			super.onFinish();
-			
+
 			takepic.setEnabled(true);
 		};
-		
 
 	};
 
@@ -612,21 +603,22 @@ public class ScanFragment extends Fragment {
 		if (content != null) {
 			try {
 				mJsonObject = new JSONObject(content);
-				
+
 				try {
 					getFoodTag(mJsonObject.getJSONObject("samefood"));
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
 				}
-				
-				Config.log=mJsonObject.getString("log");
-				
+
+				Config.log = mJsonObject.getString("log");
+
 				if (JsonUtils.isSuccess(mJsonObject)) {
 					JSONArray comments = mJsonObject.getJSONArray("comments");
 					if (comments != null && comments.length() > 0) {
-						BingLog.i(TAG, "得到食物:"+comments.getJSONObject(0));
-						HealthRecoderBean healthRecoderBean=JsonUtils.getHealthRecoder(comments.getJSONObject(0));
+						BingLog.i(TAG, "得到食物:" + comments.getJSONObject(0));
+						HealthRecoderBean healthRecoderBean = JsonUtils
+								.getHealthRecoder(comments.getJSONObject(0));
 						logindialog(healthRecoderBean);
 
 					} else {
@@ -646,7 +638,7 @@ public class ScanFragment extends Fragment {
 			}
 
 		} else {
-				logindialogfire();
+			logindialogfire();
 
 		}
 
@@ -662,12 +654,12 @@ public class ScanFragment extends Fragment {
 		intent.setClass(context, ScanResultActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
-		json="";
+		json = "";
 	}
 
 	// 比较成功
 	public void logindialog(HealthRecoderBean healthRecoderBean) {
-		json="";
+		json = "";
 		takpic = false;
 		isfit = false;
 		BingLog.i("=========", "扫描成功");
@@ -687,16 +679,17 @@ public class ScanFragment extends Fragment {
 		fs1 = align.createHistogram(PhoneUtlis
 				.getSmall100ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
 		int featureNumber = fs1.size();
-		BingLog.i(TAG, "指数:" + featureNumber + "耗时:"
-				+ ((System.currentTimeMillis() - time) / 1000.00) + "s");
+		BingLog.i(TAG,
+				"指数:" + featureNumber + "耗时:"
+						+ ((System.currentTimeMillis() - time) / 1000.00) + "s");
 		return featureNumber;
 	}
 
 	private boolean isComfortAble() {
 		iscomple = false;
 		int feturenum = secFood();
-		BingLog.i(TAG, "计算:"+feturenum);
-		Config.feture_Value="特征值:"+feturenum;
+		BingLog.i(TAG, "计算:" + feturenum);
+		Config.feture_Value = "特征值:" + feturenum;
 		if (feturenum > 15 && feturenum < 80) {
 			iscomple = true;
 			return true;
@@ -705,37 +698,35 @@ public class ScanFragment extends Fragment {
 		return false;
 	}
 
-	
-	private boolean isExitPlace(){
-		isplace=false;
-		double k=0;
-		k=BitmapRatioUtils.ratio(PhoneUtlis
+	private boolean isExitPlace() {
+		isplace = false;
+		double k = 0;
+		k = BitmapRatioUtils.ratio(PhoneUtlis
 				.getSmall40ZoomBitmap(FileUtils.HEALTH_IMAG + "/wyy.png"));
-		BingLog.i(TAG, "阈值计算:"+k);
-		Config.placeValue="阈值:"+k;
-		isplace=true;
-		if (k>0.4) {
+		BingLog.i(TAG, "阈值计算:" + k);
+		Config.placeValue = "阈值:" + k;
+		isplace = true;
+		if (k > 0.4) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
-	
+
 	private BroadcastReceiver pageIndexReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			String action=intent.getAction();
+			String action = intent.getAction();
 			if (action.equals(ConstantS.PAGE_INDEX_CHANG)) {
 				if (!isSurface) {
 					mHandler.sendEmptyMessageDelayed(0, SPLASH_DELAY_MILLIS);
 				}
-			}else if (action.equals(ConstantS.ACTION_HIDE_UI_CHANGE)) {
+			} else if (action.equals(ConstantS.ACTION_HIDE_UI_CHANGE)) {
 				changeUI();
 			}
-			
-			
+
 		}
 	};
 
@@ -757,11 +748,11 @@ public class ScanFragment extends Fragment {
 			case 0:
 				initCameraView();
 				break;
-				
+
 			case 1:
 				mFrameLayout.addView(cView);
 				break;
-				
+
 			default:
 				break;
 			}
@@ -770,9 +761,8 @@ public class ScanFragment extends Fragment {
 
 	};
 
-	
-	private OnClickListener listener=new OnClickListener() {
-		
+	private OnClickListener listener = new OnClickListener() {
+
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
@@ -784,70 +774,66 @@ public class ScanFragment extends Fragment {
 			case R.id.open_ligth:
 				openlight();
 				break;
-				
+
 			case R.id.loop_yuyin:
-				voiceflage=true;
+				voiceflage = true;
 				takepic2web();
 				break;
-				
+
 			default:
 				break;
 			}
 		}
 	};
-	
-	
-	
-	private void takepic2web(){
-		
-		
-		
+
+	private void takepic2web() {
+
 		if (Utility.isConnected(getActivity())) {
-			takpic=true;
+			takpic = true;
 			takepic.setEnabled(false);
 			scanView.setScroll(true);
-			
+
 			if (!voiceflage) {
 				scantTextView.setVisibility(View.VISIBLE);
 			}
-			
-		}else {
-			Toast.makeText(getActivity(), R.string.neterro, Toast.LENGTH_SHORT).show();
+
+		} else {
+			Toast.makeText(getActivity(), R.string.neterro, Toast.LENGTH_SHORT)
+					.show();
 		}
-		
-		
+
 	}
-	
-	
-	private void openlight(){
+
+	private void openlight() {
 		if (mCamera.getParameters().getFlashMode()
 				.equals(Parameters.FLASH_MODE_TORCH)) {
 			try {
 				parameters = mCamera.getParameters();
-				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);// �?��
+				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);// 关闭闪光灯
 				mCamera.setParameters(parameters);
+				openlight.setImageResource(R.drawable.light_close);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
 		} else {
 			try {
 				parameters = mCamera.getParameters();
-				parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);// �?��
+				parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);// 打开闪光灯
 				mCamera.setParameters(parameters);
+				openlight.setImageResource(R.drawable.light_open);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
 		}
 	}
-	
-	
-	private void showVoiceSearch(){
-		voiceflage=false;
+
+	private void showVoiceSearch() {
+		voiceflage = false;
 		startActivity(new Intent(context, VoiceSearceActivity.class));
 	}
-	
-	private void changeUI(){
-		
+
+	private void changeUI() {
+
 		if (scanView.isShown()) {
 			scanView.setVisibility(View.INVISIBLE);
 			saoImageView.setVisibility(View.INVISIBLE);
@@ -858,8 +844,8 @@ public class ScanFragment extends Fragment {
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			
-		}else {
+
+		} else {
 			scanView.setVisibility(View.VISIBLE);
 			saoImageView.setVisibility(View.INVISIBLE);
 			bottomLayout.setVisibility(View.VISIBLE);
@@ -869,14 +855,13 @@ public class ScanFragment extends Fragment {
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			
+
 		}
-		
+
 	}
-	
-	
-	private PreviewCallback previewCallback=new PreviewCallback() {
-		
+
+	private PreviewCallback previewCallback = new PreviewCallback() {
+
 		@Override
 		public void onPreviewFrame(byte[] data, Camera camera) {
 			// TODO Auto-generated method stub
@@ -886,12 +871,12 @@ public class ScanFragment extends Fragment {
 				} else {
 					PhotoUtils.saveChatCode(data, context);
 				}
-				foucs=false;
+				foucs = false;
 			}
 		}
 	};
-	
-	private void getFoodTag(JSONObject jsonObject){
-		sameNearFoodBean=JsonUtils.getNearFoodBean(jsonObject);
+
+	private void getFoodTag(JSONObject jsonObject) {
+		sameNearFoodBean = JsonUtils.getNearFoodBean(jsonObject);
 	}
 }

@@ -108,7 +108,7 @@ public class WyyApplication extends FrontiaApplication {
 				.showImageOnLoading(R.drawable.pic_loading_)
 				.showImageForEmptyUri(R.drawable.pic_empty)
 				.showImageOnFail(R.drawable.pic_failure).cacheInMemory(true)
-				.displayer(new RoundedBitmapDisplayer(60))
+				.displayer(new RoundedBitmapDisplayer(50))
 				.cacheOnDisc(true).considerExifParams(true).build();
 
 	}

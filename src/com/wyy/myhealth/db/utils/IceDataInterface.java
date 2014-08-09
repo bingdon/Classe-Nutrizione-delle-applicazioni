@@ -8,7 +8,7 @@ public interface IceDataInterface extends BaseDateInterface {
 	
 	public Object delete(long id);
 	
-	public Object delete(String id);
+	public Long delete(String id);
 	
 	public Object queryData();
 	

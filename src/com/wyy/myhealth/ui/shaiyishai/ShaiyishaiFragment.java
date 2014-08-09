@@ -2,6 +2,7 @@ package com.wyy.myhealth.ui.shaiyishai;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -144,8 +145,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	public void onCommentClick(int position) {
 		// TODO Auto-generated method stub
 
-		Toast.makeText(getActivity(), "Êý×Öz:"+position, Toast.LENGTH_LONG).show();
-		
+		this.postion = position;
 		if (thList.get(position).containsKey("foodsid")) {
 			shaiFoodsid = thList.get(position).get("foodsid").toString();
 			shaimoodsid = "";
@@ -169,7 +169,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	@Override
 	public void onCollectClick(int position) {
 		// TODO Auto-generated method stub
-		
+
 		if (thList.get(position).containsKey("foodsid")) {
 			String foodsid = thList.get(position).get("foodsid").toString();
 			CollectUtils.collectFood(foodsid, getActivity());
@@ -262,19 +262,39 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		public void onStart() {
 			// TODO Auto-generated method stub
 			super.onStart();
-			sendButton.setEnabled(false);
-			sendButton.setBackgroundColor(getResources().getColor(
-					R.color.home_txt));
+
+			Map<String, Object> map = thList.get(postion);
+			String lastcommentString = map.get("comment") + "";
+			if (!TextUtils.isEmpty("" + map.get("comment"))) {
+				lastcommentString = lastcommentString + "\n";
+			}
+			
+			thList.get(postion).put(
+					"comment",
+					lastcommentString + WyyApplication.getInfo().getUsername()
+							+ ":" + sendEditText.getText().toString());
+
+			mAdapter.notifyDataSetChanged();
+
+			// sendButton.setEnabled(false);
+			// sendButton.setBackgroundColor(getResources().getColor(
+			// R.color.home_txt));
+
+			sendEditText.setText("");
+			sendView.setVisibility(View.GONE);
+			shaiFoodsid = "";
+			shaimoodsid = "";
+
 		}
 
 		@Override
 		public void onFinish() {
 			// TODO Auto-generated method stub
 			super.onFinish();
-			sendButton.setEnabled(true);
-			sendButton.setText(R.string.send);
-			sendButton.setBackgroundColor(getResources().getColor(
-					R.color.transparent));
+			// sendButton.setEnabled(true);
+			// sendButton.setText(R.string.send);
+			// sendButton.setBackgroundColor(getResources().getColor(
+			// R.color.transparent));
 		}
 
 		@Override
@@ -284,10 +304,10 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			Log.i(TAG, "·µ»Ø:" + content);
 			Toast.makeText(getActivity(), R.string.comment_success_,
 					Toast.LENGTH_LONG).show();
-			sendEditText.setText("");
-			sendView.setVisibility(View.GONE);
-			shaiFoodsid = "";
-			shaimoodsid = "";
+			// sendEditText.setText("");
+			// sendView.setVisibility(View.GONE);
+			// shaiFoodsid = "";
+			// shaimoodsid = "";
 		}
 
 		@Override

@@ -81,6 +81,8 @@ public class PersonCenterFragment extends Fragment implements
 	private ImageView headbg;
 	
 	private Bitmap bgBitmap;
+	
+	private TextView money;
 
 	public static PersonCenterFragment newInstance(int position) {
 		PersonCenterFragment personCenterFragment = new PersonCenterFragment();
@@ -161,6 +163,8 @@ public class PersonCenterFragment extends Fragment implements
 		honorView = inflater.inflate(R.layout.my_honor_tab, bodyPager, false);
 		baseInfoView = inflater.inflate(R.layout.my_base_info_tab, null);
 
+		money=(TextView)honorView.findViewById(R.id.moeny);
+		
 		userWeima = (TextView) baseInfoView.findViewById(R.id.weima_id);
 		userCareer = (TextView) baseInfoView.findViewById(R.id.user_carrer);
 		userHeight = (TextView) baseInfoView.findViewById(R.id.body_h);
@@ -206,7 +210,7 @@ public class PersonCenterFragment extends Fragment implements
 				+ PersonUtils.getBmi(WyyApplication.getInfo().getHeight(),
 						WyyApplication.getInfo().getWeight()));
 		userRemarks.setText(WyyApplication.getInfo().getSummary() + "");
-
+		money.setText(WyyApplication.getInfo().getMoney()+"");
 		
 		getperBg();
 		

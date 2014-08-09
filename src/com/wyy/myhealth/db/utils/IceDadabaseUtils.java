@@ -85,9 +85,9 @@ public class IceDadabaseUtils implements IceDataInterface {
 	}
 
 	@Override
-	public Object delete(String id) {
+	public Long delete(String id) {
 		// TODO Auto-generated method stub
-		int del = -1;
+		long del = -1;
 		try {
 			String where = IceBoxData.FOOD_ID + " = ?";
 			String[] whereArgs = { String.valueOf(id) };
