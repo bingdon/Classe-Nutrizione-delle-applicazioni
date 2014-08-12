@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.log;
-
+package com.wyy.myhealth.ui.log;
 import android.util.Log;
 
 /**
- * class that holds the {@link Logger} for this library, defaults to {@link LoggerDefault} to send
- * logs to android {@link Log}
+ * class that holds the {@link Logger} for this library, defaults to {@link LoggerDefault} to send logs to android {@link Log}
  */
 public final class LogManager {
 

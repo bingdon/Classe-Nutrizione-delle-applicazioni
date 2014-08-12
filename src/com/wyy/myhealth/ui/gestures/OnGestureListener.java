@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.gesture;
+package com.wyy.myhealth.ui.gestures;
 
 public interface OnGestureListener {
 
     public void onDrag(float dx, float dy);
 
     public void onFling(float startX, float startY, float velocityX,
-            float velocityY);
+                        float velocityY);
 
     public void onScale(float scaleFactor, float focusX, float focusY);
 

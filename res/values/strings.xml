@@ -321,6 +321,9 @@
     <string name="health_doyen">健康达人</string>
     <string name="use_help">使用帮助</string>
     <string name="use_scan_notice">请对准中式菜品,再点击按钮即可</string>
-      <string name="action_bar_search">搜索</string>
+    <string name="action_bar_search">搜索</string>
+    <string name="ablum">相册</string>
+    <string name="today_food">今日美食</string>
+    <string name="today_food_reson">美味每一天\n就是吃货的未来</string>
 
 </resources>

@@ -15,7 +15,9 @@ import com.wyy.myhealth.utils.BingLog;
  */
 public class HealthHttpClient {
 
-	public static final String URL = "http://115.28.164.99:7001/S_health/";
+//	public static final String URL = "http://115.28.164.99:7001/S_health/";
+	
+	public static final String URL = "http://115.28.164.99:7002/S_health/";
 
 	/**
 	 * 閿熸枻鎷烽敓鐭鎷峰潃

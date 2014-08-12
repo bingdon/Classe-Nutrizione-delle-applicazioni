@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import com.wyy.myhealth.R;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -37,8 +38,10 @@ public class BaseActivity extends ActionBarActivity {
 
 	protected void onInitActionBar() {
 		ActionBar actionBar = getSupportActionBar();
-		actionBar.setBackgroundDrawable(getResources().getDrawable(
-				R.drawable.actionbar_g_bg));
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources()
+				.getColor(R.color.themecolor)));
+//		actionBar.setBackgroundDrawable(getResources().getDrawable(
+//				R.drawable.actionbar_g_bg));
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setDisplayShowHomeEnabled(false);
 	}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.gesture;
+package com.wyy.myhealth.ui.gestures;
 
 import android.view.MotionEvent;
 

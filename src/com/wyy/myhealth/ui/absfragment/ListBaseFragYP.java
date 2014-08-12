@@ -13,7 +13,7 @@ import com.wyy.myhealth.ui.customview.BingListView;
 public class ListBaseFragYP extends Fragment{
 
 	
-	protected static final String TAG=ListBaseFragYP.class.getSimpleName();
+	private static final String TAG=ListBaseFragYP.class.getSimpleName();
 	protected BingListView bingListView;
 	
 	protected SwipeRefreshLayout mRefreshLayout;

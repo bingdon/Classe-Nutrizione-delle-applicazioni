@@ -1,4 +1,4 @@
-package com.wyy.myhealth.ui.photoview.gesture;
+package com.wyy.myhealth.ui.gestures;
 
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
@@ -15,14 +15,13 @@ package com.wyy.myhealth.ui.photoview.gesture;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
 import android.content.Context;
 import android.os.Build;
 
 public final class VersionedGestureDetector {
 
     public static GestureDetector newInstance(Context context,
-            OnGestureListener listener) {
+                                              OnGestureListener listener) {
         final int sdkVersion = Build.VERSION.SDK_INT;
         GestureDetector detector;
 

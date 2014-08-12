@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.gesture;
+package com.wyy.myhealth.ui.gestures;
 
 
 import com.wyy.myhealth.ui.photoview.Compat;
@@ -22,14 +22,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.view.MotionEvent;
 
-
 @TargetApi(5)
 public class EclairGestureDetector extends CupcakeGestureDetector {
 
     private static final int INVALID_POINTER_ID = -1;
-
     private int mActivePointerId = INVALID_POINTER_ID;
-
     private int mActivePointerIndex = 0;
 
     public EclairGestureDetector(Context context) {

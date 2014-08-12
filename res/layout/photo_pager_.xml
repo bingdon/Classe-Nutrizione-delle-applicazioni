@@ -3,11 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.wyy.myhealth.ui.photoview.PagerView
-        android:id="@+id/pagerView1"
+    <com.wyy.myhealth.ui.photoview.PhotoView
+        android:id="@+id/photoView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:adjustViewBounds="false" />
+        android:layout_gravity="center" />
 
 </FrameLayout>

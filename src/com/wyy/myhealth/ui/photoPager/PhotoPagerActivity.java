@@ -10,14 +10,13 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
-import com.wyy.myhealth.ui.photoview.AnimationRect;
-import com.wyy.myhealth.ui.photoview.PagerView;
+import com.wyy.myhealth.ui.photoview.PhotoView;
 import com.wyy.myhealth.ui.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import com.wyy.myhealth.ui.photoview.ZoomOutPageTransformer;
-import com.wyy.myhealth.ui.photoview.utils.Utility;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -26,6 +25,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,12 +40,11 @@ public class PhotoPagerActivity extends BaseActivity implements
 	private PhotoPagerAdapter mAdapter;
 
 	private List<String> imgurList = new ArrayList<String>();
-	AnimationRect rect;
 	private TextView postionTextView;
 	private TextView sumTextView;
 	private HashSet<ViewGroup> unRecycledViews = new HashSet<ViewGroup>();
-	private static final int STATUS_BAR_HEIGHT_DP_UNIT = 25;
-	private static final int NAVIGATION_BAR_HEIGHT_DP_UNIT = 48;
+//	private static final int STATUS_BAR_HEIGHT_DP_UNIT = 25;
+//	private static final int NAVIGATION_BAR_HEIGHT_DP_UNIT = 48;
 	private ProgressBar loadingBar;
 	
 	private boolean loads2f=false;
@@ -53,6 +52,7 @@ public class PhotoPagerActivity extends BaseActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_photo_pager);
 		initSetting();
@@ -61,28 +61,12 @@ public class PhotoPagerActivity extends BaseActivity implements
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void onInitActionBar() {
 		// TODO Auto-generated method stub
-		super.onDestroy();
-
-//		if (!loads2f) {
-//			
-//			try {
-//				if (pager != null && unRecycledViews != null) {
-//					Utility.recycleViewGroupAndChildViews(pager, true);
-//					for (ViewGroup viewGroup : unRecycledViews) {
-//						Utility.recycleViewGroupAndChildViews(viewGroup, true);
-//					}
-//
-//					System.gc();
-//				}
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//			}
-//			
-//		}
-		
-
+		super.onInitActionBar();
+		getSupportActionBar().setTitle(R.string.ablum);
+		getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.themetranscolor)));
+		getSupportActionBar().setSplitBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.deepskyblue)));
 	}
 
 	private void initUI() {
@@ -103,9 +87,9 @@ public class PhotoPagerActivity extends BaseActivity implements
 
 		pager.setCurrentItem(getIntent().getIntExtra("postion", 0));
 
-		pager.setOffscreenPageLimit(1);
+//		pager.setOffscreenPageLimit(1);
 		pager.setPageTransformer(true, new ZoomOutPageTransformer());
-		pager.setPadding(0, Utility.dip2px(STATUS_BAR_HEIGHT_DP_UNIT), 0, 0);
+//		pager.setPadding(0, Utility.dip2px(STATUS_BAR_HEIGHT_DP_UNIT), 0, 0);
 
 	}
 
@@ -147,8 +131,13 @@ public class PhotoPagerActivity extends BaseActivity implements
 			// TODO Auto-generated method stub
 			if (!loads2f) {
 				if (object instanceof ViewGroup) {
-					((ViewPager) container).removeView((View) object);
-					unRecycledViews.remove(object);
+					try {
+						((ViewPager) container).removeView((View) object);
+						unRecycledViews.remove(object);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					
 //					ViewGroup viewGroup = (ViewGroup) object;
 //					try {
 //						Utility.recycleViewGroupAndChildViews(viewGroup, true);
@@ -188,7 +177,7 @@ public class PhotoPagerActivity extends BaseActivity implements
 			}
 
 			ImageView imageView = (ImageView) imageLayout
-					.findViewById(R.id.pagerView1);
+					.findViewById(R.id.photoView1);
 
 			if (imageView.getDrawable() != null) {
 				return;
@@ -224,8 +213,8 @@ public class PhotoPagerActivity extends BaseActivity implements
 	}
 
 	private void handelImg(View imageLayout, List<String> list, int position) {
-		final PagerView photoView = (PagerView) imageLayout
-				.findViewById(R.id.pagerView1);
+		final PhotoView photoView = (PhotoView) imageLayout
+				.findViewById(R.id.photoView1);
 
 		photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
 
@@ -280,10 +269,10 @@ public class PhotoPagerActivity extends BaseActivity implements
 
 		// imageLoader.displayImage(list.get(position), animationView);
 		//
-		 if (Utility.doThisDeviceOwnNavigationBar(PhotoPagerActivity.this)) {
-		 photoView.setPadding(0, 0, 0,
-		 Utility.dip2px(NAVIGATION_BAR_HEIGHT_DP_UNIT));
-		 }
+//		 if (Utility.doThisDeviceOwnNavigationBar(PhotoPagerActivity.this)) {
+//		 photoView.setPadding(0, 0, 0,
+//		 Utility.dip2px(NAVIGATION_BAR_HEIGHT_DP_UNIT));
+//		 }
 
 	}
 

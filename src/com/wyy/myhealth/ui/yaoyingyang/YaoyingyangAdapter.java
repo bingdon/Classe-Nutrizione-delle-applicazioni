@@ -75,7 +75,7 @@ public class YaoyingyangAdapter extends BaseAdapter {
 		ViewHolder holder = null;
 		if (convertView == null) {
 			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.yaoyy_ada, null);
+			convertView = inflater.inflate(R.layout.yao_item, parent, false);
 
 			holder.foodimg = (ImageView) convertView
 					.findViewById(R.id.bottom_pic);
@@ -95,6 +95,7 @@ public class YaoyingyangAdapter extends BaseAdapter {
 					.findViewById(R.id.shoucang_img);
 			holder.distanceTextView = (TextView) convertView
 					.findViewById(R.id.distance);
+			holder.recView = convertView.findViewById(R.id.rec_lay);
 
 			convertView.setTag(holder);
 
@@ -105,6 +106,23 @@ public class YaoyingyangAdapter extends BaseAdapter {
 		imageLoader.displayImage(list.get(position).getFoodpic(),
 				holder.foodimg, options);
 
+		
+		if (adapterPostion==2) {
+			holder.recView.setVisibility(View.VISIBLE);
+		}else {
+			holder.recView.setVisibility(View.GONE);
+		}
+		
+		
+		holder.recView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		holder.foodtags.setText(list.get(position).getTags());
 
 		holder.renqiTextView.setText("" + list.get(position).getVisitcount());
@@ -155,21 +173,21 @@ public class YaoyingyangAdapter extends BaseAdapter {
 
 		holder.taste.setImageResource(ConstantS.LEVEL_POINT[taste]);
 
-		final boolean isCollect=list.get(position).isIscollect();
-		
+		final boolean isCollect = list.get(position).isIscollect();
+
 		if (list.get(position).isIscollect()) {
 			holder.shoucang.setImageResource(R.drawable.shoucang_pressed);
-		}else {
+		} else {
 			holder.shoucang.setImageResource(R.drawable.shoucang_sec);
 		}
-		
+
 		holder.shoucang.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (listener != null) {
-					listener.onCollectClick(adapterPostion,isCollect);
+					listener.onCollectClick(adapterPostion, isCollect);
 				}
 
 			}
@@ -190,7 +208,7 @@ public class YaoyingyangAdapter extends BaseAdapter {
 				&& MainService.getNextHealthRecoderBeans().size() > 0
 				&& adapterPostion < 3) {
 			holder.tuijianImageView.setVisibility(View.VISIBLE);
-		}else {
+		} else {
 			holder.tuijianImageView.setVisibility(View.GONE);
 		}
 
@@ -208,12 +226,15 @@ public class YaoyingyangAdapter extends BaseAdapter {
 		public TextView renqiTextView;
 		public ImageView shoucang;
 		public ImageView tuijianImageView;
+		public View recView;
 	}
 
 	public interface LocationListener {
 		public void onLocationClick(int postion);
+
+		public void onCollectClick(int postion, boolean isCollect);
 		
-		public void onCollectClick(int postion,boolean isCollect);
+		public void on3Click();
 	}
 
 }

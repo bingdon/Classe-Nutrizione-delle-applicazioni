@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.log;
+package com.wyy.myhealth.ui.log;
 
 /**
  * interface for a logger class to replace the static calls to {@link android.util.Log}
  */
 public interface Logger {
-
     /**
      * Send a {@link android.util.Log#VERBOSE} log message.
      *

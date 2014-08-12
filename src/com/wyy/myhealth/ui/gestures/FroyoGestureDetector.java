@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.gesture;
+package com.wyy.myhealth.ui.gestures;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -27,12 +27,16 @@ public class FroyoGestureDetector extends EclairGestureDetector {
 
     public FroyoGestureDetector(Context context) {
         super(context);
-        ScaleGestureDetector.OnScaleGestureListener mScaleListener
-                = new ScaleGestureDetector.OnScaleGestureListener() {
+        ScaleGestureDetector.OnScaleGestureListener mScaleListener = new ScaleGestureDetector.OnScaleGestureListener() {
 
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
-                mListener.onScale(detector.getScaleFactor(),
+                float scaleFactor = detector.getScaleFactor();
+
+                if (Float.isNaN(scaleFactor) || Float.isInfinite(scaleFactor))
+                    return false;
+
+                mListener.onScale(scaleFactor,
                         detector.getFocusX(), detector.getFocusY());
                 return true;
             }

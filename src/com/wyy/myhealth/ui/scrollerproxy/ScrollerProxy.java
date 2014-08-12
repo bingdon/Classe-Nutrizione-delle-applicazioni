@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.scrollerproxy;
+package com.wyy.myhealth.ui.scrollerproxy;
 
 import android.content.Context;
 import android.os.Build.VERSION;
@@ -33,9 +33,8 @@ public abstract class ScrollerProxy {
 
     public abstract boolean computeScrollOffset();
 
-    public abstract void fling(int startX, int startY, int velocityX, int velocityY, int minX,
-            int maxX, int minY,
-            int maxY, int overX, int overY);
+    public abstract void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY,
+                               int maxY, int overX, int overY);
 
     public abstract void forceFinished(boolean finished);
 

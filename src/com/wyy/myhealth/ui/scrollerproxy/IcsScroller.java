@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wyy.myhealth.ui.photoview.scrollerproxy;
+package com.wyy.myhealth.ui.scrollerproxy;
 
 import android.annotation.TargetApi;
 import android.content.Context;

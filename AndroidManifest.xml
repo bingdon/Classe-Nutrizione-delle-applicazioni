@@ -235,6 +235,7 @@
         </activity>
         <activity android:name=".ui.icebox.IceBoxHistory" >
         </activity>
+        <activity android:name=".ui.yaoyingyang.TodayFoodRecActivity"></activity>
     </application>
 
 </manifest>

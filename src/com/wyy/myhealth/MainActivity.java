@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.TypedValue;
@@ -114,8 +115,9 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setCustomView(actionView,
 				new ActionBar.LayoutParams(Gravity.RIGHT));
 		getSupportActionBar().setDisplayShowCustomEnabled(true);
-		getSupportActionBar().setBackgroundDrawable(
-				getResources().getDrawable(R.drawable.actionbar_g_bg));
+		getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.themecolor)));
+//		getSupportActionBar().setBackgroundDrawable(
+//				getResources().getDrawable(R.drawable.actionbar_g_bg));
 		searchView.setOnQueryTextListener(this);
 		help.setOnClickListener(listener);
 	}

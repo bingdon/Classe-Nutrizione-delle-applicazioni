@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.wyy.myhealth.ui.photoview;
 
-
 import com.wyy.myhealth.ui.photoview.PhotoViewAttacher.OnMatrixChangedListener;
 import com.wyy.myhealth.ui.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import com.wyy.myhealth.ui.photoview.PhotoViewAttacher.OnViewTapListener;
@@ -27,9 +26,10 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.widget.ImageView;
 
-
-public class PhotoView extends ClipImageView implements IPhotoView {
+public class PhotoView extends ImageView implements IPhotoView {
 
     private final PhotoViewAttacher mAttacher;
 
@@ -54,9 +54,22 @@ public class PhotoView extends ClipImageView implements IPhotoView {
         }
     }
 
+    /**
+     * @deprecated use {@link #setRotationTo(float)}
+     */
     @Override
     public void setPhotoViewRotation(float rotationDegree) {
-        mAttacher.setPhotoViewRotation(rotationDegree);
+        mAttacher.setRotationTo(rotationDegree);
+    }
+    
+    @Override
+    public void setRotationTo(float rotationDegree) {
+        mAttacher.setRotationTo(rotationDegree);
+    }
+
+    @Override
+    public void setRotationBy(float rotationDegree) {
+        mAttacher.setRotationBy(rotationDegree);
     }
 
     @Override
@@ -247,6 +260,21 @@ public class PhotoView extends ClipImageView implements IPhotoView {
     @Override
     public Bitmap getVisibleRectangleBitmap() {
         return mAttacher.getVisibleRectangleBitmap();
+    }
+
+    @Override
+    public void setZoomTransitionDuration(int milliseconds) {
+        mAttacher.setZoomTransitionDuration(milliseconds);
+    }
+
+    @Override
+    public IPhotoView getIPhotoViewImplementation() {
+        return mAttacher;
+    }
+
+    @Override
+    public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener newOnDoubleTapListener) {
+        mAttacher.setOnDoubleTapListener(newOnDoubleTapListener);
     }
 
     @Override
