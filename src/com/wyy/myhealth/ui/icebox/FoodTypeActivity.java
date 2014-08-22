@@ -25,6 +25,13 @@ public class FoodTypeActivity extends SaveActivity implements ActivityInterface 
 	}
 
 	@Override
+	protected void onInitActionBar() {
+		// TODO Auto-generated method stub
+		super.onInitActionBar();
+		getSupportActionBar().setTitle(R.string.food_type);
+	}
+	
+	@Override
 	protected void submitMsg() {
 		// TODO Auto-generated method stub
 		Intent intent = new Intent(context, IceBoxAddFood.class);

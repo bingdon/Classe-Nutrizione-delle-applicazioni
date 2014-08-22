@@ -19,6 +19,14 @@ public class FeedbackActivity extends SubmitActivity implements ActivityInterfac
 	private EditText content;
 	
 	private EditText contacts;
+	
+	@Override
+	protected void onInitActionBar() {
+		// TODO Auto-generated method stub
+		super.onInitActionBar();
+		getSupportActionBar().setTitle(R.string.feedback);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

@@ -5,8 +5,9 @@
 
     <ImageView
         android:id="@+id/shai_pic_muilt"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="top"
         android:scaleType="centerCrop" />
 
 </FrameLayout>

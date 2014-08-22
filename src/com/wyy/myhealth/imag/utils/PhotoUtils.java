@@ -137,8 +137,8 @@ public class PhotoUtils {
 
 	// 图片上传选择途径
 	public static void secPic(final Activity context) {
-		final CharSequence[] items = { "相册", "拍照" };
-		AlertDialog dlg = new AlertDialog.Builder(context).setTitle("选择图片")
+		final CharSequence[] items = {context.getString(R.string.photo), context.getString(R.string.takepic) };
+		AlertDialog dlg = new AlertDialog.Builder(context).setTitle(R.string.gl_choose_title)
 				.setItems(items, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
 						// 这里item是根据选择的方式，

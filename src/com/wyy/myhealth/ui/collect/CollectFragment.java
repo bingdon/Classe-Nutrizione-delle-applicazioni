@@ -24,24 +24,26 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.ListDataBead;
+import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.db.utils.CollectDatabaseUtils;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.ui.absfragment.ListBaseFragment;
-import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter.ShaiItemOnclickListener;
+import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter2.ShaiItemOnclickListener;
+import com.wyy.myhealth.ui.absfragment.utils.TimeUtility;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
 
 public class CollectFragment extends ListBaseFragment implements
-		ShaiItemOnclickListener, OnItemClickListener, IXListViewListener,
-		OnRefreshListener {
+		OnItemClickListener, IXListViewListener, OnRefreshListener,
+		ShaiItemOnclickListener {
 
 	@Override
 	protected void initView(View v) {
 		// TODO Auto-generated method stub
 		super.initView(v);
-		mAdapter.setOnClickListener(this);
+		mAdapter2.setListener(this);
 		mListView.setOnItemClickListener(this);
 		mListView.setXListViewListener(this);
 		mRefreshLayout.setOnRefreshListener(this);
@@ -71,32 +73,28 @@ public class CollectFragment extends ListBaseFragment implements
 				.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.delcollect:
-			if (thList.get(info.position).containsKey("moodsid")) {
-				HealthHttpClient.doHttpdelMood(
-						thList.get(info.position).get("moodsid").toString(),
-						new DelAsyHander(info.position));
+			if (thList2.get(info.position).getType() == ConstantS.TYPE_MOOD) {
+				HealthHttpClient.doHttpdelMood(thList2.get(info.position)
+						.getId(), new DelAsyHander(info.position));
 
 			}
 
-			if (thList.get(info.position).containsKey("foodsid")) {
-				HealthHttpClient.doHttpdelFoods(
-						thList.get(info.position).get("foodsid").toString(),
-						new DelAsyHander(info.position));
+			if (thList2.get(info.position).getType() == ConstantS.TYPE_FOOD) {
+				HealthHttpClient.doHttpdelFoods(thList2.get(info.position)
+						.getId(), new DelAsyHander(info.position));
 			}
 
 			break;
 
 		case R.id.shaiyisai:
 
-			if (thList.get(info.position).containsKey("moodsid")) {
-				shaiMoodsshai(thList.get(info.position).get("moodsid")
-						.toString());
+			if (thList2.get(info.position).getType() == ConstantS.TYPE_MOOD) {
+				shaiMoodsshai(thList2.get(info.position).getId());
 
 			}
 
-			if (thList.get(info.position).containsKey("foodsid")) {
-				shaiFoodsshai(thList.get(info.position).get("foodsid")
-						.toString());
+			if (thList2.get(info.position).getType() == ConstantS.TYPE_FOOD) {
+				shaiFoodsshai(thList2.get(info.position).getId());
 			}
 
 			break;
@@ -165,10 +163,15 @@ public class CollectFragment extends ListBaseFragment implements
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			thList.remove(this.postion);
-			mAdapter.notifyDataSetChanged();
-			Toast.makeText(getActivity(), R.string.delsuccess,
-					Toast.LENGTH_LONG).show();
+			thList2.remove(this.postion);
+			mAdapter2.notifyDataSetChanged();
+			try {
+				Toast.makeText(getActivity(), R.string.delsuccess,
+						Toast.LENGTH_LONG).show();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
 		}
 
 		@Override
@@ -234,7 +237,11 @@ public class CollectFragment extends ListBaseFragment implements
 		if (TextUtils.isEmpty(json)) {
 			reshShayiSai("0", limit);
 		} else {
-			pareseJson(json);
+			try {
+				reshParseJson(new JSONObject(json));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 			reshShayiSai("0", limit);
 		}
 	}
@@ -252,12 +259,6 @@ public class CollectFragment extends ListBaseFragment implements
 	}
 
 	@Override
-	public void onZanClick(int position) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onCollectClick(int position) {
 		// TODO Auto-generated method stub
 
@@ -266,10 +267,9 @@ public class CollectFragment extends ListBaseFragment implements
 	@Override
 	public void onPicClick(int listPostino, int picPostion) {
 		// TODO Auto-generated method stub
-		if (thList.get(listPostino).containsKey("grid_pic")) {
-			@SuppressWarnings("unchecked")
-			List<String> list = (List<String>) thList.get(listPostino).get(
-					"grid_pic");
+		if (thList2.get(listPostino).getImg() != null) {
+			List<String> list = (List<String>) thList2.get(listPostino)
+					.getImg();
 			Intent intent = new Intent();
 			intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
 			intent.putExtra("postion", picPostion);
@@ -282,9 +282,9 @@ public class CollectFragment extends ListBaseFragment implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		if (thList.get(position).containsKey("foodsid")) {
-			PreferencesFoodsInfo.setfoodId(getActivity(), thList.get(position)
-					.get("foodsid") + "");
+		if (thList2.get(position).getType() == ConstantS.TYPE_FOOD) {
+			PreferencesFoodsInfo.setfoodId(getActivity(), thList2.get(position)
+					.getId());
 			startActivity(new Intent(getActivity(), FoodDetailsActivity.class));
 		}
 	}
@@ -305,22 +305,35 @@ public class CollectFragment extends ListBaseFragment implements
 		}
 	}
 
-	
 	@Override
 	protected void getLoadMore(String first, String limit) {
 		// TODO Auto-generated method stub
 		super.getLoadMore(first, limit);
-		HealthHttpClient.userCollects(WyyApplication.getInfo().getId(),
-				first, limit, parseHandler);
+		// HealthHttpClient.userCollects(WyyApplication.getInfo().getId(),
+		// first, limit, parseHandler);
+		HealthHttpClient.userCollects20(WyyApplication.getInfo().getId(),
+				first, limit, reshHandler2);
 	}
-	
-	
+
 	@Override
 	protected void reshShayiSai(String first, String limit) {
 		// TODO Auto-generated method stub
 		super.reshShayiSai(first, limit);
-		HealthHttpClient.userCollects(WyyApplication.getInfo().getId(),
-				first, limit, reshHandler);
+		// HealthHttpClient.userCollects(WyyApplication.getInfo().getId(),
+		// first, limit, reshHandler);
+		HealthHttpClient.userCollects20(WyyApplication.getInfo().getId(),
+				first, limit, loadMoreHandler);
 	}
-	
+
+	@Override
+	protected void arrangeDayMonth() {
+		// TODO Auto-generated method stub
+		super.arrangeDayMonth();
+		int length = thList2.size();
+		for (int i = 0; i < length; i++) {
+			thList2.get(i).setCn_time(
+					TimeUtility.getListTime(thList2.get(i).getCreatetime()));
+		}
+	}
+
 }

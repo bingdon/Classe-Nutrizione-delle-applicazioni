@@ -8,6 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import com.wyy.myhealth.bean.Foods;
 import com.wyy.myhealth.bean.HealthRecoderBean;
 import com.wyy.myhealth.bean.IceBoxFoodBean;
+import com.wyy.myhealth.bean.MoodaFoodBean;
 import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.config.Config;
@@ -189,13 +190,12 @@ public class JsonUtils {
 		return iceBoxFoodBean;
 
 	}
-	
-	
+
 	public static IceBoxFoodBean getIceBox4ProFoodBean(String content) {
 		IceBoxFoodBean iceBoxFoodBean = new IceBoxFoodBean();
 		try {
 			JSONObject jsonObject = new JSONObject(content);
-			JSONObject object=jsonObject.getJSONObject("foods");
+			JSONObject object = jsonObject.getJSONObject("foods");
 			iceBoxFoodBean = new Gson().fromJson(object.toString(),
 					IceBoxFoodBean.class);
 		} catch (Exception e) {
@@ -209,6 +209,22 @@ public class JsonUtils {
 		return iceBoxFoodBean;
 
 	}
-	
+
+	public static MoodaFoodBean getMoodaFoodBean(JSONObject object) {
+		MoodaFoodBean moodaFoodBean = new MoodaFoodBean();
+		try {
+			moodaFoodBean = new Gson().fromJson(object.toString(),
+					MoodaFoodBean.class);
+		} catch (Exception e) {
+			// TODO: handle exception
+			if (Config.DEVELOPER_MODE) {
+				e.printStackTrace();
+				BingLog.e(TAG, "½âÎö´íÎó");
+			}
+		}
+
+		return moodaFoodBean;
+
+	}
 
 }

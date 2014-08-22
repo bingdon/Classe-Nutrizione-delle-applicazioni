@@ -81,10 +81,11 @@ public class NoticeUtils {
 					System.currentTimeMillis());
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
 			notification.defaults = Notification.DEFAULT_SOUND;
-			notification.setLatestEventInfo(context, "Î¢ÓªÑø", message,
+			notification.setLatestEventInfo(context, context.getString(R.string.app_name), message,
 					pendingIntent);
 			notificationManager.notify(ConstantS.NEW_FOOD_COMMENT, id,
 					notification);
+			context.sendBroadcast(new Intent(ConstantS.NEW_FOOD_COMMENT));
 			break;
 
 		case ConstantS.PUBLISH_MOOD_ID:

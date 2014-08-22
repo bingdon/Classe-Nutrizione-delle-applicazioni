@@ -7,6 +7,7 @@ import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.IceBoxFoodBean;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.imag.utils.LoadImageUtils;
+import com.wyy.myhealth.ui.absfragment.utils.TimeUtility;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -81,7 +82,7 @@ public class IceBoxChildAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		final int realPosition=position;
+		final int realPosition = position;
 		ViewHolder holder = null;
 		if (convertView == null) {
 			holder = new ViewHolder();
@@ -99,24 +100,32 @@ public class IceBoxChildAdapter extends BaseAdapter {
 					.findViewById(R.id.ice_box_food_lable);
 			holder.line = (ImageView) convertView.findViewById(R.id.ImageView1);
 			holder.energytxt = (TextView) convertView.findViewById(R.id.enager);
-			holder.delete=(ImageView)convertView.findViewById(R.id.delete);
+			holder.delete = (ImageView) convertView.findViewById(R.id.delete);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		
 		if (IceBoxActivity.isIsvisible()) {
 			holder.delete.setVisibility(View.VISIBLE);
-		}else {
+		} else {
 			holder.delete.setVisibility(View.GONE);
 		}
-		
+
+		int left = leftday(list.get(position));
+		if (left < 0) {
+			holder.datenotice.setImageResource(R.drawable.ic_error);
+		} else if (left == 0) {
+			holder.datenotice.setImageResource(R.drawable.ic_warn);
+		} else {
+			holder.datenotice.setImageResource(R.drawable.ic_normal);
+		}
+
 		holder.foodname.setText("" + list.get(position).getName());
-		holder.fooddate.setText("" + list.get(position).getNumday() + "Ìì");
+		holder.fooddate.setText(countDay(left));
 		try {
 
-			int point = Integer.valueOf(list.get(position).getEnergy());
+			int point = list.get(position).getEnergy();
 			Drawable drawable = null;
 			switch (point) {
 			case 0:
@@ -199,19 +208,18 @@ public class IceBoxChildAdapter extends BaseAdapter {
 			break;
 		}
 
-		
 		holder.delete.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (picClickListener!=null) {
+				if (picClickListener != null) {
 					picClickListener.delFood(realPosition, type);
 				}
-				
+
 			}
 		});
-		
+
 		return convertView;
 	}
 
@@ -229,12 +237,27 @@ public class IceBoxChildAdapter extends BaseAdapter {
 		public ImageView line;
 
 		public TextView energytxt;
-		
+
 		public ImageView delete;
 	}
 
 	public interface DelPicClickListener {
-		public void delFood(int postion,int type);
+		public void delFood(int postion, int type);
+	}
+
+	private String countDay(int left) {
+		if (left < 0) {
+			return context.getString(R.string.expired);
+		} else {
+			return left + context.getString(R.string.day_);
+		}
+
+	}
+
+	private int leftday(IceBoxFoodBean iceBoxFoodBean) {
+		int left = Integer.valueOf(iceBoxFoodBean.getNumday())
+				- TimeUtility.getday2now(iceBoxFoodBean.getCreatetime());
+		return left;
 	}
 
 }

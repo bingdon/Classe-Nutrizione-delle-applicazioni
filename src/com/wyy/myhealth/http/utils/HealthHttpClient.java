@@ -15,8 +15,8 @@ import com.wyy.myhealth.utils.BingLog;
  */
 public class HealthHttpClient {
 
-//	public static final String URL = "http://115.28.164.99:7001/S_health/";
-	
+	// public static final String URL = "http://115.28.164.99:7001/S_health/";
+
 	public static final String URL = "http://115.28.164.99:7002/S_health/";
 
 	/**
@@ -43,7 +43,7 @@ public class HealthHttpClient {
 	/**
 	 * 应用下载地址
 	 */
-	public static final String APP_URL = "http://115.28.164.99:7001/S_health/version/";
+	public static final String APP_URL = BASE_URL + "version/";
 
 	private static final String ICE_BOX = BASE_URL + "userIcebox";
 
@@ -54,6 +54,28 @@ public class HealthHttpClient {
 	private static final String DEL_COLLECT_FOOD = BASE_URL + "delCollect";
 
 	private static final String REPLY_COMMENT = BASE_URL + "postMoodComment";
+
+	private static final String TOP_TEN_FOOD = BASE_URL + "top10dayBefore";
+
+	private static final String GET_DAVER_FOOD = BASE_URL + "listAdvertise";
+
+	private static final String REGIST_BY_PHONE = BASE_URL + "registerByphone";
+
+	private static final String LOGIN_BY_PHONE_NUM = BASE_URL + "loginByphone";
+
+	private static final String GET_FOOD_DETAILS = BASE_URL + "showFoodInfo";
+
+	private static final String GET_FOOD_PUSH = BASE_URL + "pushFoods";
+
+	private static final String GET_USER_AIRED = BASE_URL + "userAired20";
+
+	private static final String GET_SHAI_SHAI = BASE_URL + "aired20";
+
+	private static final String GET_COLLECT_MINE = BASE_URL + "userCollects20";
+
+	private static final String GET_MOOD_INFO = BASE_URL + "moodInfo";
+
+	private static final String GET_MOOD_INFO_ = BASE_URL + "airedInfo20";
 
 	private volatile static HealthHttpClient instance = null;
 
@@ -262,6 +284,11 @@ public class HealthHttpClient {
 		client.post(BASE_URL + "postFoods", params, handler);
 	}
 
+	/**
+	 * @deprecated
+	 * @param userId
+	 * @param handler
+	 */
 	public static void doHttpUserFoodsAndMoods(String userId,
 			AsyncHttpResponseHandler handler) {
 		RequestParams params = new RequestParams();
@@ -602,6 +629,7 @@ public class HealthHttpClient {
 	/**
 	 * 分页获取晒一晒内容
 	 * 
+	 * @deprecated
 	 * @param handler
 	 */
 	public static void doHttpGetShayiSai(String first, String limit,
@@ -610,6 +638,42 @@ public class HealthHttpClient {
 		params.put("first", first);
 		params.put("limit", limit);
 		client.post(BASE_URL + "userAiredFoodsAndMoods", params, handler);
+	}
+
+	/**
+	 * 获取晒一晒内容
+	 * 
+	 * @param userid
+	 * @param first
+	 * @param limit
+	 * @param handler
+	 */
+	public static void aired20(String userid, String first, String limit,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("first", first);
+		params.put("limit", limit);
+		client.post(GET_SHAI_SHAI, params, handler);
+	}
+
+	/**
+	 * 搜索晒一晒
+	 * 
+	 * @param userid
+	 * @param first
+	 * @param limit
+	 * @param txt
+	 * @param handler
+	 */
+	public static void aired20(String userid, String first, String limit,
+			String txt, AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("first", first);
+		params.put("limit", limit);
+		params.put("txt", txt);
+		client.post(GET_SHAI_SHAI, params, handler);
 	}
 
 	/**
@@ -723,6 +787,7 @@ public class HealthHttpClient {
 	/**
 	 * 新健康周
 	 * 
+	 * @deprecated
 	 * @param userid
 	 *            用户ID
 	 * @param first
@@ -742,8 +807,29 @@ public class HealthHttpClient {
 	}
 
 	/**
+	 * @author lyl {@inheritDoc}
+	 * @param userid
+	 *            用户ID
+	 * @param first
+	 *            开始
+	 * @param limit
+	 *            数量
+	 * @param handler
+	 *            返回处理
+	 */
+	public static void userAired20(String userid, String first, String limit,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("first", first);
+		params.put("limit", limit);
+		client.post(GET_USER_AIRED, params, handler);
+	}
+
+	/**
 	 * 我的收藏
 	 * 
+	 * @deprecated
 	 * @param userid
 	 *            用户ID
 	 * @param first
@@ -760,7 +846,27 @@ public class HealthHttpClient {
 		params.put("first", first);
 		params.put("limit", limit);
 		client.post(BASE_URL + "userCollects", params, handler);
-		// client.post(BASE_URL + "userCollects", handler);
+	}
+
+	/**
+	 * 我的收藏
+	 * 
+	 * @param userid
+	 *            用户ID
+	 * @param first
+	 *            开始
+	 * @param limit
+	 *            数量
+	 * @param handler
+	 *            返回处理
+	 */
+	public static void userCollects20(String userid, String first,
+			String limit, AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		params.put("first", first);
+		params.put("limit", limit);
+		client.post(GET_COLLECT_MINE, params, handler);
 	}
 
 	/**
@@ -788,6 +894,7 @@ public class HealthHttpClient {
 	 *            用户ID
 	 * @param handler
 	 *            返回处理
+	 * @deprecated
 	 */
 	public static void cmpFoodPic(String foodpicStr, String userid,
 			AsyncHttpResponseHandler handler) {
@@ -799,8 +906,33 @@ public class HealthHttpClient {
 	}
 
 	/**
+	 * 上传图片对比
+	 * 
+	 * @param foodpicStr
+	 *            图片
+	 * @param userid
+	 *            用户ID
+	 * @param fn
+	 *            特征值
+	 * @param cw
+	 *            阈值
+	 * @param handler
+	 */
+	public static void cmpFoodPic(String foodpicStr, String userid, int fn,
+			double cw, AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("foodpicStr", foodpicStr);
+		params.put("userid", userid);
+		params.put("fn", "" + fn);
+		params.put("cw", "" + cw);
+		client.post(BASE_URL + "cmpFoodpic", params, handler);
+
+	}
+
+	/**
 	 * 心情详情
 	 * 
+	 * @deprecated
 	 * @param moodid
 	 * @param handler
 	 */
@@ -808,7 +940,24 @@ public class HealthHttpClient {
 			AsyncHttpResponseHandler handler) {
 		RequestParams params = new RequestParams();
 		params.put("moodid", moodid);
-		client.post(BASE_URL + "moodInfo", params, handler);
+		client.post(GET_MOOD_INFO, params, handler);
+	}
+
+	/**
+	 * 心情详情
+	 * 
+	 * @param userid
+	 *            用户ID
+	 * @param moodid
+	 *            心情ID
+	 * @param handler
+	 */
+	public static void getMoodInfo(String userid, String moodid,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("id", moodid);
+		params.put("userid", userid);
+		client.post(GET_MOOD_INFO_, params, handler);
 	}
 
 	public static void getHealthRecorder(String userid, String first,
@@ -887,12 +1036,77 @@ public class HealthHttpClient {
 
 	public static void postComment(String userid, String commentid,
 			String content, String foodid, AsyncHttpResponseHandler handler) {
-		RequestParams params=new RequestParams();
+		RequestParams params = new RequestParams();
 		params.put("foodid", foodid);
 		params.put("content", content);
 		params.put("userid", userid);
 		params.put("commentid", commentid);
 		client.post(BASE_URL + "postFoodComment", params, handler);
+	}
+
+	public static void gettop10dayBefore(String userid,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("userid", userid);
+		client.post(TOP_TEN_FOOD, params, handler);
+	}
+
+	public static void getListAdvertise(AsyncHttpResponseHandler handler) {
+		client.post(GET_DAVER_FOOD, handler);
+	}
+
+	/**
+	 * 通过手机号注册
+	 * 
+	 * @param mobilenum
+	 *            手机号
+	 * @param password
+	 *            密码
+	 * @param handler
+	 */
+	public static void registerByphone(String mobilenum, String password,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("mobilenum", mobilenum);
+		params.put("password", password);
+		client.post(REGIST_BY_PHONE, params, handler);
+	}
+
+	/**
+	 * 登陆
+	 * 
+	 * @param mobilenum
+	 * @param password
+	 * @param handler
+	 */
+	public static void loginByphone(String mobilenum, String password,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("mobilenum", mobilenum);
+		params.put("password", password);
+		client.post(LOGIN_BY_PHONE_NUM, params, handler);
+	}
+
+	/**
+	 * 获得食物详情
+	 * 
+	 * @param foodid
+	 * @param handler
+	 */
+	public static void getFoodDetails(String foodid,
+			AsyncHttpResponseHandler handler) {
+		RequestParams params = new RequestParams();
+		params.put("foodid", foodid);
+		client.post(GET_FOOD_DETAILS, params, handler);
+	}
+
+	/**
+	 * 获得推荐食物
+	 * 
+	 * @param handler
+	 */
+	public static void pushFoods(AsyncHttpResponseHandler handler) {
+		client.post(GET_FOOD_PUSH, handler);
 	}
 
 }

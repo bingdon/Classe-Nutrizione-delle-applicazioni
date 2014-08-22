@@ -2,7 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/FrameLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/action_sec"
+    android:clickable="true" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="50dp"
+        android:src="@color/gray" />
 
     <ImageView
         android:layout_width="70dp"
@@ -35,11 +43,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:src="@drawable/click_more" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
 </FrameLayout>

@@ -1,5 +1,6 @@
 package com.wyy.myhealth.ui.baseactivity;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.wyy.myhealth.R;
@@ -11,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewConfiguration;
 import android.view.Window;
 
 public class BaseActivity extends ActionBarActivity {
@@ -26,6 +28,7 @@ public class BaseActivity extends ActionBarActivity {
 		onInitActionBar();
 		onInitUI();
 		onInitFragment();
+		setCusmenutome();
 	}
 
 	protected void onInitFragment() {
@@ -83,6 +86,17 @@ public class BaseActivity extends ActionBarActivity {
 		return super.onMenuOpened(featureId, menu);
 	}
 
-	
+	private void setCusmenutome() {
+		try {
+			ViewConfiguration mconfig = ViewConfiguration.get(this);
+			Field menuKeyField = ViewConfiguration.class
+					.getDeclaredField("sHasPermanentMenuKey");
+			if (menuKeyField != null) {
+				menuKeyField.setAccessible(true);
+				menuKeyField.setBoolean(mconfig, false);
+			}
+		} catch (Exception ex) {
+		}
+	}
 
 }

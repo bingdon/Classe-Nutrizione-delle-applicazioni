@@ -31,13 +31,12 @@
         app:showAsAction="always">
     </item>
     <item
-        android:id="@+id/canel"
+        android:id="@+id/resh"
         android:orderInCategory="105"
-        android:title="@string/canelcomment">
+        android:title="@string/resh">
     </item>
     <item
         android:id="@+id/loopmap"
-   		android:icon="@android:drawable/ic_dialog_map"
    		 android:orderInCategory="106"
         android:title="@string/loopmap">
     </item>

@@ -134,7 +134,7 @@ public class BaseNutritionActivity extends BaseActivity {
 		if (score == 0) {
 			return;
 		}
-		energyimgs.setBackgroundResource(energyimg[score - 1]);
+		energyimgs.setBackgroundResource(energyimg[score]);
 
 		if (ishasScale) {
 //			energyimgs.startAnimation(scaleAnimation);

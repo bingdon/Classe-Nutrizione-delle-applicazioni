@@ -7,7 +7,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.wyy.myhealth.bean.Foods;
 import com.wyy.myhealth.bean.PersonalInfo;
-
+/**
+ * @deprecated
+ * @author lyl
+ *
+ */
 public class JsonUtils {
 
 	/**

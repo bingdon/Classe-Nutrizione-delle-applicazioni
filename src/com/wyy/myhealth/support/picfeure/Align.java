@@ -71,7 +71,6 @@ import java.util.Collections;
 import java.util.List;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import mpi.cbg.fly.Feature;
 import mpi.cbg.fly.Filter;
 import mpi.cbg.fly.FloatArray2D;
@@ -98,12 +97,15 @@ public class Align {
     private static int max_size = 256;
 
     // minimal allowed alignment error in px
-    private static float min_epsilon = 2.0f;
+    @SuppressWarnings("unused")
+	private static float min_epsilon = 2.0f;
 
     // maximal allowed alignment error in px
-    private static float max_epsilon = 100.0f;
+    @SuppressWarnings("unused")
+	private static float max_epsilon = 100.0f;
 
-    private static float min_inlier_ratio = 0.05f;
+    @SuppressWarnings("unused")
+	private static float min_inlier_ratio = 0.05f;
 
     static final public int MIN_SET_SIZE = 2;
 

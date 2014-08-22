@@ -69,7 +69,7 @@ public class DistanceUtils {
 	    s *= 6378137.0D;
 	    s = Math.round(s * 10000.0D) / 10000L;
 	    
-	    s=changep2(s);
+	    s=changep2(s/1000);
 	    
 	    return s;
 	  }

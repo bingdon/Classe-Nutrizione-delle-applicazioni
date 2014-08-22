@@ -2,7 +2,8 @@ package com.wyy.myhealth.ui.shaiyishai;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import org.json.JSONObject;
 
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -18,21 +19,25 @@ import android.widget.Toast;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
+import com.wyy.myhealth.bean.CommentBean;
 import com.wyy.myhealth.bean.ListDataBead;
+import com.wyy.myhealth.bean.MoodaFoodBean;
+import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.db.utils.ShaiDatebaseUtils;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.support.collect.CollectUtils;
 import com.wyy.myhealth.ui.absfragment.ListBaseFragment;
-import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter.ShaiItemOnclickListener;
+import com.wyy.myhealth.ui.absfragment.adapter.ShaiYiSaiAdapter2.ShaiItemOnclickListener;
+import com.wyy.myhealth.ui.absfragment.utils.TimeUtility;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
 import com.wyy.myhealth.utils.BingLog;
 
 public class ShaiyishaiFragment extends ListBaseFragment implements
-		ShaiItemOnclickListener, OnRefreshListener, IXListViewListener,
-		OnItemClickListener {
+		OnRefreshListener, IXListViewListener, OnItemClickListener,
+		ShaiItemOnclickListener {
 
 	// 数据库ID
 	private int _id = 0;
@@ -47,6 +52,17 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	// 心情ID
 	private String shaimoodsid = "";
 
+	private MoodaFoodBean adversie;
+
+	private String key = "";
+	
+
+	public void setKey(String key) {
+		this.key = key;
+		thList2.clear();
+		mAdapter2.notifyDataSetChanged();
+	}
+
 	public View getSendView() {
 		return sendView;
 	}
@@ -59,7 +75,7 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		mRefreshLayout.setOnRefreshListener(this);
 		mListView.setXListViewListener(this);
 		initSendView(sendView);
-		mAdapter.setOnClickListener(this);
+		mAdapter2.setListener(this);
 		mListView.setOnItemClickListener(this);
 	}
 
@@ -88,7 +104,12 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		if (TextUtils.isEmpty(json)) {
 			reshShayiSai("0", limit);
 		} else {
-			pareseJson(json);
+			try {
+				reshParseJson(new JSONObject(json));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
 			reshShayiSai("0", limit);
 
 		}
@@ -125,20 +146,28 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	protected void reshShayiSai(String first, String limit) {
 		// TODO Auto-generated method stub
 		super.reshShayiSai(first, limit);
-		HealthHttpClient.doHttpGetShayiSai(first, limit, reshHandler);
+		// HealthHttpClient.doHttpGetShayiSai(first, limit, reshHandler);
+		if (adversie!=null&&thList2.size()>1) {
+			thList2.remove(2);
+			this.first=thList2.size();
+		}
+		HealthHttpClient.aired20(WyyApplication.getInfo().getId(), first,
+				limit, key, reshHandler2);
 	}
 
 	@Override
 	protected void getLoadMore(String first, String limit) {
 		// TODO Auto-generated method stub
 		super.getLoadMore(first, limit);
-		HealthHttpClient.doHttpGetShayiSai(first, limit, parseHandler);
+		// HealthHttpClient.doHttpGetShayiSai(first, limit, parseHandler);
+		HealthHttpClient.aired20(WyyApplication.getInfo().getId(), first,
+				limit, key, loadMoreHandler);
 	}
 
 	@Override
 	public void onUserPicClick(int position) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -146,13 +175,12 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 		// TODO Auto-generated method stub
 
 		this.postion = position;
-		if (thList.get(position).containsKey("foodsid")) {
-			shaiFoodsid = thList.get(position).get("foodsid").toString();
+		if (thList2.get(position).getType() == ConstantS.TYPE_FOOD) {
+			shaiFoodsid = thList2.get(position).getId();
 			shaimoodsid = "";
 
-		} else if (thList.get(position).containsKey("moodsid")) {
-			BingLog.i(TAG, "" + thList.get(position).get("moodsid"));
-			shaimoodsid = thList.get(position).get("moodsid").toString();
+		} else if (thList2.get(position).getType() == ConstantS.TYPE_MOOD) {
+			shaimoodsid = thList2.get(position).getId();
 			shaiFoodsid = "";
 
 		}
@@ -161,21 +189,15 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	}
 
 	@Override
-	public void onZanClick(int position) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onCollectClick(int position) {
 		// TODO Auto-generated method stub
 
-		if (thList.get(position).containsKey("foodsid")) {
-			String foodsid = thList.get(position).get("foodsid").toString();
+		if (thList2.get(position).getType() == ConstantS.TYPE_FOOD) {
+			String foodsid = thList2.get(position).getId();
 			CollectUtils.collectFood(foodsid, getActivity());
 
-		} else if (thList.get(position).containsKey("moodsid")) {
-			String moodsid = thList.get(position).get("moodsid").toString();
+		} else if (thList2.get(position).getType() == ConstantS.TYPE_MOOD) {
+			String moodsid = thList2.get(position).getId();
 			CollectUtils.postMoodCollect(moodsid, getActivity());
 		}
 	}
@@ -183,16 +205,19 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	@Override
 	public void onPicClick(int listPostino, int picPostion) {
 		// TODO Auto-generated method stub
-		if (thList.get(listPostino).containsKey("grid_pic")) {
-			@SuppressWarnings("unchecked")
-			List<String> list = (List<String>) thList.get(listPostino).get(
-					"grid_pic");
-			Intent intent = new Intent();
-			intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
-			intent.putExtra("postion", picPostion);
-			intent.setClass(getActivity(), PhotoPagerActivity.class);
-			startActivity(intent);
+		try {
+			if (thList2.get(listPostino).getImg() != null) {
+				List<String> list = thList2.get(listPostino).getImg();
+				Intent intent = new Intent();
+				intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
+				intent.putExtra("postion", picPostion);
+				intent.setClass(getActivity(), PhotoPagerActivity.class);
+				startActivity(intent);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+		
 	}
 
 	private void initSendView(View v) {
@@ -263,18 +288,24 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			// TODO Auto-generated method stub
 			super.onStart();
 
-			Map<String, Object> map = thList.get(postion);
-			String lastcommentString = map.get("comment") + "";
-			if (!TextUtils.isEmpty("" + map.get("comment"))) {
-				lastcommentString = lastcommentString + "\n";
-			}
-			
-			thList.get(postion).put(
-					"comment",
-					lastcommentString + WyyApplication.getInfo().getUsername()
-							+ ":" + sendEditText.getText().toString());
+			CommentBean commentBean = new CommentBean();
+			commentBean.setContent(sendEditText.getText().toString());
+			commentBean.setUser(WyyApplication.getInfo());
+			thList2.get(postion).getComment().add(commentBean);
+			mAdapter2.notifyDataSetChanged();
 
-			mAdapter.notifyDataSetChanged();
+			// Map<String, Object> map = thList.get(postion);
+			// String lastcommentString = map.get("comment") + "";
+			// if (!TextUtils.isEmpty("" + map.get("comment"))) {
+			// lastcommentString = lastcommentString + "\n";
+			// }
+			//
+			// thList.get(postion).put(
+			// "comment",
+			// lastcommentString + WyyApplication.getInfo().getUsername()
+			// + ":" + sendEditText.getText().toString());
+			//
+			// mAdapter.notifyDataSetChanged();
 
 			// sendButton.setEnabled(false);
 			// sendButton.setBackgroundColor(getResources().getColor(
@@ -302,6 +333,9 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
 			BingLog.i(TAG, "返回:" + content);
+			if (null==getActivity()) {
+				return;
+			}
 			Toast.makeText(getActivity(), R.string.comment_success_,
 					Toast.LENGTH_LONG).show();
 			// sendEditText.setText("");
@@ -332,6 +366,10 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		if (!loadflag) {
+			if (adversie != null) {
+				thList2.remove(2);
+				first = thList2.size();
+			}
 			getLoadMore("" + first, limit);
 		}
 	}
@@ -340,12 +378,40 @@ public class ShaiyishaiFragment extends ListBaseFragment implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		if (thList.get(position).containsKey("foodsid")) {
-			PreferencesFoodsInfo.setfoodId(getActivity(), thList.get(position)
-					.get("foodsid") + "");
+		if (thList2.get(position).getType() == ConstantS.TYPE_FOOD) {
+			PreferencesFoodsInfo.setfoodId(getActivity(), thList2.get(position)
+					.getId());
 			startActivity(new Intent(getActivity(), FoodDetailsActivity.class));
 		}
 
 	}
 
+	public void addAdversie(MoodaFoodBean mBean) {
+		BingLog.i(TAG, "添加:"+mBean);
+		adversie = mBean;
+		thList2.add(2, mBean);
+		mAdapter2.notifyDataSetChanged();
+
+	}
+
+	@Override
+	protected void addGg() {
+		// TODO Auto-generated method stub
+		super.addGg();
+		if (adversie != null&&thList2.size()>1) {
+			thList2.add(2, adversie);
+		}
+
+	}
+
+	@Override
+	protected void arrangeDayMonth() {
+		// TODO Auto-generated method stub
+		super.arrangeDayMonth();
+		int length = thList2.size();
+		for (int i = 0; i < length; i++) {
+			thList2.get(i).setCn_time(
+					TimeUtility.getListTime(thList2.get(i).getCreatetime()));
+		}
+	}
 }

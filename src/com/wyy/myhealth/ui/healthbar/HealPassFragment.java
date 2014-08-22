@@ -42,19 +42,24 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
+import com.wyy.myhealth.bean.MoodaFoodBean;
+import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.file.utils.FileUtils;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.imag.utils.PhotoUtils;
 import com.wyy.myhealth.ui.absfragment.HealthPassBase;
-import com.wyy.myhealth.ui.absfragment.adapter.HealthAdapter.ShaiItemOnclickListener;
+import com.wyy.myhealth.ui.absfragment.adapter.HealthAdapter2.ShaiItemOnclickListener;
 import com.wyy.myhealth.ui.customview.BingListView.IXListViewListener;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
+import com.wyy.myhealth.ui.mood.MoodDetailsActivity;
 import com.wyy.myhealth.ui.photoPager.PhotoPagerActivity;
+import com.wyy.myhealth.utils.BingDateUtils;
 import com.wyy.myhealth.utils.BingLog;
 
 public class HealPassFragment extends HealthPassBase implements
-		OnRefreshListener, IXListViewListener, OnItemClickListener, ShaiItemOnclickListener {
+		OnRefreshListener, IXListViewListener, OnItemClickListener,
+		ShaiItemOnclickListener {
 
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 
@@ -88,7 +93,12 @@ public class HealPassFragment extends HealthPassBase implements
 		if (TextUtils.isEmpty(json)) {
 			reshShayiSai("0", limit);
 		} else {
-			pareseJson(json);
+			try {
+				reshParseJson(new JSONObject(json));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
 			reshShayiSai("0", limit);
 
 		}
@@ -115,8 +125,9 @@ public class HealPassFragment extends HealthPassBase implements
 		}
 
 		mListView.setOnItemClickListener(this);
-		mAdapter.setOnClickListener(this);
-		
+		// mAdapter.setOnClickListener(this);
+		mAdapter2.setListener(this);
+
 	}
 
 	@Override
@@ -142,39 +153,28 @@ public class HealPassFragment extends HealthPassBase implements
 		switch (item.getItemId()) {
 		case R.id.shaiyisai:
 
-			if (thList.get(info.position - 1).containsKey("moodsid")) {
-				shaiMoodsshai(thList.get(info.position - 1).get("moodsid")
-						.toString());
+			if (thList2.get(info.position - 1).getType() == ConstantS.TYPE_MOOD) {
+				shaiMoodsshai(thList2.get(info.position - 1).getId());
 
 			}
 
-			if (thList.get(info.position - 1).containsKey("foodsid")) {
-				shaiFoodsshai(thList.get(info.position - 1).get("foodsid")
-						.toString());
+			if (thList2.get(info.position - 1).getType() == ConstantS.TYPE_FOOD) {
+				shaiFoodsshai(thList2.get(info.position - 1).getId());
 			}
 
 			break;
 
 		case R.id.delete:
 
-			if (thList.get(info.position - 1).containsKey("moodsid")) {
-				HealthHttpClient.doHttpdelMood(thList.get(info.position - 1)
-						.get("moodsid").toString(), new DelAsyHander(
-						info.position - 1));
+			if (thList2.get(info.position - 1).getType() == ConstantS.TYPE_MOOD) {
+				HealthHttpClient.doHttpdelMood(thList2.get(info.position - 1)
+						.getId(), new DelAsyHander(info.position - 1));
 
 			}
 
-			if (thList.get(info.position - 1).containsKey("collect_id")) {
-				HealthHttpClient.doHttpdelCollect(thList.get(info.position - 1)
-						.get("collect_id").toString(), new DelAsyHander(
-						info.position - 1));
-			} else {
-				if (thList.get(info.position - 1).containsKey("foodsid")) {
-					HealthHttpClient.doHttpdelFoods(
-							thList.get(info.position - 1).get("foodsid")
-									.toString(), new DelAsyHander(
-									info.position - 1));
-				}
+			if (thList2.get(info.position - 1).getType() == ConstantS.TYPE_FOOD) {
+				HealthHttpClient.doHttpdelFoods(thList2.get(info.position - 1)
+						.getId(), new DelAsyHander(info.position - 1));
 			}
 
 			break;
@@ -192,16 +192,20 @@ public class HealPassFragment extends HealthPassBase implements
 		if (null == WyyApplication.getInfo().getId()) {
 			return;
 		}
-		HealthHttpClient.userFoodsAndMoods2(WyyApplication.getInfo().getId(),
-				first, limit, reshHandler);
+		// HealthHttpClient.userFoodsAndMoods2(WyyApplication.getInfo().getId(),
+		// first, limit, reshHandler);
+		HealthHttpClient.userAired20(WyyApplication.getInfo().getId(), first,
+				limit, reshHandler2);
 	}
 
 	@Override
 	protected void getLoadMore(String first, String limit) {
 		// TODO Auto-generated method stub
 		super.getLoadMore(first, limit);
-		HealthHttpClient.userFoodsAndMoods2(WyyApplication.getInfo().getId(),
-				first, limit, parseHandler);
+		// HealthHttpClient.userFoodsAndMoods2(WyyApplication.getInfo().getId(),
+		// first, limit, parseHandler);
+		HealthHttpClient.userAired20(WyyApplication.getInfo().getId(), first,
+				limit, loadMoreHandler);
 	}
 
 	@Override
@@ -389,8 +393,8 @@ public class HealPassFragment extends HealthPassBase implements
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			thList.remove(this.postion);
-			mAdapter.notifyDataSetChanged();
+			thList2.remove(this.postion);
+			mAdapter2.notifyDataSetChanged();
 			Toast.makeText(getActivity(), R.string.delsuccess,
 					Toast.LENGTH_LONG).show();
 		}
@@ -447,50 +451,69 @@ public class HealPassFragment extends HealthPassBase implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		if (thList.get(position-1).containsKey("foodsid")) {
+		if (thList2.get(position - 1).getType() == ConstantS.TYPE_FOOD) {
 			PreferencesFoodsInfo.setfoodId(getActivity(),
-					thList.get(position-1).get("foodsid")+"");
-			startActivity(new Intent(getActivity(),
-					FoodDetailsActivity.class));
+					thList2.get(position - 1).getId());
+			startActivity(new Intent(getActivity(), FoodDetailsActivity.class));
+		} else if (thList2.get(position - 1).getType() == ConstantS.TYPE_MOOD) {
+			try {
+				showMoodDetails(thList2.get(position - 1));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
 		}
-	}
-
-	@Override
-	public void onUserPicClick(int position) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onCommentClick(int position) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onZanClick(int position) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onCollectClick(int position) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onPicClick(int listPostino, int picPostion) {
 		// TODO Auto-generated method stub
-		 if (thList.get(listPostino).containsKey("grid_pic")) {
-				@SuppressWarnings("unchecked")
-				List<String> list=(List<String>) thList.get(listPostino).get("grid_pic");
-				Intent intent=new Intent();
-				intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
-				intent.putExtra("postion", picPostion);
-				intent.setClass(getActivity(), PhotoPagerActivity.class);
-				startActivity(intent);
+		if (thList2.get(listPostino).getImg() != null) {
+			List<String> list = (List<String>) thList2.get(listPostino)
+					.getImg();
+			Intent intent = new Intent();
+			intent.putStringArrayListExtra("imgurls", (ArrayList<String>) list);
+			intent.putExtra("postion", picPostion);
+			intent.setClass(getActivity(), PhotoPagerActivity.class);
+			startActivity(intent);
+		}
+	}
+
+	@Override
+	protected void arrangeDayMonth() {
+		// TODO Auto-generated method stub
+		super.arrangeDayMonth();
+		int length = thList2.size();
+		for (int i = 0; i < length; i++) {
+			String createtime = thList2.get(i).getCreatetime();
+			String day = "" + BingDateUtils.getDay(createtime);
+			String month = BingDateUtils.getMonth(createtime) + "ÔÂ";
+			if (i == 0) {
+				thList2.get(i).setDay(day);
+				thList2.get(i).setMonth(month);
+			} else {
+				String lastcreatetime = thList2.get(i - 1).getCreatetime();
+				String lastday = "" + BingDateUtils.getDay(lastcreatetime);
+				String lastmonth = BingDateUtils.getMonth(lastcreatetime) + "ÔÂ";
+				if (lastday.equals(day) && lastmonth.equals(month)) {
+					thList2.get(i).setDay(" ");
+					thList2.get(i).setMonth("  ");
+				} else {
+					thList2.get(i).setDay(day);
+					thList2.get(i).setMonth(month);
+				}
 			}
+		}
+	}
+
+	private void showMoodDetails(MoodaFoodBean moodaFoodBean) {
+		if (moodaFoodBean == null) {
+			return;
+		}
+		Intent intent = new Intent();
+		intent.setClass(getActivity(), MoodDetailsActivity.class);
+		intent.putExtra("moodid", moodaFoodBean.getId());
+		startActivity(intent);
 	}
 
 }

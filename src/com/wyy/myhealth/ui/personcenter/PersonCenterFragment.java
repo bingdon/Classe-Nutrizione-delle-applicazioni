@@ -16,6 +16,7 @@ import com.wyy.myhealth.ui.personcenter.modify.ModifySummaryActivity;
 import com.wyy.myhealth.ui.personcenter.modify.Modify_h_w_activity;
 import com.wyy.myhealth.ui.personcenter.modify.ModityCareerActivity;
 import com.wyy.myhealth.utils.ImageUtil;
+import com.wyy.myhealth.welcome.WelcomeActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -77,11 +78,11 @@ public class PersonCenterFragment extends Fragment implements
 	private List<View> centerViews = new ArrayList<View>();
 	// Í·Ïñ
 	private Bitmap headBitmap = null;
-	
+
 	private ImageView headbg;
-	
+
 	private Bitmap bgBitmap;
-	
+
 	private TextView money;
 
 	public static PersonCenterFragment newInstance(int position) {
@@ -113,6 +114,7 @@ public class PersonCenterFragment extends Fragment implements
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
 		outState.putParcelable("headimg", headBitmap);
+		outState.putSerializable("info", info);
 	}
 
 	@Override
@@ -146,15 +148,13 @@ public class PersonCenterFragment extends Fragment implements
 
 		tabBaseInfo = (TextView) v.findViewById(R.id.my_base_info_tab);
 		tabHonor = (TextView) v.findViewById(R.id.my_honor_tab);
-		
-		
-		headbg=(ImageView)v.findViewById(R.id.per_bg);
+
+		headbg = (ImageView) v.findViewById(R.id.per_bg);
 
 		userHeadImageView.setOnClickListener(listener);
 		tabBaseInfo.setOnClickListener(listener);
 		tabHonor.setOnClickListener(listener);
 
-		
 	}
 
 	private void initPageView(View v) {
@@ -163,8 +163,8 @@ public class PersonCenterFragment extends Fragment implements
 		honorView = inflater.inflate(R.layout.my_honor_tab, bodyPager, false);
 		baseInfoView = inflater.inflate(R.layout.my_base_info_tab, null);
 
-		money=(TextView)honorView.findViewById(R.id.moeny);
-		
+		money = (TextView) honorView.findViewById(R.id.moeny);
+
 		userWeima = (TextView) baseInfoView.findViewById(R.id.weima_id);
 		userCareer = (TextView) baseInfoView.findViewById(R.id.user_carrer);
 		userHeight = (TextView) baseInfoView.findViewById(R.id.body_h);
@@ -199,6 +199,15 @@ public class PersonCenterFragment extends Fragment implements
 
 	private void initPersonInfo() {
 		info = WyyApplication.getInfo();
+		if (info == null) {
+			info = (PersonalInfo) getArguments().getSerializable("info");
+		}
+
+		if (info == null) {
+			WelcomeActivity.getPersonInfo(getActivity());
+			info = WyyApplication.getInfo();
+		}
+
 		userName.setText(WyyApplication.getInfo().getUsername() + "");
 		userAge.setText(WyyApplication.getInfo().getAge() + "");
 		userWeima.setText(WyyApplication.getInfo().getIdcode() + "");
@@ -210,12 +219,12 @@ public class PersonCenterFragment extends Fragment implements
 				+ PersonUtils.getBmi(WyyApplication.getInfo().getHeight(),
 						WyyApplication.getInfo().getWeight()));
 		userRemarks.setText(WyyApplication.getInfo().getSummary() + "");
-		money.setText(WyyApplication.getInfo().getMoney()+"");
-		
+		money.setText(WyyApplication.getInfo().getMoney() + "");
+
 		getperBg();
-		
+
 		setSex();
-		
+
 		if (!TextUtils.isEmpty(info.getHeadimage())) {
 
 			if (WyyApplication.getHeaderImaList().size() > 0) {
@@ -374,40 +383,40 @@ public class PersonCenterFragment extends Fragment implements
 		}
 	};
 
-	
-	private void setSex(){
+	private void setSex() {
 		switch (WyyApplication.getInfo().getGender()) {
 		case ConstantS.MAN:
-			Drawable drawable0=getResources().getDrawable(R.drawable.sex_man);
+			Drawable drawable0 = getResources().getDrawable(R.drawable.sex_man);
 			drawable0.setBounds(0, 0, drawable0.getMinimumWidth(),
-	                drawable0.getMinimumHeight());
-			
+					drawable0.getMinimumHeight());
+
 			userAge.setCompoundDrawables(drawable0, null, null, null);
 			break;
 
 		case ConstantS.WOMAN:
-			Drawable drawable=getResources().getDrawable(R.drawable.sex_woman);
+			Drawable drawable = getResources()
+					.getDrawable(R.drawable.sex_woman);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(),
-	                drawable.getMinimumHeight());
-			
+					drawable.getMinimumHeight());
+
 			userAge.setCompoundDrawables(drawable, null, null, null);
-			
+
 			break;
-			
+
 		default:
 			break;
 		}
 	}
-	
-	private void getperBg(){
-		if (bgBitmap==null) {
-			bgBitmap=PhotoUtils.getListHeadBg();
-			if (null!=bgBitmap) {
+
+	private void getperBg() {
+		if (bgBitmap == null) {
+			bgBitmap = PhotoUtils.getListHeadBg();
+			if (null != bgBitmap) {
 				headbg.setImageBitmap(bgBitmap);
 			}
-		}else {
+		} else {
 			headbg.setImageBitmap(bgBitmap);
 		}
 	}
-	
+
 }

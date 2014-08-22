@@ -14,7 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.wyy.myhealth.app.WyyApplication;
+import com.wyy.myhealth.baidu.utlis.TagUtils;
 import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.contants.ConstantS;
 
@@ -31,7 +31,7 @@ public class SavePersonInfoUtlis {
 	 * @param info
 	 * @param context
 	 */
-	public static void setPersonInfo(PersonalInfo info, Activity context) {
+	public static void setPersonInfo(PersonalInfo info, Context context) {
 		SharedPreferences preferences = context.getSharedPreferences(ConstantS.USER_DATA,
 				Context.MODE_PRIVATE);
 
@@ -41,7 +41,7 @@ public class SavePersonInfoUtlis {
 		editor.putString("id", info.getId());
 		editor.putString("idcode", info.getIdcode());
 		editor.putString("foodpic", info.getHeadimage());
-
+		TagUtils.setTag(info.getId(), context);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			ObjectOutputStream infoStream = new ObjectOutputStream(baos);

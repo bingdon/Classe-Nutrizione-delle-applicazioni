@@ -11,24 +11,27 @@ import org.json.JSONObject;
 
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.ListDataBead;
+import com.wyy.myhealth.bean.MoodaFoodBean;
 import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.bean.ShaiFoods;
 import com.wyy.myhealth.bean.ShaiMoods;
 import com.wyy.myhealth.http.AsyncHttpResponseHandler;
+import com.wyy.myhealth.http.JsonHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
+import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.ui.absfragment.adapter.HealthAdapter;
-import com.wyy.myhealth.ui.absfragment.utils.JsonUtils;
+import com.wyy.myhealth.ui.absfragment.adapter.HealthAdapter2;
 import com.wyy.myhealth.ui.absfragment.utils.ListAddUtils;
 import com.wyy.myhealth.ui.absfragment.utils.SortUtils;
 import com.wyy.myhealth.ui.absfragment.utils.TimeUtils;
 import com.wyy.myhealth.ui.customview.BingListView;
+import com.wyy.myhealth.utils.BingLog;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,15 +43,15 @@ import android.widget.Toast;
 
 public class HealthPassBase extends Fragment {
 
-
-
-
 	protected static final String TAG = ListBaseFragment.class.getSimpleName();
 	protected ArrayList<ShaiFoods> userfoodsList = new ArrayList<ShaiFoods>();
 	protected ArrayList<ShaiMoods> usermoodsList = new ArrayList<ShaiMoods>();
 	protected BingListView mListView;
 	protected SwipeRefreshLayout mRefreshLayout;
 	protected HealthAdapter mAdapter;
+
+	protected HealthAdapter2 mAdapter2;
+
 	protected RelativeLayout titleLayout;
 	// 个人信息
 	protected PersonalInfo info;
@@ -57,6 +60,10 @@ public class HealthPassBase extends Fragment {
 
 	// 晒一晒新数据
 	protected List<Map<String, Object>> tempshaiList = new ArrayList<Map<String, Object>>();
+
+	protected List<MoodaFoodBean> thList2 = new ArrayList<>();
+
+	protected List<MoodaFoodBean> tempLists = new ArrayList<>();
 
 	protected int first = 0;
 
@@ -68,11 +75,11 @@ public class HealthPassBase extends Fragment {
 	protected int postion = 0;
 
 	protected List<ListDataBead> lastDataBeads = new ArrayList<ListDataBead>();
-	
-	protected boolean loadflag=false;
-	//数据库位置
-	protected int id=0;
-	
+
+	protected boolean loadflag = false;
+	// 数据库位置
+	protected int id = 0;
+
 	protected View headView;
 	protected ImageView bgImageView;
 	protected ImageView userhead;
@@ -83,8 +90,9 @@ public class HealthPassBase extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View rootView = inflater.inflate(R.layout.base_frag_lay, null);
-		headView=inflater.inflate(R.layout.healthbar_head_view, null);
+		View rootView = inflater.inflate(R.layout.base_frag_lay, container,
+				false);
+		headView = inflater.inflate(R.layout.healthbar_head_view, null);
 		initView(rootView);
 		registerForContextMenu();
 		onGetLastData();
@@ -95,27 +103,28 @@ public class HealthPassBase extends Fragment {
 		mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.list_swipe);
 		mListView = (BingListView) v.findViewById(R.id.m_listview);
 
-		
-		bgImageView=(ImageView)headView.findViewById(R.id.user_bg);
-		userhead=(ImageView)headView.findViewById(R.id.user_head);
-		username=(TextView)headView.findViewById(R.id.username);
-		publishV=(ImageButton)headView.findViewById(R.id.take_pic);
+		bgImageView = (ImageView) headView.findViewById(R.id.user_bg);
+		userhead = (ImageView) headView.findViewById(R.id.user_head);
+		username = (TextView) headView.findViewById(R.id.username);
+		publishV = (ImageButton) headView.findViewById(R.id.take_pic);
 		mListView.addHeaderView(headView);
-		
+
 		mRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_blue_dark,
 				android.R.color.holo_green_light,
 				android.R.color.holo_green_dark);
-		mAdapter = new HealthAdapter(getActivity(), thList);
-		mListView.setAdapter(mAdapter);
+		// mAdapter = new HealthAdapter(getActivity(), thList);
+
+		mAdapter2 = new HealthAdapter2(thList2, getActivity());
+
+		mListView.setAdapter(mAdapter2);
 		mListView.setCacheColorHint(Color.TRANSPARENT);
 	}
 
-	
-	protected void onGetLastData(){
-		
+	protected void onGetLastData() {
+
 	}
-	
+
 	@Override
 	public void onDetach() {
 		// TODO Auto-generated method stub
@@ -123,11 +132,14 @@ public class HealthPassBase extends Fragment {
 		saveJsontoDb(json, postion);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	protected AsyncHttpResponseHandler parseHandler = new AsyncHttpResponseHandler() {
 
 		public void onStart() {
 			super.onStart();
-			loadflag=true;
+			loadflag = true;
 			mRefreshLayout.setRefreshing(true);
 		};
 
@@ -135,7 +147,7 @@ public class HealthPassBase extends Fragment {
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			Log.i(TAG, content);
+			BingLog.i(TAG, content);
 			if (first == 0) {
 				json = content;
 			}
@@ -153,17 +165,20 @@ public class HealthPassBase extends Fragment {
 		public void onFinish() {
 			// TODO Auto-generated method stub
 			super.onFinish();
-			loadflag=false;
+			loadflag = false;
 			mRefreshLayout.setRefreshing(false);
 		}
 
 	};
 
+	/**
+	 * @deprecated
+	 */
 	protected AsyncHttpResponseHandler reshHandler = new AsyncHttpResponseHandler() {
 
 		public void onStart() {
 			super.onStart();
-			loadflag=true;
+			loadflag = true;
 			mRefreshLayout.setRefreshing(true);
 		};
 
@@ -171,12 +186,13 @@ public class HealthPassBase extends Fragment {
 		public void onSuccess(String content) {
 			// TODO Auto-generated method stub
 			super.onSuccess(content);
-			Log.i(TAG, content);
+			BingLog.i(TAG, content);
 
 			if (content.equals(json) && !TextUtils.isEmpty(json)) {
-				if (null!=getActivity()) {
-					
-					Toast.makeText(getActivity(), R.string.nonewmsg, Toast.LENGTH_SHORT).show();
+				if (null != getActivity()) {
+
+					Toast.makeText(getActivity(), R.string.nonewmsg,
+							Toast.LENGTH_SHORT).show();
 				}
 			} else {
 				reshpareseJson(content);
@@ -195,12 +211,154 @@ public class HealthPassBase extends Fragment {
 		public void onFinish() {
 			// TODO Auto-generated method stub
 			super.onFinish();
-			loadflag=false;
+			loadflag = false;
 			mRefreshLayout.setRefreshing(false);
 		}
 
 	};
 
+	protected JsonHttpResponseHandler loadMoreHandler = new JsonHttpResponseHandler() {
+
+		@Override
+		public void onSuccess(JSONObject response) {
+			// TODO Auto-generated method stub
+			super.onSuccess(response);
+			BingLog.i(TAG, "" + response);
+			if (first == 0) {
+				json = response.toString();
+			}
+			loadmoreJson(response);
+		}
+
+		@Override
+		public void onFailure(Throwable e, JSONObject errorResponse) {
+			// TODO Auto-generated method stub
+			super.onFailure(e, errorResponse);
+		}
+
+		@Override
+		public void onStart() {
+			// TODO Auto-generated method stub
+			super.onStart();
+			loadflag = true;
+			mRefreshLayout.setRefreshing(true);
+		}
+
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			super.onFinish();
+			loadflag = false;
+			mRefreshLayout.setRefreshing(false);
+		}
+
+	};
+
+	protected JsonHttpResponseHandler reshHandler2 = new JsonHttpResponseHandler() {
+
+		@Override
+		public void onSuccess(JSONObject response) {
+			// TODO Auto-generated method stub
+			super.onSuccess(response);
+			if (response.toString().equals(json) && !TextUtils.isEmpty(json)) {
+				if (null != getActivity()) {
+					Toast.makeText(getActivity(), R.string.nonewmsg,
+							Toast.LENGTH_SHORT).show();
+				}
+			} else {
+				reshParseJson(response);
+				json = response.toString();
+			}
+
+		}
+
+		@Override
+		public void onFailure(Throwable e, JSONObject errorResponse) {
+			// TODO Auto-generated method stub
+			super.onFailure(e, errorResponse);
+		}
+
+		@Override
+		public void onStart() {
+			// TODO Auto-generated method stub
+			super.onStart();
+			loadflag = true;
+			mRefreshLayout.setRefreshing(true);
+		}
+
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			super.onFinish();
+			loadflag = false;
+			mRefreshLayout.setRefreshing(false);
+		}
+
+	};
+
+	protected void reshParseJson(JSONObject response) {
+		BingLog.i(TAG, "最新" + response);
+		if (JsonUtils.isSuccess(response)) {
+			try {
+				tempLists.clear();
+				JSONArray array = response.getJSONArray("foods");
+				int length = array.length();
+				for (int i = 0; i < length; i++) {
+					MoodaFoodBean moodaFoodBean = JsonUtils
+							.getMoodaFoodBean(array.getJSONObject(i));
+
+					tempLists.add(moodaFoodBean);
+				}
+
+				if (0 != thList2.size()) {
+					ListAddUtils.compleAMearge2(tempLists, thList2);
+				} else {
+					thList2.addAll(tempLists);
+				}
+				arrangeDayMonth();
+				first = thList2.size();
+				mAdapter2.notifyDataSetChanged();
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void loadmoreJson(JSONObject response) {
+		BingLog.i(TAG, "最新" + response);
+		if (JsonUtils.isSuccess(response)) {
+			try {
+				JSONArray array = response.getJSONArray("foods");
+				int length = array.length();
+				if (length == 0) {
+					Toast.makeText(getActivity(), R.string.nomore,
+							Toast.LENGTH_SHORT).show();
+				}else {
+					for (int i = 0; i < length; i++) {
+						MoodaFoodBean moodaFoodBean = JsonUtils
+								.getMoodaFoodBean(array.getJSONObject(i));
+
+						thList2.add(moodaFoodBean);
+					}
+
+					arrangeDayMonth();
+					first = thList2.size();
+					mAdapter2.notifyDataSetChanged();
+				}
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @deprecated
+	 * @param json
+	 */
 	protected void pareseJson(String json) {
 		userfoodsList.clear();
 		usermoodsList.clear();
@@ -328,26 +486,26 @@ public class HealthPassBase extends Fragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.i(TAG, "foods长度:" + userfoodsList.size());
-		Log.i(TAG, "moods长度:" + usermoodsList.size());
-		Log.i(TAG, "长度:" + thList.size());
+		BingLog.i(TAG, "foods长度:" + userfoodsList.size());
+		BingLog.i(TAG, "moods长度:" + usermoodsList.size());
+		BingLog.i(TAG, "长度:" + thList.size());
 
 		arrangeData();
-		Log.i(TAG, "长度:" + thList.size());
+		BingLog.i(TAG, "长度:" + thList.size());
 		SortUtils.bingSort(thList);
 
 		TimeUtils.getCnTime(thList);
 
 		TimeUtils.getDayMoth(thList);
-		
-		Log.i(TAG, "适配:"+mAdapter);
+
+		BingLog.i(TAG, "适配:" + mAdapter);
 		mAdapter.notifyDataSetChanged();
 		first = thList.size();
 
 		if (userfoodsList.size() + usermoodsList.size() == 0) {
-			if (null!=getActivity()) {
-				Toast.makeText(getActivity(), R.string.nomore, Toast.LENGTH_LONG)
-				.show();
+			if (null != getActivity()) {
+				Toast.makeText(getActivity(), R.string.nomore,
+						Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -356,6 +514,7 @@ public class HealthPassBase extends Fragment {
 	/**
 	 * 刷新数据
 	 * 
+	 * @deprecated
 	 * @param json
 	 */
 	private void reshpareseJson(String json) {
@@ -501,11 +660,11 @@ public class HealthPassBase extends Fragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.i(TAG, "foods长度:" + userfoodsList.size());
-		Log.i(TAG, "moods长度:" + usermoodsList.size());
-		Log.i(TAG, "长度:" + tempshaiList.size());
+		BingLog.i(TAG, "foods长度:" + userfoodsList.size());
+		BingLog.i(TAG, "moods长度:" + usermoodsList.size());
+		BingLog.i(TAG, "长度:" + tempshaiList.size());
 		arrangenewData();
-		Log.i(TAG, "长度:" + tempshaiList.size());
+		BingLog.i(TAG, "长度:" + tempshaiList.size());
 		SortUtils.bingSort(tempshaiList);
 		TimeUtils.getCnTime(tempshaiList);
 		if (0 != thList.size()) {
@@ -711,7 +870,6 @@ public class HealthPassBase extends Fragment {
 
 	}
 
-	
 	/**
 	 * 刷新数据
 	 * 
@@ -719,9 +877,8 @@ public class HealthPassBase extends Fragment {
 	 * @param limit
 	 */
 	protected void reshShayiSai(String first, String limit) {
-		
+
 	}
-	
 
 	/**
 	 * 分页加载
@@ -732,9 +889,11 @@ public class HealthPassBase extends Fragment {
 	 *            页数
 	 */
 	protected void getLoadMore(String first, String limit) {
-		
+
 	}
-	
-	
+
+	protected void arrangeDayMonth() {
+
+	}
 
 }

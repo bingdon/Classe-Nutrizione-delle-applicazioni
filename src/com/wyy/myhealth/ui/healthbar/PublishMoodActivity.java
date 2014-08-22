@@ -89,7 +89,7 @@ public class PublishMoodActivity extends SubmitActivity implements
 					public void onRatingChanged(RatingBar ratingBar,
 							float rating, boolean fromUser) {
 						// TODO Auto-generated method stub
-						moodIndex = "" + rating;
+						moodIndex = "" + (int)rating;
 
 						Log.i(TAG, "Ö¸Êý:" + rating);
 					}

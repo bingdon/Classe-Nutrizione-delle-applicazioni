@@ -13,6 +13,7 @@ public class SavePic {
 
 	/**
 	 * 保存图片名为wyy.png
+	 * 
 	 * @param mBitmap
 	 */
 	public static void saveFoodPic(Bitmap mBitmap) {
@@ -29,26 +30,33 @@ public class SavePic {
 		}
 
 	}
-	
+
 	/**
 	 * 保存图片示例
+	 * 
 	 * @param mBitmap
 	 */
-	public static void saveFoodPic2Example(Bitmap mBitmap) {
-		File file = new File(FileUtils.HEALTH_IMAG, "llllllllllll" + ".png");
-		BufferedOutputStream bos;
-		try {
-			bos = new BufferedOutputStream(new FileOutputStream(file));
-			mBitmap.compress(CompressFormat.PNG, 100, bos);
-			bos.flush();
-			bos.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void saveFoodPic2Example(final Bitmap mBitmap) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				File file = new File(FileUtils.HEALTH_IMAG, "chc" + ".png");
+				BufferedOutputStream bos;
+				try {
+					bos = new BufferedOutputStream(new FileOutputStream(file));
+					mBitmap.compress(CompressFormat.PNG, 100, bos);
+					bos.flush();
+					bos.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 
 	}
-	
 
 	/**
 	 * 将拍下来的照片存放在SD卡中

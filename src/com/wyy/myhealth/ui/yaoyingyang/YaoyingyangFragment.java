@@ -100,7 +100,12 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 		// TODO Auto-generated method stub
 		super.onDetach();
 		if (!TextUtils.isEmpty(lastJson)) {
-			saveLie_Current_Result(lastJson);
+			try {
+				saveLie_Current_Result(lastJson);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
 		}
 
 		getActivity().unregisterReceiver(searchReceiver);
@@ -253,14 +258,10 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 
 					}
 
-					// Log.i(TAG, "距离:" + distance + "km");
-
 					NearFoodBean nearFoodBean = null;
 					try {
 						nearFoodBean = gson.fromJson(jsonObject.toString(),
 								NearFoodBean.class);
-						// Log.i(TAG, "新数据:" + nearFoodBean);
-						// Log.i(TAG, "新数据距离:" + distance);
 						nearFoodBean.setDistance("" + distance);
 						// nearFoodBean.setFoodpic(HealthHttpClient.MINIIMAGE +
 						// jsonObject.get("id"));
@@ -438,6 +439,8 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 			intent.setClass(getActivity(), MapFoodsActivity.class);
 			double lat = Double.valueOf(list.get(postion).getCommercialLat());
 			double lon = Double.valueOf(list.get(postion).getCommercialLon());
+			String foodsid = list.get(postion).getId();
+			PreferencesFoodsInfo.setfoodId(getActivity(), foodsid);
 			intent.putExtra("lat", lat);
 			intent.putExtra("lon", lon);
 			startActivity(intent);
@@ -540,11 +543,15 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 			if (isCollect) {
 				CollectUtils.delCollectFood(WyyApplication.getInfo().getId(),
 						list.get(postion).getId(), getActivity());
+				list.get(postion).setIscollect(false);
 			} else {
 				CollectUtils.collectFood(list.get(postion).getId(),
 						getActivity());
+				list.get(postion).setIscollect(true);
 			}
 
+			yaoyingyangAdapter.notifyDataSetChanged();
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -554,7 +561,7 @@ public class YaoyingyangFragment extends ListBaseFragYP implements
 	@Override
 	public void on3Click() {
 		// TODO Auto-generated method stub
-		
+		startActivity(new Intent(getActivity(), TodayFoodRecActivity.class));
 	}
 
 }

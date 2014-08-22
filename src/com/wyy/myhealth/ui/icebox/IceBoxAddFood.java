@@ -127,7 +127,7 @@ public class IceBoxAddFood extends SubmitActivity implements ActivityInterface {
 				break;
 
 			case R.id.food_pic:
-				PhotoUtils.MyDialog(context);
+				PhotoUtils.secPic(context);
 				break;
 
 			default:

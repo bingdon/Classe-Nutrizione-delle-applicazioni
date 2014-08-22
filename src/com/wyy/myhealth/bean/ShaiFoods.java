@@ -11,8 +11,6 @@ public class ShaiFoods extends Foods {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	// 用户ID
-	private String userid;
 	// 头像地址
 	private String headimage;
 	// 评论
@@ -38,14 +36,6 @@ public class ShaiFoods extends Foods {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getUserid() {
-		return userid;
-	}
-
-	public void setUserid(String userid) {
-		this.userid = userid;
 	}
 
 	public String getHeadimage() {

@@ -9,6 +9,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.wyy.myhealth.R;
+import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.photoview.PhotoView;
 import com.wyy.myhealth.ui.photoview.PhotoViewAttacher.OnPhotoTapListener;
@@ -229,7 +230,7 @@ public class PhotoPagerActivity extends BaseActivity implements
 			}
 		});
 
-		imageLoader.displayImage(list.get(position), photoView, options,
+		imageLoader.displayImage(HealthHttpClient.IMAGE_URL+list.get(position), photoView, options,
 				new SimpleImageLoadingListener() {
 
 					@Override

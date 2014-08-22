@@ -91,6 +91,7 @@ public class SettingActivity extends BaseActivity implements ActivityInterface {
 		delDataBase();
 		clearPreferences();
 		startActivity(new Intent(context, LoginActivity.class));
+		finshAll();
 		finish();
 	}
 
@@ -113,4 +114,9 @@ public class SettingActivity extends BaseActivity implements ActivityInterface {
 				MODE_PRIVATE).edit().clear().commit();
 	}
 
+	
+	private void finshAll(){
+		sendBroadcast(new Intent(ConstantS.ACTION_MAIN_FINSH));
+	}
+	
 }

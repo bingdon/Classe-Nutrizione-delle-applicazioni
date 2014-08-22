@@ -67,7 +67,7 @@ public class MicroCodeLoginActivity extends BaseActivity implements
 		userHeadImageView = (ImageView) findViewById(R.id.home_head_ima);
 		loginButton = (Button) findViewById(R.id.micro_code_login);
 		microcodEditText = (EditText) findViewById(R.id.micro_code_edit);
-		loginProgressDialog = new ProgressDialog(MicroCodeLoginActivity.this);
+		loginProgressDialog = new ProgressDialog(context);
 		loginProgressDialog.setMessage(getString(R.string.logining));
 		loginButton.setOnClickListener(listener);
 		initData();

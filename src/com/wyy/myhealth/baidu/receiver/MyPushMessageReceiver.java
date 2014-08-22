@@ -325,20 +325,19 @@ public class MyPushMessageReceiver extends FrontiaPushMessageReceiver {
 			JSONObject jObject = new JSONObject(json);
 			String type = jObject.getString("type");
 			if (type.equals(ConstantS.ADD_FOODS_COMMENT)) {
-				intent.setAction(ConstantS.NEW_FOOD_COMMENT);
+				intent2.setAction(ConstantS.NEW_FOOD_COMMENT);
 				Utils.add_Foods_Comm = json;
 				Utils.mstlList.add(json);
 				intent2.putExtra("msg", json);
 				intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(intent2);
-				NoticeUtils.notice(context, Utils.mstlList.size() + "条新消息", 1);
+				NoticeUtils.notice(context, Utils.mstlList.size() + "条新消息", ConstantS.NEW_FOOD_COMMENT_ID);
 			} else if (type.equals(ConstantS.FIRST_LOGIN)
 					|| type.equals("message")) {
 				intent.setAction(ConstantS.NEW_LOGIN_ACTION);
 				Utils.response = jObject.getString("content");
 				Utils.loginList.add(Utils.response);
-				NoticeUtils.notice(context, Utils.loginList.size() + "条新消息", 0);
-				// intent2.setClass(context, HomeActivity.class);
+				NoticeUtils.notice(context, Utils.loginList.size() + "条新消息", ConstantS.NEW_LOGIN_ACTION_ID);
 			}
 
 		} catch (JSONException e) {

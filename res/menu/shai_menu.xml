@@ -6,21 +6,15 @@
     <item
         android:id="@+id/action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_search"
         android:orderInCategory="100"
         android:title="@string/action_bar_search"
         app:showAsAction="always"/>
     <item
         android:id="@+id/publis_shai"
-        android:icon="@android:drawable/ic_menu_edit"
         android:orderInCategory="101"
         android:title="@string/publish"
         app:showAsAction="always">
-    </item>
-    <item
-        android:id="@+id/mycollect"
-        android:orderInCategory="102"
-        android:title="@string/mycollect">
     </item>
 
 </menu>

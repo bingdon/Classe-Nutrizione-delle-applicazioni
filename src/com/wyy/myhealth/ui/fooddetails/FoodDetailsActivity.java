@@ -1,14 +1,15 @@
 package com.wyy.myhealth.ui.fooddetails;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
@@ -23,9 +24,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.MainActivity;
@@ -35,15 +36,17 @@ import com.wyy.myhealth.bean.Comment;
 import com.wyy.myhealth.bean.NearFoodBean;
 import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.contants.ConstantS;
+import com.wyy.myhealth.file.utils.FileUtils;
+import com.wyy.myhealth.http.AsyncHttpResponseHandler;
 import com.wyy.myhealth.http.utils.HealthHttpClient;
+import com.wyy.myhealth.imag.utils.SavePic;
 import com.wyy.myhealth.support.collect.CollectUtils;
 import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.mapfood.CommercialMapActivity;
-import com.wyy.myhealth.ui.mapfood.MapFoodsActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
 import com.wyy.myhealth.utils.BingLog;
 import com.wyy.myhealth.utils.DistanceUtils;
-import com.wyy.myhealth.utils.FoodsUtil;
+import com.wyy.myhealth.utils.ShareUtils;
 
 public class FoodDetailsActivity extends BaseActivity {
 
@@ -93,8 +96,8 @@ public class FoodDetailsActivity extends BaseActivity {
 	private String mydiatance = "";
 
 	private String foodid = "";
-	
-	public static String imgurl="";
+
+	public static String imgurl = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -166,22 +169,22 @@ public class FoodDetailsActivity extends BaseActivity {
 			CollectUtils.collectFood(foodid, context);
 			break;
 
-		case R.id.canel:
-
+		case R.id.resh:
+			foodsDetail(foodid);
 			break;
 
 		case R.id.call:
-
+			callPhone();
 			break;
 
 		case R.id.action_share:
-
+			shareFood();
 			break;
-			
+
 		case R.id.loopmap:
-			
+
 			loopCommercialMap();
-			
+
 			break;
 
 		default:
@@ -215,20 +218,21 @@ public class FoodDetailsActivity extends BaseActivity {
 	private void foodsDetail(String foodid) {
 
 		AsyncHttpResponseHandler res = new AsyncHttpResponseHandler() {
+
+			@Override
+			public void onStart() {
+				// TODO Auto-generated method stub
+				super.onStart();
+				loadingBar.setVisibility(View.VISIBLE);
+			}
+
 			@Override
 			public void onSuccess(String response) {
+				BingLog.i(TAG, "返回:" + response);
 				parseFoods(response);
 				// initData();
 				// InitViewPager();
 				// initList();
-
-			}
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, byte[] arg2,
-					Throwable arg3) {
-				// TODO Auto-generated method stub
-				super.onFailure(arg0, arg1, arg2, arg3);
 
 			}
 
@@ -240,14 +244,14 @@ public class FoodDetailsActivity extends BaseActivity {
 			}
 
 		};
-		FoodsUtil.doHttpDetails(foodid, res);
+		HealthHttpClient.getFoodDetails(foodid, res);
+		// FoodsUtil.doHttpDetails(foodid, res);
 	}
 
 	private void parseFoods(String response) {
 
 		try {
 
-			
 			JSONObject result = new JSONObject(response);
 
 			JSONObject obj = result.getJSONObject("foods");
@@ -285,23 +289,10 @@ public class FoodDetailsActivity extends BaseActivity {
 					// TODO: handle exception
 					BingLog.e(TAG, "解析错误");
 				}
-				// mcomment.setVitamin(obj.getString("vitamin"));
-				// mcomment.setProtein(obj.getString("protein"));
-				// mcomment.setMineral(obj.getString("mineral"));
-				// mcomment.setSugar(obj.getString("sugar"));
-				// mcomment.setFat(obj.getString("fat"));
-				// mcomment.setEnergy(obj.getString("energy"));
-				// // mcomment.setContent(obj.getString("content"));
-				// //
-				// mcomment.setContent(commentsArray.getJSONObject(i).getString("content"));
-				// // comment.setUserheadimage(obj.getString("userheadimage"));
-				// // mcomment.setUsername(obj.getString("username"));
-				// mcomment.setReasonable(obj.getString("reasonable"));
-
-				// Log.i("comments", "-------------" + comments);
 			}
 
 			int commlength = commentsArray.length();
+			menuComlist.clear();
 			/*********** 评论数量 ************/
 			for (int i = 0; i < commlength; i++) {
 				Log.i(TAG, "评论:" + commentsArray.getJSONObject(i));
@@ -362,10 +353,11 @@ public class FoodDetailsActivity extends BaseActivity {
 	}
 
 	private void setView() {
-		imgurl=HealthHttpClient.IMAGE_URL + foods.getFoodpic();
+		imgurl = HealthHttpClient.IMAGE_URL + foods.getFoodpic();
 		imageLoader.displayImage(
 				HealthHttpClient.IMAGE_URL + foods.getFoodpic(), foodpic,
 				options);
+		SavePic.saveFoodPic2Example(imageLoader.loadImageSync(imgurl));
 		foodtag.setText("" + foods.getTags());
 		try {
 			tasteLevel.setImageResource(ConstantS.LEVEL_POINT[Integer
@@ -417,10 +409,9 @@ public class FoodDetailsActivity extends BaseActivity {
 		}
 	}
 
-	
-	private void loopCommercialMap(){
+	private void loopCommercialMap() {
 		try {
-			
+
 			YaoyingyangFragment.isdingwei = true;
 			Intent intent = new Intent();
 			intent.setClass(context, CommercialMapActivity.class);
@@ -432,15 +423,15 @@ public class FoodDetailsActivity extends BaseActivity {
 			BingLog.e(TAG, "写入错误");
 		}
 	}
-	
-	
-	private void loopNutritionInfo(){
+
+	private void loopNutritionInfo() {
 		try {
-			
+
 			Intent intent = new Intent();
 			intent.setClass(context, FoodNutritionActivity.class);
-			if (comments!=null&&comments.size()>0) {
-				intent.putExtra("comment", (Serializable) comments.get(comments.size()-1));
+			if (comments != null && comments.size() > 0) {
+				intent.putExtra("comment",
+						(Serializable) comments.get(comments.size() - 1));
 			}
 			startActivity(intent);
 		} catch (Exception e) {
@@ -449,6 +440,27 @@ public class FoodDetailsActivity extends BaseActivity {
 			BingLog.e(TAG, "写入错误");
 		}
 	}
+
+	private void shareFood() {
+		try {
+			ShareUtils.shareFood(context, foods.getTags(), Uri
+					.fromFile(new File(FileUtils.HEALTH_IMAG, "chc" + ".png")));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+	}
 	
+	
+	private void callPhone(){
+		if (foods!=null&&foods.getCommercialPhone()!=null) {
+			Intent intent=new Intent("android.intent.action.CALL",Uri.parse("tel:"+foods.getCommercialPhone()));
+			startActivity(intent);
+		}else {
+			Toast.makeText(context, R.string.tel_error, Toast.LENGTH_SHORT).show();
+		}
+		
+	}
 	
 }

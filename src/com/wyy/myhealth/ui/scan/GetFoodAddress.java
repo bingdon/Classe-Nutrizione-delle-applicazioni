@@ -20,7 +20,7 @@ public class GetFoodAddress extends SaveActivity implements ActivityInterface {
 		// TODO Auto-generated method stub
 		super.onInitActionBar();
 		getSupportActionBar()
-				.setTitle(R.string.abc_action_bar_home_description);
+				.setTitle(R.string.place);
 	}
 
 	@Override

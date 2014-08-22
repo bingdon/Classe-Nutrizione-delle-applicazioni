@@ -6,8 +6,10 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -38,10 +40,11 @@ import com.wyy.myhealth.ui.baseactivity.BaseActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
 import com.wyy.myhealth.ui.customview.BingListView;
 import com.wyy.myhealth.ui.icebox.IceBoxChildAdapter.DelPicClickListener;
+import com.wyy.myhealth.ui.icebox.IceBoxMainAdapter.GridCilckListener;
 import com.wyy.myhealth.utils.BingLog;
 
 public class IceBoxActivity extends BaseActivity implements ActivityInterface,
-		OnRefreshListener, DelPicClickListener {
+		OnRefreshListener, DelPicClickListener, GridCilckListener {
 
 	private static final String TAG = IceBoxActivity.class.getSimpleName();
 
@@ -74,6 +77,8 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 	private boolean isLoading = false;
 
 	private static boolean isDeletevisible = false;
+	
+	private int infodex=0;
 
 	public static boolean isIsvisible() {
 		return isDeletevisible;
@@ -92,6 +97,7 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ice_box);
+		initFilter();
 		initView();
 
 	}
@@ -99,7 +105,6 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
-
 		getMenuInflater().inflate(R.menu.ice_box, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -131,6 +136,7 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		saveCurrent_Result(json);
+		unregisterReceiver(iceboxReceiver);
 	}
 
 	@Override
@@ -162,6 +168,7 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 		}
 
 		iceBoxMainAdapter.setDelpicClickListener(this);
+		iceBoxMainAdapter.setGridCilckListener(this);
 
 	}
 
@@ -473,4 +480,55 @@ public class IceBoxActivity extends BaseActivity implements ActivityInterface,
 						.getId(), new DelFood4Ice(postion, type));
 	}
 
+	@Override
+	public void getFoodInfo(int adapterposition, int position) {
+		// TODO Auto-generated method stub
+		infodex=position;
+		try {
+			loopIceBoxInfo(iceBoxFoodBeansList.get(adapterposition).get(position));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+
+	private void loopIceBoxInfo(IceBoxFoodBean iceBoxFoodBean) {
+		if (iceBoxFoodBean == null) {
+			return;
+		}
+		Intent intent = new Intent(context, IceBoxInfoActivity.class);
+		intent.putExtra("food", iceBoxFoodBean);
+		startActivity(intent);
+//		overridePendingTransition(R.anim.zoom_enter,
+//				R.anim.zoom_exit);
+	}
+
+	
+	
+	private void initFilter() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConstantS.ACTION_SEND_DELETE_ICEFOOD);
+		registerReceiver(iceboxReceiver, filter);
+	}
+
+	private BroadcastReceiver iceboxReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if (action.equals(ConstantS.ACTION_SEND_DELETE_ICEFOOD)) {
+				IceBoxFoodBean iceBoxFoodBean=(IceBoxFoodBean) intent.getSerializableExtra("food");
+				delIceFood(iceBoxFoodBean);
+			}
+		}
+	};
+
+	private void delIceFood(IceBoxFoodBean iceBoxFoodBean){
+		if (iceBoxFoodBean!=null) {
+			HealthHttpClient.delFood4Icebox(
+					iceBoxFoodBean.getId(), new DelFood4Ice(infodex, iceBoxFoodBean.getType()));
+		}
+	}
+	
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.ui.absfragment.utils.TextViewUtils;
@@ -29,12 +28,15 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-
+/**
+ * @deprecated
+ * @author lyl
+ *
+ */
 public class HealthAdapter extends BaseAdapter {
 
 	private List<Map<String, Object>> list;
 	private LayoutInflater inflater;
-	private DisplayImageOptions options;
 	private ImageLoader imageLoader;
 	private PopupWindow popupWindow;
 	private View popView;
@@ -58,13 +60,6 @@ public class HealthAdapter extends BaseAdapter {
 		this.context = context;
 		this.inflater = LayoutInflater.from(context);
 		this.imageLoader = ImageLoader.getInstance();
-		this.options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.drawable.pic_loading)
-				.showImageForEmptyUri(R.drawable.pic_empty)
-				.showImageOnFail(R.drawable.pic_failure).cacheInMemory(true)
-				.cacheOnDisc(true).considerExifParams(true)
-				// .displayer(new RoundedBitmapDisplayer(20))
-				.build();
 
 		popView = inflater.inflate(R.layout.shai_menu, null);
 		commentImageView = (ImageView) popView.findViewById(R.id.shai_pinglun);
@@ -109,7 +104,7 @@ public class HealthAdapter extends BaseAdapter {
 		ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.healthpass_ada_, null);
+			convertView = inflater.inflate(R.layout.healthpass_ada_,parent, false);
 			holder.usernameTextView = (TextView) convertView
 					.findViewById(R.id.shai_username_txt);
 			holder.timeTextView = (TextView) convertView

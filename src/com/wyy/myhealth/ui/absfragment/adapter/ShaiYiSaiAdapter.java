@@ -13,7 +13,6 @@ import com.wyy.myhealth.utils.BingLog;
 import android.content.Context;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,9 +31,9 @@ import android.widget.TextView;
 
 /**
  * É¹Ò»É¹ÁÐ±íÈÝÆ÷
- * 
+ * @version 1.0
  * @author lyl
- * 
+ * @deprecated
  */
 public class ShaiYiSaiAdapter extends BaseAdapter {
 
@@ -52,8 +51,8 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 		return imageLoader;
 	}
 
-	private int realPostion=0;
-	
+	private int realPostion = 0;
+
 	private Context context;
 	private static int[] levels = { R.drawable.shai_star1,
 			R.drawable.shai_star2, R.drawable.shai_star3,
@@ -117,7 +116,7 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 		ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.shai_ada_,parent, false);
+			convertView = inflater.inflate(R.layout.shai_ada_, parent, false);
 			holder.userheadImageView = (ImageView) convertView
 					.findViewById(R.id.shai_head_img);
 			holder.usernameTextView = (TextView) convertView
@@ -134,26 +133,12 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 					.findViewById(R.id.shai_bottom_txt);
 			holder.shai_level_imgImageView = (ImageView) convertView
 					.findViewById(R.id.shai_start_img);
-			// holder.shoucangImageView = (ImageView) convertView
-			// .findViewById(R.id.shai_shoucang_img);
-			// holder.shoucangcounTextView = (TextView) convertView
-			// .findViewById(R.id.shai_shoucang_count_txt);
-			// holder.zanImageView = (ImageView) convertView
-			// .findViewById(R.id.shai_zan_img);
-			// holder.zanTextView = (TextView) convertView
-			// .findViewById(R.id.shai_zan_count_txt);
 			holder.commenImageView = (ImageButton) convertView
 					.findViewById(R.id.shai_pinglun_img);
-			// holder.commencounTextView = (TextView) convertView
-			// .findViewById(R.id.shai_pinglun_count_txt);
 			holder.reasonTextView = (TextView) convertView
 					.findViewById(R.id.shai_reason_txt);
 			holder.commeninfoTextView = (TextView) convertView
 					.findViewById(R.id.shai_comment_txt);
-
-			// holder.shai_centerLayout = (LinearLayout) convertView
-			// .findViewById(R.id.shai_center_layout);
-
 			// gridView
 			holder.picGridView = (GridView) convertView
 					.findViewById(R.id.shai_gridView1);
@@ -307,7 +292,7 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (listener != null) {
-					realPostion=newposition;
+					realPostion = newposition;
 					int width = popView.getWidth();
 					if (width == 0) {
 						width = 254;
@@ -356,6 +341,13 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 				}
 			}
 		});
+
+		if (list.get(position).containsKey("isadrivse")) {
+			convertView.setBackgroundResource(R.drawable.ic_tap);
+		} else {
+			convertView.setBackgroundColor(context.getResources().getColor(
+					R.color.transparent));
+		}
 
 		// holder.zanImageView.setOnClickListener(new OnClickListener() {
 		//
@@ -495,7 +487,7 @@ public class ShaiYiSaiAdapter extends BaseAdapter {
 		case 4:
 
 			gridView.setNumColumns(2);
-			gridView.setHorizontalSpacing(20);
+			gridView.setVerticalSpacing(20);
 
 			break;
 

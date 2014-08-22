@@ -22,23 +22,24 @@ import android.view.View;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.http.utils.HttpUtil;
 
 public class FoodsUtil {
 	// 方框查询地址
-	public final static String urlFindByBox = "http://115.28.164.99:7001/S_health/api/boxFoods";
+	public final static String urlFindByBox = HealthHttpClient.BASE_URL+"boxFoods";
 	// 文本查询地址
-	public final static String urlFindByText = "http://115.28.164.99:7001/S_health/api/searchFoods";
+	public final static String urlFindByText = HealthHttpClient.BASE_URL+"searchFoods";
 	// 临近查询地址
-	public final static String urlFindByCircle = "http://115.28.164.99:7001/S_health/api/nearbyFoods";
+	public final static String urlFindByCircle = HealthHttpClient.BASE_URL+"nearbyFoods";
 	// 临近查询地址
-	public final static String urlMiniImage = "http://115.28.164.99:7001/S_health/api/miniImage?id=";
+	public final static String urlMiniImage = HealthHttpClient.BASE_URL+"miniImage?id=";
 	// 详情
-	public final static String urldetails = "http://115.28.164.99:7001/S_health/api/showFoodInfo";
+	public final static String urldetails = HealthHttpClient.BASE_URL+"showFoodInfo";
 	// 图片地址
-	public final static String urlFoodpic = "http://115.28.164.99:7001/S_health/upload";
+	public final static String urlFoodpic = HealthHttpClient.BASE_URL+"upload";
 	// 健康轴
-	public final static String urlzhou = "http://115.28.164.99:7001/S_health/api/userFoodsAndMoods";
+	public final static String urlzhou = HealthHttpClient.BASE_URL+"userFoodsAndMoods";
 
 	/**
 	 * @param args

@@ -47,6 +47,13 @@ public class GetCommercial extends SaveActivity implements ActivityInterface {
 	}
 
 	@Override
+	protected void onInitActionBar() {
+		// TODO Auto-generated method stub
+		super.onInitActionBar();
+		getSupportActionBar().setTitle(R.string.commercialname);
+	}
+	
+	@Override
 	public void initView() {
 		// TODO Auto-generated method stub
 		nameEdit = (EditText) findViewById(R.id.commercial_name);

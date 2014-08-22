@@ -60,7 +60,6 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 	protected void onInitActionBar() {
 		// TODO Auto-generated method stub
 		super.onInitActionBar();
-
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(R.string.publish);
 
@@ -209,6 +208,7 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 	private void parseJson(String content) {
 		JSONObject moodJsonObject;
 		try {
+			BingLog.i(TAG, "·¢ËÍ·µ»Ø:"+content);
 			moodJsonObject = new JSONObject(content);
 			if ("1".equals(moodJsonObject.getString("result"))) {
 				moodid = moodJsonObject.getJSONObject("mood").getString("id");
@@ -408,6 +408,7 @@ public class PublishActivity extends BaseActivity implements PicClickListener {
 
 	private void handleSendImage(Intent intent) {
 		// TODO Auto-generated method stub
+		handleSendText(intent);
 		Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
 		if (imageUri != null) {
 			// Update UI to reflect image being shared

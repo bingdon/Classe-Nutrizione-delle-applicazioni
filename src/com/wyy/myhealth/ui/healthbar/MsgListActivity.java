@@ -28,6 +28,7 @@ import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.ui.absfragment.utils.TimeUtility;
 import com.wyy.myhealth.ui.baseactivity.BaseListActivity;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
+import com.wyy.myhealth.ui.mood.MoodDetailsActivity;
 import com.wyy.myhealth.utils.BingLog;
 
 public class MsgListActivity extends BaseListActivity {
@@ -70,7 +71,7 @@ public class MsgListActivity extends BaseListActivity {
 					String moodid = list.get(position).get("moodid").toString();
 					Intent intent = new Intent();
 					intent.putExtra("moodid", moodid);
-//					intent.setClass(context, MoodDetail.class);
+					intent.setClass(context, MoodDetailsActivity.class);
 					startActivity(intent);
 				}
 

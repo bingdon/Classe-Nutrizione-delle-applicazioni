@@ -12,13 +12,11 @@ import android.widget.LinearLayout;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.bean.HealthRecoderBean;
 import com.wyy.myhealth.bean.NearFoodBean;
-import com.wyy.myhealth.config.Config;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.ui.baseactivity.BaseNutritionActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
 import com.wyy.myhealth.ui.scan.utils.DialogShow;
-import com.wyy.myhealth.ui.scan.utils.DialogShowFeture;
 
 public class ScanResultActivity extends BaseNutritionActivity implements
 		ActivityInterface {
@@ -91,8 +89,8 @@ public class ScanResultActivity extends BaseNutritionActivity implements
 
 		initData();
 
-		DialogShowFeture.showFetureDialog(context, Config.log + "\n"
-				+ Config.feture_Value + "\n" + Config.placeValue);
+//		DialogShowFeture.showFetureDialog(context, Config.log + "\n"
+//				+ Config.feture_Value + "\n" + Config.placeValue);
 
 	}
 

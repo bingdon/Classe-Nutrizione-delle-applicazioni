@@ -5,10 +5,13 @@ import com.wyy.myhealth.ui.baseactivity.AbstractlistActivity;
 
 public class TodayFoodRecActivity extends AbstractlistActivity {
 
+	public static boolean isTopten=false;
+	
 	@Override
 	protected void onInitFragment() {
 		// TODO Auto-generated method stub
 		super.onInitFragment();
+		isTopten=true;
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.wrapper, new TodayFoodRecFragment()).commit();
 	}
@@ -20,4 +23,12 @@ public class TodayFoodRecActivity extends AbstractlistActivity {
 		getSupportActionBar().setTitle(R.string.today_food);
 	}
 
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		isTopten=false;
+	}
+	
 }

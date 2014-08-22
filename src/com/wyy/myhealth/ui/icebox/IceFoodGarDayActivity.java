@@ -28,6 +28,13 @@ public class IceFoodGarDayActivity extends SaveActivity implements
 	}
 	
 	@Override
+	protected void onInitActionBar() {
+		// TODO Auto-generated method stub
+		super.onInitActionBar();
+		getSupportActionBar().setTitle(R.string.good_day);
+	}
+	
+	@Override
 	protected void submitMsg() {
 		// TODO Auto-generated method stub
 		numdayedit.setError(null);

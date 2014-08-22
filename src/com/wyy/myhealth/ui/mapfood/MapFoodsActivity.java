@@ -41,8 +41,10 @@ import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.PreferencesFoodsInfo;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.Foods;
+import com.wyy.myhealth.http.utils.JsonUtils;
 import com.wyy.myhealth.ui.fooddetails.FoodDetailsActivity;
 import com.wyy.myhealth.ui.yaoyingyang.YaoyingyangFragment;
+import com.wyy.myhealth.utils.BingLog;
 import com.wyy.myhealth.utils.FoodsUtil;
 import com.wyy.myhealth.utils.ImageUtil;
 
@@ -70,8 +72,7 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class MapFoodsActivity extends ActionBarActivity {
 
-	
-	private static final String TAG=MapFoodsActivity.class.getSimpleName();
+	private static final String TAG = MapFoodsActivity.class.getSimpleName();
 
 	private static final double SCALE = 1000000.0;
 	private static final int INIT_LEVEL = 17;
@@ -80,7 +81,7 @@ public class MapFoodsActivity extends ActionBarActivity {
 	/**
 	 * pu MapView 是地图主控件
 	 */
-	private  MapView mMapView = null;
+	private MapView mMapView = null;
 	/**
 	 * 用MapController完成地图控制
 	 */
@@ -103,7 +104,6 @@ public class MapFoodsActivity extends ActionBarActivity {
 	 */
 	MKMapViewListener mMapListener = null;
 
-
 	// public static EditText edit_search;
 	private MKSearch mSearch = null; // 搜索模块，也可去掉地图模块独立使用
 	/**
@@ -111,9 +111,14 @@ public class MapFoodsActivity extends ActionBarActivity {
 	 */
 	private ArrayAdapter<String> sugAdapter = null;
 	private String city = null;
-	
+
 	private SearchView searchView;
+
+	private GeoPoint point;
 	
+	private boolean isone=false;
+
+	private String foodid="";
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
@@ -130,7 +135,7 @@ public class MapFoodsActivity extends ActionBarActivity {
 		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
 				.detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath()
 				.build());
-//		initFirst();
+		// initFirst();
 		/**
 		 * 使用地图sdk前需先初始化BMapManager. BMapManager是全局的，可为多个MapView共用，它需要地图模块创建前创建，
 		 * 并在地图地图模块销毁后销毁，只要还有地图模块在使用，BMapManager就不应该销毁
@@ -143,17 +148,17 @@ public class MapFoodsActivity extends ActionBarActivity {
 			 */
 			app.mBMapManager.init(WyyApplication.strKey,
 					new MKGeneralListener() {
-						
+
 						@Override
 						public void onGetPermissionState(int arg0) {
 							// TODO Auto-generated method stub
-							
+
 						}
-						
+
 						@Override
 						public void onGetNetworkState(int arg0) {
 							// TODO Auto-generated method stub
-							
+
 						}
 					});
 		}
@@ -191,9 +196,9 @@ public class MapFoodsActivity extends ActionBarActivity {
 		 */
 		mMapView.getController().setZoom(INIT_LEVEL);
 		mMapView.getController().enableClick(true);
-		//俯视角度
+		// 俯视角度
 		mMapView.getController().setOverlooking(-45);
-		
+
 		mMapView.refresh();
 
 		// 定位初始化
@@ -222,13 +227,14 @@ public class MapFoodsActivity extends ActionBarActivity {
 		mMapView.getOverlays().add(myLocationOverlay);
 
 		if (YaoyingyangFragment.isdingwei) {
+			foodid=PreferencesFoodsInfo.getfoodId(MapFoodsActivity.this);
 			Intent intent = getIntent();
 			double lat = intent.getDoubleExtra("lat", 0);
 			double lon = intent.getDoubleExtra("lon", 0);
-			
-			Log.i(TAG, "经度:"+lat+"纬度:"+lon);
-			
-			GeoPoint point = new GeoPoint((int) (lat * 1E6), (int) (lon * 1E6));
+
+			Log.i(TAG, "经度:" + lat + "纬度:" + lon);
+
+			point = new GeoPoint((int) (lat * 1E6), (int) (lon * 1E6));
 			mMapView.getController().setCenter(point);
 			resetOverlay();
 			createSearch();
@@ -242,7 +248,6 @@ public class MapFoodsActivity extends ActionBarActivity {
 
 	}
 
-	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
@@ -278,8 +283,7 @@ public class MapFoodsActivity extends ActionBarActivity {
 
 		return super.onMenuOpened(featureId, menu);
 	}
-	
-	
+
 	private void initActionBar() {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setBackgroundDrawable(getResources().getDrawable(
@@ -287,33 +291,30 @@ public class MapFoodsActivity extends ActionBarActivity {
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setDisplayShowHomeEnabled(false);
 
-		searchView=new SearchView(this);
+		searchView = new SearchView(this);
 		actionBar.setCustomView(searchView, new ActionBar.LayoutParams(
 				Gravity.RIGHT));
 		actionBar.setDisplayShowCustomEnabled(true);
 		searchView.setOnQueryTextListener(searchListener);
-		
 
 	}
-	
-	
-	
-	private OnQueryTextListener searchListener=new OnQueryTextListener() {
-		
+
+	private OnQueryTextListener searchListener = new OnQueryTextListener() {
+
 		@Override
 		public boolean onQueryTextSubmit(String arg0) {
 			// TODO Auto-generated method stub
 			mSearch.poiSearchInCity(city, arg0);
 			return true;
 		}
-		
+
 		@Override
 		public boolean onQueryTextChange(String arg0) {
 			// TODO Auto-generated method stub
 			return false;
 		}
 	};
-	
+
 	// 监听地图事件
 	public void createMapListener() {
 		/**
@@ -361,8 +362,8 @@ public class MapFoodsActivity extends ActionBarActivity {
 			 */
 			@Override
 			public void onMapLoadFinish() {
-				Toast.makeText(MapFoodsActivity.this, "地图加载完成", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(MapFoodsActivity.this, "地图加载完成",
+						Toast.LENGTH_SHORT).show();
 				// requestLocClick();
 				// resetOverlay();
 			}
@@ -371,7 +372,6 @@ public class MapFoodsActivity extends ActionBarActivity {
 				mMapListener);
 
 	}
-
 
 	/**
 	 * 修改位置图标
@@ -391,7 +391,8 @@ public class MapFoodsActivity extends ActionBarActivity {
 	 * @param view
 	 */
 	public void resetOverlay() {
-		Toast.makeText(MapFoodsActivity.this, "加载美食……", Toast.LENGTH_SHORT).show();
+		Toast.makeText(MapFoodsActivity.this, "加载美食……", Toast.LENGTH_SHORT)
+				.show();
 		new Thread() {
 			@Override
 			public void run() {// 你要执行的方法
@@ -402,8 +403,7 @@ public class MapFoodsActivity extends ActionBarActivity {
 					// + mMapView.getZoomLevel());
 					// Log.i("resetOverlay", "经度宽 ：" +
 					// mMapView.getLongitudeSpan());
-					
-					
+
 					try {
 						double minx = (gp.getLongitudeE6() - mMapView
 								.getLongitudeSpan() * HALF)
@@ -417,22 +417,41 @@ public class MapFoodsActivity extends ActionBarActivity {
 						double maxy = (gp.getLatitudeE6() + mMapView
 								.getLatitudeSpan() * HALF)
 								/ SCALE;
-						Log.i("地图", "minx:"+minx+"miny:"+miny+"maxx:"+maxx+"maxy:"+maxy);
+						BingLog.i("地图", "minx:" + minx + "miny:" + miny
+								+ "maxx:" + maxx + "maxy:" + maxy);
 						searchByBox(minx, miny, maxx, maxy);
 					} catch (Exception e) {
 						// TODO: handle exception
-						Log.e("地图", "解析错误:"+e.toString());
+						BingLog.e("地图", "解析错误:" + e.toString());
+						newSearch();
 					}
-					
-					
+
+				} else {
+					newSearch();
 				}
 			}
 		}.start();
 
 	}
-	
-	
-	
+
+	private void newSearch(){
+		try {
+			double minx = (point.getLongitudeE6()-1)
+					/ SCALE;
+			double miny = (point.getLatitudeE6()-1)
+					/ SCALE;
+			double maxx = (point.getLongitudeE6()+1)
+					/ SCALE;
+			double maxy = (point.getLatitudeE6()+1)
+					/ SCALE;
+			BingLog.i("地图", "minx:" + minx + "miny:" + miny
+					+ "maxx:" + maxx + "maxy:" + maxy);
+			searchByBox(minx, miny, maxx, maxy);
+		} catch (Exception e) {
+			// TODO: handle exception
+			BingLog.e("地图2", "解析错误:" + e.toString());
+		}
+	}
 	
 	/**
 	 * 重新添加Overlay
@@ -440,15 +459,15 @@ public class MapFoodsActivity extends ActionBarActivity {
 	 * @param view
 	 */
 	public void search4Place() {
-		Toast.makeText(MapFoodsActivity.this, "加载美食……", Toast.LENGTH_SHORT).show();
+		Toast.makeText(MapFoodsActivity.this, "加载美食……", Toast.LENGTH_SHORT)
+				.show();
 		new Thread() {
 			@Override
 			public void run() {// 你要执行的方法
 
 				if (mMapView.getZoomLevel() > SHOW_LEVEL) {
 					GeoPoint gp = mMapView.getMapCenter();
-					
-					
+
 					try {
 						double minx = (gp.getLongitudeE6() - mMapView
 								.getLongitudeSpan() * HALF)
@@ -462,20 +481,19 @@ public class MapFoodsActivity extends ActionBarActivity {
 						double maxy = (gp.getLatitudeE6() + mMapView
 								.getLatitudeSpan() * HALF)
 								/ SCALE;
-						Log.i("地图", "minx:"+minx+"miny:"+miny+"maxx:"+maxx+"maxy:"+maxy);
+						Log.i("地图", "minx:" + minx + "miny:" + miny + "maxx:"
+								+ maxx + "maxy:" + maxy);
 						searchByBox(minx, miny, maxx, maxy);
 					} catch (Exception e) {
 						// TODO: handle exception
-						Log.e("地图", "解析错误:"+e.toString());
+						Log.e("地图", "解析错误:" + e.toString());
 					}
-					
-					
+
 				}
 			}
 		}.start();
 
 	}
-	
 
 	/**
 	 * 手动触发一次定位请求
@@ -483,7 +501,8 @@ public class MapFoodsActivity extends ActionBarActivity {
 	public void requestLocClick() {
 		isRequest = true;
 		mLocClient.requestLocation();
-		Toast.makeText(MapFoodsActivity.this, "正在定位……", Toast.LENGTH_SHORT).show();
+		Toast.makeText(MapFoodsActivity.this, "正在定位……", Toast.LENGTH_SHORT)
+				.show();
 	}
 
 	@Override
@@ -545,7 +564,7 @@ public class MapFoodsActivity extends ActionBarActivity {
 		AsyncHttpResponseHandler res = new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				System.out.println(response);
+				BingLog.i(TAG, "搜索返回:" + response);
 				foodsList = parseFoods(response);
 				showFoods(foodsList);
 
@@ -556,7 +575,8 @@ public class MapFoodsActivity extends ActionBarActivity {
 	}
 
 	protected void searchByCircle() {
-		Toast.makeText(MapFoodsActivity.this, "加载美食……", Toast.LENGTH_SHORT).show();
+		Toast.makeText(MapFoodsActivity.this, "加载美食……", Toast.LENGTH_SHORT)
+				.show();
 		new Thread() {
 			@Override
 			public void run() {// 你要执行的方法
@@ -614,22 +634,31 @@ public class MapFoodsActivity extends ActionBarActivity {
 
 			int length = json.length();
 			for (int i = 0; i < length; i++) {
-				Foods food = new Foods();
+				// Foods food=new Foods();
 				JSONObject obj = json.getJSONObject(i);
-				food.setCommercialLat(obj.getString("commercialLat"));
-				food.setCommercialLon(obj.getString("commercialLon"));
-				food.setCommercialName(obj.getString("commercialName"));
+				Foods food = JsonUtils.getfoods(obj);
+				// food.setCommercialLat(obj.getString("commercialLat"));
+				// food.setCommercialLon(obj.getString("commercialLon"));
+				// food.setCommercialName(obj.getString("commercialName"));
 				// food.setCommercialAddress(obj.getString("commercialAddress"));
 				// food.setCommercialPhone(obj.getString("commercialPhone"));
-				food.setTags(obj.getString("tags"));
-				food.setId(obj.getString("id"));
+				// food.setTags(obj.getString("tags"));
+				// food.setId(obj.getString("id"));
 				// food.setTastelevel(obj.getString("tastelevel"));
-				food.setFoodpic(obj.getString("foodpic"));
+				// food.setFoodpic(obj.getString("foodpic"));
 				// food.setSummary(obj.getString("summary"));
 				// food.setEnergy(obj.getString("energy"));
 				// food.setType(obj.getString("type"));
-				list.add(food);
+				if (!isone) {
+					if (foodid.equals(food.getId())) {
+						list.add(food);
+					}
+				}else {
+					list.add(food);
+				}
+				
 			}
+			isone=true;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -768,8 +797,6 @@ public class MapFoodsActivity extends ActionBarActivity {
 			if (location == null)
 				return;
 
-			
-
 			locData.latitude = location.getLatitude();
 			locData.longitude = location.getLongitude();
 			// 如果不显示定位精度圈，将accuracy赋值为0即可
@@ -818,52 +845,52 @@ public class MapFoodsActivity extends ActionBarActivity {
 		}
 	}
 
-//	private View.OnClickListener listener = new OnClickListener() {
-//
-//		@Override
-//		public void onClick(View v) {
-//			switch (v.getId()) {
-//
-//			case R.id.left_button:
-//				EditText keyWorldsView = (EditText) findViewById(R.id.search_input);
-//
-//				mSearch.poiSearchInCity(city, keyWorldsView.getText()
-//						.toString());
-//				break;
-//			case R.id.map_right_button:
-//
-//				// Toast.makeText(MainActivity.this, "点击主页",
-//				// Toast.LENGTH_LONG).show();
-//				// Intent intent3 = new Intent(MainActivity.this,
-//				// HomeActivity.class);
-//				// startActivity(intent3);
-//				// finish();
-//
-//				break;
-//			case R.id.Lie_Layout:
-//
-//				/*
-//				 * Intent intent2 = new
-//				 * Intent(MainActivity.this,SearchActivity.class);
-//				 * intent2.putExtra("lon", (int) (locData.longitude * 1e6));
-//				 * intent2.putExtra("lat", (int) (locData.latitude * 1e6));
-//				 */
-//
-//				Intent intent2 = new Intent(MainActivity.this,
-//						LieActivity.class);
-//
-//				startActivity(intent2);
-//				finish();
-//				break;
-//			case R.id.Map_Layout:
-//
-//				break;
-//			default:
-//				break;
-//			}
-//		}
-//
-//	};
+	// private View.OnClickListener listener = new OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View v) {
+	// switch (v.getId()) {
+	//
+	// case R.id.left_button:
+	// EditText keyWorldsView = (EditText) findViewById(R.id.search_input);
+	//
+	// mSearch.poiSearchInCity(city, keyWorldsView.getText()
+	// .toString());
+	// break;
+	// case R.id.map_right_button:
+	//
+	// // Toast.makeText(MainActivity.this, "点击主页",
+	// // Toast.LENGTH_LONG).show();
+	// // Intent intent3 = new Intent(MainActivity.this,
+	// // HomeActivity.class);
+	// // startActivity(intent3);
+	// // finish();
+	//
+	// break;
+	// case R.id.Lie_Layout:
+	//
+	// /*
+	// * Intent intent2 = new
+	// * Intent(MainActivity.this,SearchActivity.class);
+	// * intent2.putExtra("lon", (int) (locData.longitude * 1e6));
+	// * intent2.putExtra("lat", (int) (locData.latitude * 1e6));
+	// */
+	//
+	// Intent intent2 = new Intent(MainActivity.this,
+	// LieActivity.class);
+	//
+	// startActivity(intent2);
+	// finish();
+	// break;
+	// case R.id.Map_Layout:
+	//
+	// break;
+	// default:
+	// break;
+	// }
+	// }
+	//
+	// };
 
 	public void createSearch() {
 		WyyApplication app = (WyyApplication) this.getApplication();
@@ -988,78 +1015,77 @@ public class MapFoodsActivity extends ActionBarActivity {
 			}
 		});
 
-		
-		
-		
-//		keyWorldsView = (AutoCompleteTextView) findViewById(R.id.search_input);
-//		sugAdapter = new ArrayAdapter<String>(this,
-//				android.R.layout.simple_dropdown_item_1line);
-//		keyWorldsView.setAdapter(sugAdapter);
-//
-//		/**
-//		 * 当输入关键字变化时，动态更新建议列表
-//		 */
-//		keyWorldsView.addTextChangedListener(new TextWatcher() {
-//
-//			@Override
-//			public void afterTextChanged(Editable arg0) {
-//
-//			}
-//
-//			@Override
-//			public void beforeTextChanged(CharSequence arg0, int arg1,
-//					int arg2, int arg3) {
-//
-//			}
-//
-//			@Override
-//			public void onTextChanged(CharSequence cs, int arg1, int arg2,
-//					int arg3) {
-//				if (cs.length() <= 0) {
-//					return;
-//				}
-//				// String city =
-//				// ((EditText)findViewById(R.id.city)).getText().toString();
-//				/**
-//				 * 使用建议搜索服务获取建议列表，结果在onSuggestionResult()中更新
-//				 */
-//				mSearch.suggestionSearch(cs.toString(), "");
-//			}
-//		});
-//
-//		keyWorldsView.setOnKeyListener(new OnKeyListener() {// 输入完后按键盘上的搜索键【回车键改为了搜索键】
-//
-//					@Override
-//					public boolean onKey(View v, int keyCode, KeyEvent event) {
-//
-//						if (city == null) {
-//							Toast.makeText(MapFoodsActivity.this, "没有定位到城市，无法查询",
-//									Toast.LENGTH_LONG).show();
-//							return false;
-//						}
-//
-//						// TODO Auto-generated method stub
-//						if (keyCode == KeyEvent.KEYCODE_ENTER) {// 修改回车键功能
-//							// 先隐藏键盘
-//							((InputMethodManager) keyWorldsView.getContext()
-//									.getSystemService(
-//											Context.INPUT_METHOD_SERVICE))
-//									.hideSoftInputFromWindow(
-//											MapFoodsActivity.this.getCurrentFocus()
-//													.getWindowToken(),
-//											InputMethodManager.HIDE_NOT_ALWAYS);
-//
-//							EditText keyWorldsView = (EditText) findViewById(R.id.search_input);
-//
-//							mSearch.poiSearchInCity(city, keyWorldsView
-//									.getText().toString());
-//
-//							return true;
-//						}
-//						return false;
-//					}
-//
-//				});
+		// keyWorldsView = (AutoCompleteTextView)
+		// findViewById(R.id.search_input);
+		// sugAdapter = new ArrayAdapter<String>(this,
+		// android.R.layout.simple_dropdown_item_1line);
+		// keyWorldsView.setAdapter(sugAdapter);
+		//
+		// /**
+		// * 当输入关键字变化时，动态更新建议列表
+		// */
+		// keyWorldsView.addTextChangedListener(new TextWatcher() {
+		//
+		// @Override
+		// public void afterTextChanged(Editable arg0) {
+		//
+		// }
+		//
+		// @Override
+		// public void beforeTextChanged(CharSequence arg0, int arg1,
+		// int arg2, int arg3) {
+		//
+		// }
+		//
+		// @Override
+		// public void onTextChanged(CharSequence cs, int arg1, int arg2,
+		// int arg3) {
+		// if (cs.length() <= 0) {
+		// return;
+		// }
+		// // String city =
+		// // ((EditText)findViewById(R.id.city)).getText().toString();
+		// /**
+		// * 使用建议搜索服务获取建议列表，结果在onSuggestionResult()中更新
+		// */
+		// mSearch.suggestionSearch(cs.toString(), "");
+		// }
+		// });
+		//
+		// keyWorldsView.setOnKeyListener(new OnKeyListener() {//
+		// 输入完后按键盘上的搜索键【回车键改为了搜索键】
+		//
+		// @Override
+		// public boolean onKey(View v, int keyCode, KeyEvent event) {
+		//
+		// if (city == null) {
+		// Toast.makeText(MapFoodsActivity.this, "没有定位到城市，无法查询",
+		// Toast.LENGTH_LONG).show();
+		// return false;
+		// }
+		//
+		// // TODO Auto-generated method stub
+		// if (keyCode == KeyEvent.KEYCODE_ENTER) {// 修改回车键功能
+		// // 先隐藏键盘
+		// ((InputMethodManager) keyWorldsView.getContext()
+		// .getSystemService(
+		// Context.INPUT_METHOD_SERVICE))
+		// .hideSoftInputFromWindow(
+		// MapFoodsActivity.this.getCurrentFocus()
+		// .getWindowToken(),
+		// InputMethodManager.HIDE_NOT_ALWAYS);
+		//
+		// EditText keyWorldsView = (EditText) findViewById(R.id.search_input);
+		//
+		// mSearch.poiSearchInCity(city, keyWorldsView
+		// .getText().toString());
+		//
+		// return true;
+		// }
+		// return false;
+		// }
+		//
+		// });
 
 	}
 
@@ -1069,18 +1095,16 @@ public class MapFoodsActivity extends ActionBarActivity {
 				(int) (locData.longitude * 1e6)));
 	}
 
-//	private void initFirst() {
-//		// TODO Auto-generated method stub
-//		if (!LoginActivity.firstYao) {
-//			Intent intent = new Intent(MainActivity.this, Prompt.class);
-//			intent.putExtra("first_map", "bing");
-//			startActivity(intent);
-//			LoginActivity.firstYao = true;
-//
-//		}
-//
-//	}
-
-
+	// private void initFirst() {
+	// // TODO Auto-generated method stub
+	// if (!LoginActivity.firstYao) {
+	// Intent intent = new Intent(MainActivity.this, Prompt.class);
+	// intent.putExtra("first_map", "bing");
+	// startActivity(intent);
+	// LoginActivity.firstYao = true;
+	//
+	// }
+	//
+	// }
 
 }

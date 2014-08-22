@@ -12,7 +12,17 @@ public class IceBoxFoodBean implements Serializable {
 	
 	private String createtime;
 	
-	private String energy;
+	private int energy;
+	
+	private int fat;
+	
+	private int mineral;
+	
+	private int protein;
+	
+	private int vitamin;
+	
+	private int sugar;
 	
 	private String foodpic;
 	
@@ -26,6 +36,24 @@ public class IceBoxFoodBean implements Serializable {
 	
 	private String source;
 	
+	
+	
+	public int getSugar() {
+		return sugar;
+	}
+
+	public void setSugar(int sugar) {
+		this.sugar = sugar;
+	}
+
+	public int getVitamin() {
+		return vitamin;
+	}
+
+	public void setVitamin(int vitamin) {
+		this.vitamin = vitamin;
+	}
+
 	public int getType() {
 		return type;
 	}
@@ -46,13 +74,6 @@ public class IceBoxFoodBean implements Serializable {
 		this.createtime = createtime;
 	}
 
-	public String getEnergy() {
-		return energy;
-	}
-
-	public void setEnergy(String energy) {
-		this.energy = energy;
-	}
 
 	public String getFoodpic() {
 		return foodpic;
@@ -108,6 +129,38 @@ public class IceBoxFoodBean implements Serializable {
 
 	public void setUserid(String userid) {
 		this.userid = userid;
+	}
+
+	public int getEnergy() {
+		return energy;
+	}
+
+	public void setEnergy(int energy) {
+		this.energy = energy;
+	}
+
+	public int getFat() {
+		return fat;
+	}
+
+	public void setFat(int fat) {
+		this.fat = fat;
+	}
+
+	public int getMineral() {
+		return mineral;
+	}
+
+	public void setMineral(int mineral) {
+		this.mineral = mineral;
+	}
+
+	public int getProtein() {
+		return protein;
+	}
+
+	public void setProtein(int protein) {
+		this.protein = protein;
 	}
 	
 	

@@ -1,5 +1,7 @@
 package com.wyy.myhealth;
 
+import java.lang.reflect.Field;
+
 import com.astuetz.PagerSlidingTabStrip;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -40,6 +42,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
@@ -69,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	public static String address = "";
 
-	private MainService mservice;
+	private MainService mainService;
 
 	SearchView searchView;
 
@@ -84,6 +87,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		tabs.setShouldExpand(true);
+		tabs.setChangeTextColor(true);
 		mainPager = (ViewPager) findViewById(R.id.pager);
 		adapter = new MyPagerAdapter(getSupportFragmentManager());
 
@@ -104,6 +108,8 @@ public class MainActivity extends ActionBarActivity implements
 		initFilter();
 
 		finshLogin();
+		
+		setCusmenutome();
 
 	}
 
@@ -111,13 +117,12 @@ public class MainActivity extends ActionBarActivity implements
 		View actionView = getLayoutInflater().inflate(R.layout.main_menu_v,
 				null);
 		searchView = (SearchView) actionView.findViewById(R.id.search_view);
+		settingSearchView();
 		help = (ImageView) actionView.findViewById(R.id.help);
 		getSupportActionBar().setCustomView(actionView,
 				new ActionBar.LayoutParams(Gravity.RIGHT));
 		getSupportActionBar().setDisplayShowCustomEnabled(true);
 		getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.themecolor)));
-//		getSupportActionBar().setBackgroundDrawable(
-//				getResources().getDrawable(R.drawable.actionbar_g_bg));
 		searchView.setOnQueryTextListener(this);
 		help.setOnClickListener(listener);
 	}
@@ -323,6 +328,8 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		if (arg0 == 0) {
 			sendPageIndex(arg0);
+		}else if (arg0==2) {
+			startUpdateData();
 		}
 
 	}
@@ -358,7 +365,7 @@ public class MainActivity extends ActionBarActivity implements
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			// TODO Auto-generated method stub
-			mservice = ((MainService.Wibingder) service).getBingder();
+			mainService = ((MainService.Wibingder) service).getBingder();
 
 		}
 	};
@@ -367,6 +374,10 @@ public class MainActivity extends ActionBarActivity implements
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(ConstantS.PAGE_INDEX_CHANG);
 		filter.addAction(ConstantS.ACTION_HIDE_UI_CHANGE);
+		filter.addAction(ConstantS.ACTION_MAIN_FINSH);
+		filter.addAction(ConstantS.ACTION_SEND_SHAI);
+		filter.addAction(ConstantS.ACTION_SEND_CANEL_NOTICE);
+		filter.addAction(ConstantS.NEW_FOOD_COMMENT);
 		registerReceiver(mainReceiver, filter);
 	}
 
@@ -376,8 +387,17 @@ public class MainActivity extends ActionBarActivity implements
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
+			BingLog.i(TAG, "main:"+action);
 			if (action.equals(ConstantS.ACTION_HIDE_UI_CHANGE)) {
 				changeUI();
+			}else if (action.equals(ConstantS.ACTION_MAIN_FINSH)) {
+				finish();
+			}else if (action.equals(ConstantS.ACTION_SEND_SHAI)) {
+				showNotice();
+			}else if (action.equals(ConstantS.NEW_FOOD_COMMENT)) {
+				showNotice();
+			}else if (action.equals(ConstantS.ACTION_SEND_CANEL_NOTICE)) {
+				canelNotice();
 			}
 		}
 	};
@@ -398,6 +418,14 @@ public class MainActivity extends ActionBarActivity implements
 		sendBroadcast(new Intent(ConstantS.ACTION_LOGIN_FINISH));
 	}
 
+	private void showNotice(){
+		tabs.updateTextDrawNotice(2, R.drawable.ic_tab_notice);
+	}
+	
+	private void canelNotice(){
+		tabs.updateTextDrawNotice(2, 0);
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -435,4 +463,30 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	};
 
+	
+	private void settingSearchView(){
+		ImageView icon = (ImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
+		icon.setImageResource(R.drawable.ic_search);
+	}
+	
+	private void startUpdateData(){
+		if (mainService.getService()==null) {
+			mainService.initRunable();
+		}
+	}
+	
+	
+	private void setCusmenutome() {
+		try {
+			ViewConfiguration mconfig = ViewConfiguration.get(this);
+			Field menuKeyField = ViewConfiguration.class
+					.getDeclaredField("sHasPermanentMenuKey");
+			if (menuKeyField != null) {
+				menuKeyField.setAccessible(true);
+				menuKeyField.setBoolean(mconfig, false);
+			}
+		} catch (Exception ex) {
+		}
+	}
+	
 }

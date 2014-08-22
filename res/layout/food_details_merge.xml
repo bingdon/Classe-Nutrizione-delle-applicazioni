@@ -18,18 +18,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/list_sec"
-        android:minHeight="50dp" >
+        android:minHeight="45dp" >
 
         <TextView
             android:id="@+id/user_summary_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
             android:drawableLeft="@drawable/icon_user_summary"
             android:drawablePadding="10dp"
+            android:textColor="@color/gray"
             android:text=""
-            android:textSize="18sp" />
+            android:textSize="14sp" />
     </FrameLayout>
 
     <FrameLayout

@@ -29,11 +29,14 @@ import com.wyy.myhealth.http.utils.HealthHttpClient;
 import com.wyy.myhealth.imag.utils.PhoneUtlis;
 import com.wyy.myhealth.ui.baseactivity.SubmitActivity;
 import com.wyy.myhealth.ui.baseactivity.interfacs.ActivityInterface;
+import com.wyy.myhealth.utils.BingLog;
 import com.wyy.myhealth.utils.NoticeUtils;
 
 public class ShareFoodActivity extends SubmitActivity implements
 		ActivityInterface {
 
+	private static final String TAG=ShareFoodActivity.class.getSimpleName();
+	
 	private RatingBar tastRating;
 	
 	private String tasteStr;
@@ -302,6 +305,7 @@ public class ShareFoodActivity extends SubmitActivity implements
 	
 	
 	private void parseJson(String content){
+		BingLog.i(TAG, "·µ»Ø:"+content);
 		try {
 			JSONObject jsonObject=new JSONObject(content);
 			int result=0;

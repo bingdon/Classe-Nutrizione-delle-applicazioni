@@ -13,7 +13,6 @@ import com.wyy.myhealth.service.MainService;
 import com.wyy.myhealth.utils.BingLog;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -107,7 +106,7 @@ public class YaoyingyangAdapter extends BaseAdapter {
 				holder.foodimg, options);
 
 		
-		if (adapterPostion==2) {
+		if (adapterPostion==2&&!TodayFoodRecActivity.isTopten) {
 			holder.recView.setVisibility(View.VISIBLE);
 		}else {
 			holder.recView.setVisibility(View.GONE);
@@ -119,7 +118,9 @@ public class YaoyingyangAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				if (listener!=null) {
+					listener.on3Click();
+				}
 			}
 		});
 		
@@ -140,7 +141,6 @@ public class YaoyingyangAdapter extends BaseAdapter {
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			Log.i("æ‡¿Î", "æ‡¿Î:" + d);
 			if (d < 0) {
 				holder.distanceTextView.setVisibility(View.INVISIBLE);
 			} else {
@@ -206,7 +206,7 @@ public class YaoyingyangAdapter extends BaseAdapter {
 
 		if (MainService.getNextHealthRecoderBeans() != null
 				&& MainService.getNextHealthRecoderBeans().size() > 0
-				&& adapterPostion < 3) {
+				&& adapterPostion < 3&&!TodayFoodRecActivity.isTopten) {
 			holder.tuijianImageView.setVisibility(View.VISIBLE);
 		} else {
 			holder.tuijianImageView.setVisibility(View.GONE);

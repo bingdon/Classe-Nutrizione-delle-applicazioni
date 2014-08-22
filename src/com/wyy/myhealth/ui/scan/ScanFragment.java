@@ -82,7 +82,7 @@ public class ScanFragment extends Fragment {
 	// 阈值计算是否完成
 	private boolean isplace = false;
 	// 上传返回完成标志
-	private boolean isfasongcm = false;
+	private boolean isfasongcm = true;
 
 	private boolean isplacefit = false;
 
@@ -113,6 +113,10 @@ public class ScanFragment extends Fragment {
 	private TextView scantTextView;
 
 	private NearFoodBean sameNearFoodBean;
+	// 特征点
+	private int feture = 0;
+	// 阈值
+	private double cw = 0;
 
 	public static ScanFragment newInstance(int postion) {
 		ScanFragment scanFragment = new ScanFragment();
@@ -491,12 +495,15 @@ public class ScanFragment extends Fragment {
 	};
 
 	private void compareFood() {
-		ExecutorService tExecutorService = Executors.newFixedThreadPool(3);
+		ExecutorService tExecutorService = Executors.newFixedThreadPool(2);
 		tExecutorService.execute(cmpPicRunnable);
-		tExecutorService.execute(sendbmp);
+		// tExecutorService.execute(sendbmp);
 		tExecutorService.execute(cmpPlaceRunnable);
 	}
 
+	/**
+	 * 阈值计算
+	 */
 	Runnable cmpPlaceRunnable = new Runnable() {
 
 		@Override
@@ -504,8 +511,9 @@ public class ScanFragment extends Fragment {
 			// TODO Auto-generated method stub
 			isplacefit = isExitPlace();
 			if (isfasongcm && iscomple) {
-				if (isfit && isplacefit && !TextUtils.isEmpty(json)) {
-					parseJson(json);
+				if (isfit && isplacefit /* && !TextUtils.isEmpty(json) */) {
+					mHandler.sendEmptyMessage(2);
+					// parseJson(json);
 				} else {
 					logindialogfire();
 				}
@@ -529,12 +537,12 @@ public class ScanFragment extends Fragment {
 				mybmp = PhoneUtlis.bitmapzoomToString(FileUtils.HEALTH_IMAG
 						+ "/wyy.png");
 				HealthHttpClient.cmpFoodPic(mybmp, WyyApplication.getInfo()
-						.getId(), handler);
+						.getId(), feture, cw, handler);
 
 			} else {
 				mybmp = PhoneUtlis.bitmapToString(context);
 				HealthHttpClient.cmpFoodPic(mybmp, WyyApplication.getInfo()
-						.getId(), handler);
+						.getId(), feture, cw, handler);
 			}
 
 		}
@@ -549,9 +557,10 @@ public class ScanFragment extends Fragment {
 			BingLog.i(TAG, "=============计算线程============");
 			isfit = isComfortAble();
 			if (isfasongcm && isplace) {
-				if (isfit && !TextUtils.isEmpty(json) && isplacefit) {
+				if (isfit && /* !TextUtils.isEmpty(json) && */isplacefit) {
 					BingLog.i(TAG, "=============计算处理============");
-					parseJson(json);
+					mHandler.sendEmptyMessage(2);
+					// parseJson(json);
 				} else {
 					logindialogfire();
 				}
@@ -611,7 +620,11 @@ public class ScanFragment extends Fragment {
 					e.printStackTrace();
 				}
 
-				Config.log = mJsonObject.getString("log");
+				try {
+					Config.log = mJsonObject.getString("log");
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 
 				if (JsonUtils.isSuccess(mJsonObject)) {
 					JSONArray comments = mJsonObject.getJSONArray("comments");
@@ -690,6 +703,7 @@ public class ScanFragment extends Fragment {
 		int feturenum = secFood();
 		BingLog.i(TAG, "计算:" + feturenum);
 		Config.feture_Value = "特征值:" + feturenum;
+		feture = feturenum;
 		if (feturenum > 15 && feturenum < 80) {
 			iscomple = true;
 			return true;
@@ -706,6 +720,7 @@ public class ScanFragment extends Fragment {
 		BingLog.i(TAG, "阈值计算:" + k);
 		Config.placeValue = "阈值:" + k;
 		isplace = true;
+		cw = k;
 		if (k > 0.4) {
 			return true;
 		} else {
@@ -751,6 +766,10 @@ public class ScanFragment extends Fragment {
 
 			case 1:
 				mFrameLayout.addView(cView);
+				break;
+
+			case 2:
+				new Thread(sendbmp).start();
 				break;
 
 			default:

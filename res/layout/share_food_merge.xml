@@ -21,7 +21,7 @@
         <RatingBar
             android:id="@+id/taste_index"
             android:layout_width="wrap_content"
-            android:layout_height="70px"
+            android:layout_height="30dp"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="16dp"
             android:progressDrawable="@drawable/rating_yellow"

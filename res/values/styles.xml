@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -25,5 +25,15 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="content_txt_theme" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+    
+    <style name="search_theme" parent="Theme.AppCompat.Light">
+        <item name="searchViewSearchIcon">@drawable/ic_search</item>
+    </style>
+    
 
 </resources>

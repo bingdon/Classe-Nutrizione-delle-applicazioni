@@ -14,6 +14,7 @@ import com.wyy.myhealth.baidu.utlis.Utils;
 import com.wyy.myhealth.bean.PersonalInfo;
 import com.wyy.myhealth.contants.ConstantS;
 import com.wyy.myhealth.ui.login.LoginActivity;
+import com.wyy.myhealth.ui.login.utils.LoginUtils;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -94,7 +95,11 @@ public class WelcomeActivity extends Activity {
 			wait_Onbind.setVisibility(View.GONE);
 			unregisterReceiver(onbindReceiver);
 			mHandler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
+			LoginUtils.login(WelcomeActivity.this, WyyApplication.getInfo().getIdcode());
 		}
+		
+		
+		
 	}
 	
 	private void goHome() {

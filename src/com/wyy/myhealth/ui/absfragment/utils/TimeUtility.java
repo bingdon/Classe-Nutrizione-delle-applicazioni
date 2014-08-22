@@ -7,6 +7,8 @@ import java.util.Date;
 import com.wyy.myhealth.R;
 import com.wyy.myhealth.app.WyyApplication;
 import com.wyy.myhealth.bean.ItemBean;
+import com.wyy.myhealth.utils.BingDateUtils;
+import com.wyy.myhealth.utils.BingLog;
 
 /**
  * User: qii
@@ -53,7 +55,24 @@ public class TimeUtility {
         }
         return getListTime(msg);
     }
-
+    
+    public static String getListTime(String time) {
+		long ltime = BingDateUtils.getTime(time);
+		return getListTime(ltime);
+	}
+    
+    
+    public static int getday2now(String ltime){
+    	BingLog.i("时间", "时间:"+ltime);
+    	long time = BingDateUtils.getTime(ltime);
+    	long now = System.currentTimeMillis();
+        long msg = time;
+        long calcMills = now - msg;
+        long calDay = calcMills/1000/60/60 / 24;
+        BingLog.i("时间", "时间:"+calDay);
+        return (int) calDay;
+    }
+    
     public static String getListTime(long time) {
         long now = System.currentTimeMillis();
         long msg = time;

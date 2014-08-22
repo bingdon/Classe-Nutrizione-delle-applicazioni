@@ -11,6 +11,16 @@ public class NearFoodBean extends Foods{
 
 	private String visitcount;
 	
+	private String createtime;
+	
+	public String getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
+	}
+
 	private boolean iscollect;
 	
 	public boolean isIscollect() {
